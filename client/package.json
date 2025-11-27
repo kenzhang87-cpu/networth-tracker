@@ -13,7 +13,11 @@
     "@vitejs/plugin-react": "^4.3.2",
     "vite": "^5.4.8"
   },
-  "scripts": {
-    "dev": "vite"
-  }
+"scripts": {
+  "dev": "node index.js",
+  "start": "node index.js",
+  "postinstall": "npm rebuild sqlite3 --build-from-source"
 }
+
+  }
+
