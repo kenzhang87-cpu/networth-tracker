@@ -56,19 +56,28 @@ const formatNumber = (val) => {
   return num.toLocaleString(undefined, { useGrouping: true, maximumFractionDigits: 20 });
 };
 
-const categoriesOrder = ["cash", "stocks", "crypto", "retirement", "property", "other"];
+const assetCategories = ["cash", "stocks", "crypto", "retirement", "property", "other"];
+const liabilityCategories = ["mortgage", "credit card", "loans", "other liability"];
 
 const palette = {
-    cash: { fill: "rgba(84, 119, 215, 0.9)", stroke: "#4a90e2" },
-    stocks: { fill: "rgba(51, 216, 123, 0.9)", stroke: "#27ae60" },
-    crypto: { fill: "rgba(253, 203, 110, 0.9)", stroke: "#f39c12" },
-    retirement: { fill: "rgba(246, 221, 204, 0.9)", stroke: "#d35400" },
-    property: { fill: "rgba(232, 218, 239, 0.9)", stroke: "#8e44ad" },
-    other: { fill: "rgba(242, 244, 244, 0.9)", stroke: "#7f8c8d" }
-
+  cash: { fill: "rgba(84, 119, 215, 0.9)", stroke: "#4a90e2" },
+  stocks: { fill: "rgba(51, 216, 123, 0.9)", stroke: "#27ae60" },
+  crypto: { fill: "rgba(253, 203, 110, 0.9)", stroke: "#f39c12" },
+  retirement: { fill: "rgba(246, 221, 204, 0.9)", stroke: "#d35400" },
+  property: { fill: "rgba(232, 218, 239, 0.9)", stroke: "#8e44ad" },
+  mortgage: { fill: "rgba(214, 234, 248, 0.9)", stroke: "#2980b9" },
+  "credit card": { fill: "rgba(245, 183, 177, 0.9)", stroke: "#c0392b" },
+  loans: { fill: "rgba(215, 189, 226, 0.9)", stroke: "#7d3c98" },
+  "other liability": { fill: "rgba(236, 240, 241, 0.9)", stroke: "#7f8c8d" },
+  other: { fill: "rgba(242, 244, 244, 0.9)", stroke: "#7f8c8d" }
 };
 
 const colorForCategory = (cat) => palette[cat] || palette.other;
+const categoryType = (cat) => {
+  const c = (cat || "").toLowerCase();
+  if (liabilityCategories.includes(c)) return "liability";
+  return "asset";
+};
 
 export default function History() {
   const [balances, setBalances] = useState([]);
@@ -81,6 +90,8 @@ export default function History() {
   const [editingValues, setEditingValues] = useState({});
 
   const [draftRows, setDraftRows] = useState([]);
+  const [assetCols, setAssetCols] = useState([]);
+  const [liabilityCols, setLiabilityCols] = useState([]);
 
   const load = async () => {
     const [data, accts] = await Promise.all([getBalances(), getAccounts()]);
@@ -101,25 +112,47 @@ export default function History() {
     return map;
   }, [accountsList, balances]);
 
-  const accounts = useMemo(() => {
+  const accountsByType = useMemo(() => {
     const names = new Set();
     balances.forEach(b => names.add(b.account));
     accountsList.forEach(a => names.add(a.name));
 
-    const orderMap = new Map(categoriesOrder.map((c, i) => [c, i]));
-    return [...names]
-      .map(name => {
-        const cat = accountCategory.get(name) || "other";
-        return { name, cat };
-      })
+    const withMeta = [...names].map(name => {
+      const cat = accountCategory.get(name) || "other";
+      const type = categoryType(cat);
+      return { name, cat, type };
+    });
+
+    const orderAsset = new Map(assetCategories.map((c, i) => [c, i]));
+    const orderLiab = new Map(liabilityCategories.map((c, i) => [c, i]));
+
+    const assets = withMeta
+      .filter(x => x.type === "asset")
       .sort((a, b) => {
-        const ca = orderMap.get(a.cat) ?? orderMap.size;
-        const cb = orderMap.get(b.cat) ?? orderMap.size;
+        const ca = orderAsset.get(a.cat) ?? orderAsset.size;
+        const cb = orderAsset.get(b.cat) ?? orderAsset.size;
         if (ca !== cb) return ca - cb;
         return a.name.localeCompare(b.name);
-      })
-      .map(x => x.name);
+      });
+
+    const liabilities = withMeta
+      .filter(x => x.type === "liability")
+      .sort((a, b) => {
+        const ca = orderLiab.get(a.cat) ?? orderLiab.size;
+        const cb = orderLiab.get(b.cat) ?? orderLiab.size;
+        if (ca !== cb) return ca - cb;
+        return a.name.localeCompare(b.name);
+      });
+
+    return { assets, liabilities };
   }, [balances, accountsList, accountCategory]);
+
+  useEffect(() => {
+    setAssetCols(accountsByType.assets.map(a => a.name));
+    setLiabilityCols(accountsByType.liabilities.map(a => a.name));
+  }, [accountsByType]);
+
+  const allColumns = useMemo(() => [...assetCols, ...liabilityCols], [assetCols, liabilityCols]);
 
   const dates = useMemo(() => {
     const d = new Set(balances.map(b => b.date));
@@ -148,7 +181,7 @@ export default function History() {
         .filter(date => !draftRows.some(dr => dr.date === date))
         .map(date => {
           const values = {};
-          accounts.forEach(a => {
+          allColumns.forEach(a => {
             const entry = byDate.get(date)?.get(a);
             values[a] = entry ? entry.balance : "";
           });
@@ -160,16 +193,16 @@ export default function History() {
       const cmp = dateMs(b.dateIso) - dateMs(a.dateIso);
       return sortDir === "desc" ? cmp : -cmp;
     });
-  }, [draftRows, dates, accounts, byDate, sortDir]);
+  }, [draftRows, dates, allColumns, byDate, sortDir]);
 
   const addDateRow = () => {
-    if (accounts.length === 0) return;
+    if (allColumns.length === 0) return;
     const today = new Date().toISOString().slice(0, 10);
     const latestDate = dates[0] || today;
     const latestMap = buildLatestMap(balances, latestDate);
 
     const values = {};
-    accounts.forEach(a => { values[a] = latestMap[a] ?? ""; });
+    allColumns.forEach(a => { values[a] = latestMap[a] ?? ""; });
 
     const id = `draft-${Date.now()}`;
     const isoDate = toIsoDate(latestDate);
@@ -197,7 +230,7 @@ export default function History() {
     if (!editingRowKey || editingRowKey !== key) return;
 
     // validate numbers first
-    for (const acct of accounts) {
+    for (const acct of allColumns) {
       const raw = editingValues[acct];
       if (raw === "" || raw == null) continue;
       const num = Number(String(raw).replace(/,/g, ""));
@@ -212,7 +245,7 @@ export default function History() {
 
     try {
       if (!isDraft && editingDate !== originalDate) {
-        const entries = accounts
+        const entries = allColumns
           .map(acct => byDate.get(originalDate)?.get(acct))
           .filter(Boolean);
         for (const entry of entries) {
@@ -220,7 +253,7 @@ export default function History() {
         }
       }
 
-      for (const acct of accounts) {
+      for (const acct of allColumns) {
         const raw = editingValues[acct];
         const existing = byDate.get(originalDate)?.get(acct);
         if (raw === "" || raw == null) {
@@ -319,23 +352,56 @@ export default function History() {
   };
 
   const downloadCsv = () => {
-    const sorted = [...balances].sort((a, b) => {
-      const diff = dateMs(toIsoDate(b.date)) - dateMs(toIsoDate(a.date));
-      if (diff !== 0) return diff;
-      return a.account.localeCompare(b.account);
-    });
-    const rows = ["date,account,balance"];
-    for (const b of sorted) {
-      rows.push(`${b.date},${b.account},${b.balance}`);
+    const cols = allColumns; // account names
+    const rows = [];
+    rows.push(["date", "account", "balance"].join(","));
+  
+    const sortedDates = [...dates].sort((a, b) => dateMs(a) - dateMs(b));
+  
+    for (const date of sortedDates) {
+      const iso = toIsoDate(date);
+  
+      // Try both keys because your byDate might be keyed by raw date or ISO
+      let entries = byDate.get?.(date) ?? byDate.get?.(iso) ?? byDate[date] ?? byDate[iso];
+  
+      // Normalize entries to a Map-ish accessor
+      const getEntry = (acct) => {
+        if (!entries) return undefined;
+        if (entries instanceof Map) return entries.get(acct);
+        return entries[acct]; // plain object case
+      };
+  
+      for (const acct of cols) {
+        const entry = getEntry(acct);
+        if (entry == null) continue; // skip blanks to match your attached CSV
+  
+        // Support entry being {balance: x} or directly a number
+        const bal =
+          typeof entry === "object" && entry !== null
+            ? entry.balance
+            : entry;
+  
+        if (bal == null || bal === "") continue;
+  
+        // Use same date style as your original file (change to `iso` if you want ISO)
+        const dateOut = date;
+  
+        rows.push([dateOut, acct, bal].join(","));
+      }
     }
-    const blob = new Blob([rows.join("\\n")], { type: "text/csv" });
+  
+    const csvContent = rows.join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "history.csv";
-    a.click();
+  
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "balances_long.csv";
+    link.click();
+  
     URL.revokeObjectURL(url);
   };
+  
 
   const deleteRow = async (date) => {
     const iso = toIsoDate(date);
@@ -353,7 +419,7 @@ export default function History() {
     }
   };
 
-  const renderRow = ({ key, dateIso, values, isDraft, originalDate }) => {
+  const renderRow = ({ key, dateIso, values, isDraft, originalDate, columns = allColumns }) => {
     const isEditing = editingRowKey === key;
     const rowDate = isEditing ? editingDate : dateIso;
 
@@ -366,7 +432,7 @@ export default function History() {
             formatDate(rowDate)
           )}
         </td>
-        {accounts.map(acct => {
+        {columns.map(acct => {
           const val = isEditing ? editingValues[acct] ?? "" : values[acct] ?? "";
           const shown = isEditing ? val : formatNumber(val);
           return (
@@ -423,7 +489,7 @@ export default function History() {
 
       {status && <p>{status}</p>}
       {dates.length === 0 && draftRows.length === 0 && <p>No balances yet.</p>}
-      {accounts.length > 0 && (
+      {allColumns.length > 0 && (
         <div style={{ marginBottom: 12 }}>
           <button style={btnStyle} onClick={addDateRow}>Add date</button>
         </div>
@@ -441,43 +507,155 @@ export default function History() {
       </section>
 
       {(dates.length > 0 || draftRows.length > 0) && (
-        <div style={{ overflowX: "auto" }}>
-          <table width="100%" cellPadding="6" style={{ borderCollapse: "collapse", minWidth: 400 }}>
-            <thead>
-              <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
-                <th
-                  style={{ width: 120, lineHeight: 1.2, whiteSpace: "nowrap", cursor: "pointer" }}
-                  onClick={() => setSortDir(d => (d === "desc" ? "asc" : "desc"))}
-                  title="Click to sort by date"
-                >
-                  Date {sortDir === "desc" ? "▼" : "▲"}
-                </th>
-                {accounts.map(acct => {
-                  const cat = accountCategory.get(acct) || "other";
-                  const colors = colorForCategory(cat);
-                  return (
+        <>
+          <div
+  style={{
+    background: "#000",
+    color: "#fff",
+    padding: "8px 12px",
+    borderRadius: 8,
+    marginBottom: 8
+  }}
+>
+  <h3 style={{ margin: 0 }}>Assets</h3>
+</div>
+
+<div style={{ overflowX: "auto" }}>
+  ...
+</div>
+
+          <div style={{ overflowX: "auto", marginBottom: 12 }}>
+            {assetCols.length === 0 ? (
+              <div style={{ color: "#777" }}>No asset accounts</div>
+            ) : (
+              <table width="100%" cellPadding="6" style={{ borderCollapse: "collapse", minWidth: 400 }}>
+                <thead>
+                  <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
                     <th
-                      key={acct}
-                      style={{
-                        textAlign: "center",
-                        background: colors.fill,
-                        borderBottom: `1px solid ${colors.stroke}`,
-                        color: "#111"
-                      }}
-                      title={cat}
+                      style={{ width: 120, lineHeight: 1.2, whiteSpace: "nowrap", cursor: "pointer" }}
+                      onClick={() => setSortDir(d => (d === "desc" ? "asc" : "desc"))}
+                      title="Click to sort by date"
                     >
-                      {acct}
+                      Date {sortDir === "desc" ? "▼" : "▲"}
                     </th>
-                  );
-                })}
-                <th style={{ width: 120 }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableRows.map(r => renderRow(r))}
-            </tbody>
-          </table>
-        </div>
+                    {assetCols.map(acct => {
+                      const cat = accountCategory.get(acct) || "other";
+                      const colors = colorForCategory(cat);
+                      return (
+                        <th
+                          key={acct}
+                          draggable
+                          onDragStart={(e) => e.dataTransfer.setData("text/plain", `asset::${acct}`)}
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            const data = e.dataTransfer.getData("text/plain");
+                            if (!data.startsWith("asset::")) return;
+                            const dragged = data.split("::")[1];
+                            setAssetCols(cols => {
+                              const next = cols.filter(c => c !== dragged);
+                              const idx = next.indexOf(acct);
+                              next.splice(idx, 0, dragged);
+                              return [...next];
+                            });
+                          }}
+                          style={{
+                            textAlign: "center",
+                            background: colors.fill,
+                            borderBottom: `1px solid ${colors.stroke}`,
+                            color: "#111",
+                            cursor: "grab"
+                          }}
+                          title={cat}
+                        >
+                          {acct}
+                        </th>
+                      );
+                    })}
+                    <th style={{ width: 120 }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableRows.map(r => renderRow({ ...r, columns: assetCols }))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <div
+  style={{
+    background: "#000",
+    color: "#fff",
+    padding: "8px 12px",
+    borderRadius: 8,
+    marginBottom: 8
+  }}
+>
+  <h3 style={{ margin: 0 }}>Liabilities</h3>
+</div>
+
+<div style={{ overflowX: "auto" }}>
+  ...
+</div>
+
+          <div style={{ overflowX: "auto" }}>
+            {liabilityCols.length === 0 ? (
+              <div style={{ color: "#777" }}>No liability accounts</div>
+            ) : (
+              <table width="100%" cellPadding="6" style={{ borderCollapse: "collapse", minWidth: 400 }}>
+                <thead>
+                  <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
+                    <th
+                      style={{ width: 120, lineHeight: 1.2, whiteSpace: "nowrap", cursor: "pointer" }}
+                      onClick={() => setSortDir(d => (d === "desc" ? "asc" : "desc"))}
+                      title="Click to sort by date"
+                    >
+                      Date {sortDir === "desc" ? "▼" : "▲"}
+                    </th>
+                    {liabilityCols.map(acct => {
+                      const cat = accountCategory.get(acct) || "other liability";
+                      const colors = colorForCategory(cat);
+                      return (
+                        <th
+                          key={acct}
+                          draggable
+                          onDragStart={(e) => e.dataTransfer.setData("text/plain", `liability::${acct}`)}
+                          onDragOver={(e) => e.preventDefault()}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            const data = e.dataTransfer.getData("text/plain");
+                            if (!data.startsWith("liability::")) return;
+                            const dragged = data.split("::")[1];
+                            setLiabilityCols(cols => {
+                              const next = cols.filter(c => c !== dragged);
+                              const idx = next.indexOf(acct);
+                              next.splice(idx, 0, dragged);
+                              return [...next];
+                            });
+                          }}
+                          style={{
+                            textAlign: "center",
+                            background: colors.fill,
+                            borderBottom: `1px solid ${colors.stroke}`,
+                            color: "#111",
+                            cursor: "grab"
+                          }}
+                          title={cat}
+                        >
+                          {acct}
+                        </th>
+                      );
+                    })}
+                    <th style={{ width: 120 }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableRows.map(r => renderRow({ ...r, columns: liabilityCols }))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </>
       )}
     </div>
   );
