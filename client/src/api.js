@@ -38,8 +38,14 @@ export async function addAccount(name, category = "other") {
     headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({ name, category })
   });
-  return r.json();
+
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    throw new Error(data.error || `addAccount failed (${r.status})`);
+  }
+  return data;
 }
+
 
 export async function updateAccount(id, payload) {
   const r = await fetch(`${API}/accounts/${id}`, {
@@ -73,8 +79,15 @@ export async function addBalance(entry) {
     headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify(entry)
   });
-  return r.json();
+
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    // This will show the real reason (missing fields, auth, unknown account, etc.)
+    throw new Error(data.error || `addBalance failed (${r.status})`);
+  }
+  return data;
 }
+
 
 export async function getTimeseries() {
   const r = await fetch(`${API}/timeseries`, { headers: authHeaders() });

@@ -1,0 +1,425 @@
+date,account,balance
+2023-12-20,Fidelity Brokerage,346000
+2023-12-20,Coinbase Account,80000
+2023-12-20,401(k) Plan,229888
+2023-12-20,Roth IRA,161000
+2023-12-20,Car,10000
+2023-12-20,Watches and Jewelry,20000
+2024-03-21,Fidelity Brokerage,700100
+2024-03-21,Coinbase Account,123512
+2024-03-21,401(k) Plan,230296
+2024-03-21,Roth IRA,261100
+2024-03-21,Car,10000
+2024-03-21,Watches and Jewelry,20000
+2024-04-12,Fidelity Brokerage,700100
+2024-04-12,Coinbase Account,123512
+2024-04-12,401(k) Plan,282504
+2024-04-12,Roth IRA,261100
+2024-04-12,NYC Apartment,1425000
+2024-04-12,Car,10000
+2024-04-12,Watches and Jewelry,20000
+2024-04-12,NYC Apartment Mortgage,-1282500
+2024-06-11,Fidelity Brokerage,451027
+2024-06-11,Coinbase Account,122550
+2024-06-11,401(k) Plan,293944
+2024-06-11,Roth IRA,167999
+2024-06-11,NYC Apartment,1425000
+2024-06-11,Car,10000
+2024-06-11,Watches and Jewelry,20000
+2024-06-11,NYC Apartment Mortgage,-1282500
+2024-07-24,Chase Savings,0
+2024-07-24,Fidelity Brokerage,157917
+2024-07-24,Coinbase Account,119609
+2024-07-24,401(k) Plan,295479
+2024-07-24,Roth IRA,172123
+2024-07-24,NYC Apartment,1425000
+2024-07-24,Car,10000
+2024-07-24,Watches and Jewelry,20000
+2024-07-24,NYC Apartment Mortgage,-997500
+2024-07-25,Chase Savings,0
+2024-07-25,Fidelity Brokerage,373944
+2024-07-25,Coinbase Account,119609
+2024-07-25,401(k) Plan,295479
+2024-07-25,Roth IRA,170551
+2024-07-25,NYC Apartment,1425000
+2024-07-25,Car,10000
+2024-07-25,Watches and Jewelry,20000
+2024-07-25,NYC Apartment Mortgage,-997500
+2024-07-30,Chase Savings,0
+2024-07-30,Fidelity Brokerage,369169
+2024-07-30,Coinbase Account,119609
+2024-07-30,401(k) Plan,295479
+2024-07-30,Roth IRA,167549
+2024-07-30,NYC Apartment,1425000
+2024-07-30,Car,10000
+2024-07-30,Watches and Jewelry,20000
+2024-07-30,NYC Apartment Mortgage,-997500
+2024-08-01,Chase Savings,0
+2024-08-01,Fidelity Brokerage,428339
+2024-08-01,Coinbase Account,119609
+2024-08-01,401(k) Plan,295479
+2024-08-01,Roth IRA,171273
+2024-08-01,NYC Apartment,1425000
+2024-08-01,Car,10000
+2024-08-01,Watches and Jewelry,20000
+2024-08-01,NYC Apartment Mortgage,-997500
+2024-08-15,Chase Savings,0
+2024-08-15,Fidelity Brokerage,502620
+2024-08-15,Coinbase Account,119609
+2024-08-15,401(k) Plan,295479
+2024-08-15,Roth IRA,179363
+2024-08-15,NYC Apartment,1425000
+2024-08-15,Car,10000
+2024-08-15,Watches and Jewelry,20000
+2024-08-15,NYC Apartment Mortgage,-997500
+2024-08-19,Chase Savings,0
+2024-08-19,Fidelity Brokerage,512551
+2024-08-19,Coinbase Account,119609
+2024-08-19,401(k) Plan,295479
+2024-08-19,Roth IRA,182155
+2024-08-19,NYC Apartment,1425000
+2024-08-19,Car,10000
+2024-08-19,Watches and Jewelry,20000
+2024-08-19,NYC Apartment Mortgage,-997500
+2024-09-13,Chase Savings,0
+2024-09-13,Fidelity Brokerage,565776
+2024-09-13,Coinbase Account,105000
+2024-09-13,401(k) Plan,295479
+2024-09-13,Roth IRA,183984
+2024-09-13,NYC Apartment,1425000
+2024-09-13,Car,10000
+2024-09-13,Watches and Jewelry,20000
+2024-09-13,NYC Apartment Mortgage,-996598
+2024-11-06,Chase Savings,0
+2024-11-06,Fidelity Brokerage,378219
+2024-11-06,Coinbase Account,130000
+2024-11-06,401(k) Plan,316893
+2024-11-06,Roth IRA,206216
+2024-11-06,NYC Apartment,1425000
+2024-11-06,Car,10000
+2024-11-06,Watches and Jewelry,20000
+2024-11-06,NYC Apartment Mortgage,-994780
+2024-11-11,Chase Savings,0
+2024-11-11,Fidelity Brokerage,400391
+2024-11-11,Coinbase Account,147000
+2024-11-11,401(k) Plan,316893
+2024-11-11,Roth IRA,233426
+2024-11-11,NYC Apartment,1425000
+2024-11-11,Car,10000
+2024-11-11,Watches and Jewelry,20000
+2024-11-11,NYC Apartment Mortgage,-994780
+2024-11-26,Chase Savings,0
+2024-11-26,Fidelity Brokerage,466083
+2024-11-26,Coinbase Account,158950
+2024-11-26,401(k) Plan,316893
+2024-11-26,Roth IRA,219034
+2024-11-26,NYC Apartment,1425000
+2024-11-26,Car,10000
+2024-11-26,Watches and Jewelry,20000
+2024-11-26,NYC Apartment Mortgage,-994780
+2024-12-16,Chase Savings,0
+2024-12-16,Fidelity Brokerage,531535
+2024-12-16,Coinbase Account,184735
+2024-12-16,401(k) Plan,335271
+2024-12-16,Roth IRA,274138
+2024-12-16,NYC Apartment,1425000
+2024-12-16,Car,10000
+2024-12-16,Watches and Jewelry,20000
+2024-12-16,NYC Apartment Mortgage,-994780
+2025-03-24,Chase Savings,0
+2025-03-24,Fidelity Brokerage,580858
+2025-03-24,Coinbase Account,162289
+2025-03-24,401(k) Plan,314967
+2025-03-24,Roth IRA,185436
+2025-03-24,NYC Apartment,1425000
+2025-03-24,Car,0
+2025-03-24,Watches and Jewelry,20000
+2025-03-24,NYC Apartment Mortgage,-991084
+2025-04-22,Chase Savings,0
+2025-04-22,Fidelity Brokerage,588613
+2025-04-22,Coinbase Account,162289
+2025-04-22,401(k) Plan,290355
+2025-04-22,Roth IRA,168161
+2025-04-22,NYC Apartment,1425000
+2025-04-22,Car,18250
+2025-04-22,Watches and Jewelry,20000
+2025-04-22,NYC Apartment Mortgage,-991084
+2025-04-23,Chase Savings,0
+2025-04-23,Fidelity Brokerage,616917
+2025-04-23,Coinbase Account,168477
+2025-04-23,401(k) Plan,290355
+2025-04-23,Roth IRA,176114
+2025-04-23,NYC Apartment,1425000
+2025-04-23,Car,18250
+2025-04-23,Watches and Jewelry,20000
+2025-04-23,NYC Apartment Mortgage,-991084
+2025-04-25,Chase Savings,0
+2025-04-25,Fidelity Brokerage,634074
+2025-04-25,Coinbase Account,172000
+2025-04-25,401(k) Plan,309358
+2025-04-25,Roth IRA,184933
+2025-04-25,NYC Apartment,1425000
+2025-04-25,Car,18250
+2025-04-25,Watches and Jewelry,20000
+2025-04-25,NYC Apartment Mortgage,-991084
+2025-05-04,Chase Savings,0
+2025-05-04,Fidelity Brokerage,709769
+2025-05-04,Coinbase Account,172000
+2025-05-04,401(k) Plan,309358
+2025-05-04,Roth IRA,184933
+2025-05-04,NYC Apartment,1425000
+2025-05-04,Car,18250
+2025-05-04,Watches and Jewelry,20000
+2025-05-04,NYC Apartment Mortgage,-991084
+2025-05-13,Chase Savings,0
+2025-05-13,Fidelity Brokerage,819774
+2025-05-13,Coinbase Account,191563
+2025-05-13,401(k) Plan,332256
+2025-05-13,Roth IRA,205374
+2025-05-13,NYC Apartment,1425000
+2025-05-13,Car,18250
+2025-05-13,Watches and Jewelry,20000
+2025-05-13,NYC Apartment Mortgage,-991084
+2025-05-14,Chase Savings,0
+2025-05-14,Fidelity Brokerage,841571
+2025-05-14,Coinbase Account,191563
+2025-05-14,401(k) Plan,332256
+2025-05-14,Roth IRA,212793
+2025-05-14,NYC Apartment,1425000
+2025-05-14,Car,18250
+2025-05-14,Watches and Jewelry,20000
+2025-05-14,NYC Apartment Mortgage,-991084
+2025-05-27,Chase Savings,0
+2025-05-27,Fidelity Brokerage,891291
+2025-05-27,Coinbase Account,201740
+2025-05-27,401(k) Plan,333020
+2025-05-27,Roth IRA,213438
+2025-05-27,NYC Apartment,1425000
+2025-05-27,Car,18250
+2025-05-27,Watches and Jewelry,20000
+2025-05-27,NYC Apartment Mortgage,-991084
+2025-05-29,Chase Savings,0
+2025-05-29,Fidelity Brokerage,925256
+2025-05-29,Coinbase Account,201740
+2025-05-29,401(k) Plan,333020
+2025-05-29,Roth IRA,214583
+2025-05-29,NYC Apartment,1425000
+2025-05-29,Car,18250
+2025-05-29,Watches and Jewelry,20000
+2025-05-29,NYC Apartment Mortgage,-991084
+2025-06-09,Chase Savings,0
+2025-06-09,Fidelity Brokerage,927946
+2025-06-09,Coinbase Account,197107
+2025-06-09,401(k) Plan,346404
+2025-06-09,Roth IRA,200657
+2025-06-09,NYC Apartment,1425000
+2025-06-09,Car,18250
+2025-06-09,Watches and Jewelry,20000
+2025-06-09,NYC Apartment Mortgage,-991084
+2025-06-24,Chase Savings,0
+2025-06-24,Fidelity Brokerage,961503
+2025-06-24,Coinbase Account,197107
+2025-06-24,401(k) Plan,348175
+2025-06-24,Roth IRA,215290
+2025-06-24,NYC Apartment,1425000
+2025-06-24,Car,18250
+2025-06-24,Watches and Jewelry,20000
+2025-06-24,NYC Apartment Mortgage,-991084
+2025-07-14,Chase Savings,0
+2025-07-14,Fidelity Brokerage,1003241
+2025-07-14,Coinbase Account,220000
+2025-07-14,401(k) Plan,360646
+2025-07-14,Roth IRA,211448
+2025-07-14,NYC Apartment,1425000
+2025-07-14,Car,18250
+2025-07-14,Watches and Jewelry,20000
+2025-07-14,NYC Apartment Mortgage,-991084
+2025-07-15,Chase Savings,0
+2025-07-15,Fidelity Brokerage,1005484
+2025-07-15,Coinbase Account,213603
+2025-07-15,401(k) Plan,360646
+2025-07-15,Roth IRA,211178
+2025-07-15,NYC Apartment,1425000
+2025-07-15,Car,18250
+2025-07-15,Watches and Jewelry,20000
+2025-07-15,NYC Apartment Mortgage,-991084
+2025-08-06,Chase Savings,0
+2025-08-06,Fidelity Brokerage,1039204
+2025-08-06,Coinbase Account,213603
+2025-08-06,401(k) Plan,366203
+2025-08-06,Roth IRA,211755
+2025-08-06,NYC Apartment,1425000
+2025-08-06,Car,18250
+2025-08-06,Watches and Jewelry,20000
+2025-08-06,NYC Apartment Mortgage,-991084
+2025-08-07,Chase Savings,0
+2025-08-07,Fidelity Brokerage,1046440
+2025-08-07,Coinbase Account,213603
+2025-08-07,401(k) Plan,366203
+2025-08-07,Roth IRA,211977
+2025-08-07,NYC Apartment,1425000
+2025-08-07,Car,18250
+2025-08-07,Watches and Jewelry,20000
+2025-08-07,NYC Apartment Mortgage,-991084
+2025-08-11,Chase Savings,0
+2025-08-11,Fidelity Brokerage,1061311
+2025-08-11,Coinbase Account,227435
+2025-08-11,401(k) Plan,366203
+2025-08-11,Roth IRA,218460
+2025-08-11,NYC Apartment,1425000
+2025-08-11,Car,18250
+2025-08-11,Watches and Jewelry,20000
+2025-08-11,NYC Apartment Mortgage,-991084
+2025-09-03,Chase Savings,0
+2025-09-03,Fidelity Brokerage,950821
+2025-09-03,Coinbase Account,227435
+2025-09-03,401(k) Plan,366203
+2025-09-03,Roth IRA,218896
+2025-09-03,NYC Apartment,1425000
+2025-09-03,Car,18250
+2025-09-03,Watches and Jewelry,20000
+2025-09-03,NYC Apartment Mortgage,-991084
+2025-09-13,Chase Savings,0
+2025-09-13,Fidelity Brokerage,1010000
+2025-09-13,Coinbase Account,227435
+2025-09-13,401(k) Plan,366203
+2025-09-13,Roth IRA,218896
+2025-09-13,NYC Apartment,1425000
+2025-09-13,Car,18250
+2025-09-13,Watches and Jewelry,20000
+2025-09-13,NYC Apartment Mortgage,-991084
+2025-09-15,Chase Savings,0
+2025-09-15,Fidelity Brokerage,1014212
+2025-09-15,Coinbase Account,223800
+2025-09-15,401(k) Plan,387570
+2025-09-15,Roth IRA,245435
+2025-09-15,NYC Apartment,1425000
+2025-09-15,Car,18250
+2025-09-15,Watches and Jewelry,20000
+2025-09-15,NYC Apartment Mortgage,-991084
+2025-09-18,Chase Savings,0
+2025-09-18,Fidelity Brokerage,1017299
+2025-09-18,Coinbase Account,223800
+2025-09-18,401(k) Plan,387570
+2025-09-18,Roth IRA,247278
+2025-09-18,NYC Apartment,1425000
+2025-09-18,Car,18250
+2025-09-18,Watches and Jewelry,20000
+2025-09-18,NYC Apartment Mortgage,-991084
+2025-09-22,Chase Savings,0
+2025-09-22,Fidelity Brokerage,1033680
+2025-09-22,Coinbase Account,223800
+2025-09-22,401(k) Plan,387570
+2025-09-22,Roth IRA,250754
+2025-09-22,NYC Apartment,1425000
+2025-09-22,Car,18250
+2025-09-22,Watches and Jewelry,20000
+2025-09-22,NYC Apartment Mortgage,-991084
+2025-10-06,Chase Savings,0
+2025-10-06,Fidelity Brokerage,988184
+2025-10-06,Coinbase Account,223800
+2025-10-06,401(k) Plan,387570
+2025-10-06,Roth IRA,253955
+2025-10-06,NYC Apartment,1425000
+2025-10-06,Car,18250
+2025-10-06,Watches and Jewelry,20000
+2025-10-06,NYC Apartment Mortgage,-991084
+2025-10-08,Chase Savings,0
+2025-10-08,Fidelity Brokerage,992753
+2025-10-08,Coinbase Account,223800
+2025-10-08,401(k) Plan,395707
+2025-10-08,Roth IRA,251196
+2025-10-08,NYC Apartment,1425000
+2025-10-08,Car,18250
+2025-10-08,Watches and Jewelry,20000
+2025-10-08,NYC Apartment Mortgage,-991084
+2025-10-24,Chase Savings,0
+2025-10-24,Fidelity Brokerage,820737
+2025-10-24,Coinbase Account,223800
+2025-10-24,401(k) Plan,398000
+2025-10-24,Roth IRA,252567
+2025-10-24,NYC Apartment,1425000
+2025-10-24,Car,18250
+2025-10-24,Watches and Jewelry,20000
+2025-10-24,NYC Apartment Mortgage,-991084
+2025-10-27,Chase Savings,0
+2025-10-27,Fidelity Brokerage,839696
+2025-10-27,Coinbase Account,218227
+2025-10-27,401(k) Plan,398000
+2025-10-27,Roth IRA,255113
+2025-10-27,NYC Apartment,1425000
+2025-10-27,Car,18250
+2025-10-27,Watches and Jewelry,20000
+2025-10-27,NYC Apartment Mortgage,-983084
+2025-10-29,Chase Savings,0
+2025-10-29,Fidelity Brokerage,851889
+2025-10-29,Coinbase Account,218227
+2025-10-29,401(k) Plan,406000
+2025-10-29,Roth IRA,258616
+2025-10-29,NYC Apartment,1425000
+2025-10-29,Car,18250
+2025-10-29,Watches and Jewelry,20000
+2025-10-29,NYC Apartment Mortgage,-983084
+2025-10-30,Chase Savings,0
+2025-10-30,Fidelity Brokerage,846694
+2025-10-30,Coinbase Account,203401
+2025-10-30,401(k) Plan,406000
+2025-10-30,Roth IRA,250743
+2025-10-30,NYC Apartment,1425000
+2025-10-30,Car,18250
+2025-10-30,Watches and Jewelry,20000
+2025-10-30,NYC Apartment Mortgage,-983084
+2025-11-03,Chase Savings,0
+2025-11-03,Fidelity Brokerage,859664
+2025-11-03,Coinbase Account,203401
+2025-11-03,401(k) Plan,406000
+2025-11-03,Roth IRA,259275
+2025-11-03,NYC Apartment,1425000
+2025-11-03,Car,18250
+2025-11-03,Watches and Jewelry,20000
+2025-11-03,NYC Apartment Mortgage,-983084
+2025-11-05,Chase Savings,0
+2025-11-05,Fidelity Brokerage,830116
+2025-11-05,Coinbase Account,203401
+2025-11-05,401(k) Plan,396000
+2025-11-05,Roth IRA,254000
+2025-11-05,NYC Apartment,1425000
+2025-11-05,Car,18250
+2025-11-05,Watches and Jewelry,20000
+2025-11-05,NYC Apartment Mortgage,-983084
+2025-11-07,Chase Savings,0
+2025-11-07,Fidelity Brokerage,780705
+2025-11-07,Coinbase Account,203401
+2025-11-07,401(k) Plan,391912
+2025-11-07,Roth IRA,242781
+2025-11-07,NYC Apartment,1425000
+2025-11-07,Car,18250
+2025-11-07,Watches and Jewelry,20000
+2025-11-07,NYC Apartment Mortgage,-983084
+2025-11-10,Chase Savings,0
+2025-11-10,Fidelity Brokerage,820718
+2025-11-10,Coinbase Account,197722
+2025-11-10,401(k) Plan,394436
+2025-11-10,Roth IRA,250608
+2025-11-10,NYC Apartment,1425000
+2025-11-10,Car,18250
+2025-11-10,Watches and Jewelry,20000
+2025-11-10,NYC Apartment Mortgage,-983084
+2025-11-21,Chase Savings,0
+2025-11-21,Fidelity Brokerage,761058
+2025-11-21,Coinbase Account,155450
+2025-11-21,401(k) Plan,379170
+2025-11-21,Roth IRA,218658
+2025-11-21,NYC Apartment,1425000
+2025-11-21,Car,18250
+2025-11-21,Watches and Jewelry,20000
+2025-11-21,NYC Apartment Mortgage,-983084
+2025-11-24,Chase Savings,0
+2025-11-24,Fidelity Brokerage,787821
+2025-11-24,Coinbase Account,155450
+2025-11-24,401(k) Plan,379170
+2025-11-24,Roth IRA,228394
+2025-11-24,NYC Apartment,1425000
+2025-11-24,Car,18250
+2025-11-24,Watches and Jewelry,20000
+2025-11-24,NYC Apartment Mortgage,-983084

@@ -1,15 +1,26 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { getBalances, getAccounts, addBalance, updateBalance, deleteBalance } from "../api.js";
+import {
+  addAccount,
+  addBalance,
+  deleteBalance,
+  getAccounts,
+  getBalances,
+  updateAccount,
+  updateBalance
+} from "../api.js";
+
+/** ---------------- Date helpers ---------------- */
 
 const parseDateParts = (str) => {
   if (!str) return null;
-  const parts = str.includes("/") ? str.split("/") : str.split("-");
+  const s = String(str).trim();
+  const parts = s.includes("/") ? s.split("/") : s.split("-");
   if (parts.length < 3) return null;
   let [a, b, c] = parts.map(Number);
   if ([a, b, c].some(x => Number.isNaN(x))) return null;
-  // Handle both MM/DD/YY and YYYY-MM-DD
+
   let y, m, d;
-  if (str.includes("/")) {
+  if (s.includes("/")) {
     [m, d, y] = [a, b, c];
   } else {
     [y, m, d] = [a, b, c];
@@ -21,7 +32,7 @@ const parseDateParts = (str) => {
 
 const toIsoDate = (str) => {
   const p = parseDateParts(str);
-  if (!p) return str;
+  if (!p) return String(str).trim();
   const mm = String(p.m).padStart(2, "0");
   const dd = String(p.d).padStart(2, "0");
   return `${p.y}-${mm}-${dd}`;
@@ -40,11 +51,13 @@ const dateMs = (str) => {
   return Date.UTC(p.y, p.m - 1, p.d);
 };
 
+/** ---------------- Misc helpers ---------------- */
+
 const buildLatestMap = (data, targetDate) => {
   if (!targetDate) return {};
   const map = {};
   for (const b of data) {
-    if (b.date === targetDate) map[b.account] = b.balance;
+    if (toIsoDate(b.date) === toIsoDate(targetDate)) map[b.account] = b.balance;
   }
   return map;
 };
@@ -78,14 +91,87 @@ const categoryType = (cat) => {
   if (liabilityCategories.includes(c)) return "liability";
   return "asset";
 };
+const sanitizeCategory = (cat) => {
+  const c = String(cat || "").trim().toLowerCase();
+  if (!c) return "other";
+  return c;
+};
+const normalizeType = (val) => {
+  const t = String(val || "").trim().toLowerCase();
+  if (t.startsWith("liab")) return "liability";
+  if (t.startsWith("asset")) return "asset";
+  return null;
+};
+
+/** ---------------- CSV (LONG FORMAT) PARSER ----------------
+ * Expected columns: date, account, category, type, balance
+ */
+
+const parseCsvLong = (text) => {
+  const lines = String(text)
+    .split(/\r?\n/)
+    .map(l => l.trim())
+    .filter(Boolean);
+
+  if (lines.length < 2) return [];
+
+  const header = lines[0].split(",").map(h => h.trim().toLowerCase());
+  const hasHeader5 =
+    header[0] === "date" &&
+    header[1] === "account" &&
+    header[2] === "category" &&
+    header[3] === "type" &&
+    header[4] === "balance";
+  const hasHeader4 =
+    header[0] === "date" &&
+    header[1] === "account" &&
+    header[2] === "type" &&
+    header[3] === "balance";
+  const hasHeader3 =
+    header[0] === "date" &&
+    header[1] === "account" &&
+    header[2] === "balance";
+
+  const startIdx = hasHeader5 || hasHeader4 || hasHeader3 ? 1 : 0;
+  const records = [];
+
+  for (let i = startIdx; i < lines.length; i++) {
+    const cols = lines[i].split(",").map(c => c.trim());
+    if (cols.length < 3) continue;
+
+    let dateStr, account, categoryRaw, typeRaw, balStr;
+    if (hasHeader5 || cols.length >= 5) {
+      [dateStr, account, categoryRaw, typeRaw, balStr] = cols;
+    } else if (hasHeader4 || cols.length === 4) {
+      [dateStr, account, typeRaw, balStr] = cols;
+      categoryRaw = null;
+    } else {
+      [dateStr, account, balStr] = cols;
+      categoryRaw = null;
+      typeRaw = null;
+    }
+
+    if (!dateStr || !account || !balStr) continue;
+
+    const balance = Number(balStr.replace(/[$,]/g, ""));
+    if (!Number.isFinite(balance)) continue;
+
+    const date = toIsoDate(dateStr);
+    const type = normalizeType(typeRaw);
+    const category = sanitizeCategory(categoryRaw);
+    records.push({ date, account, balance, type, category });
+  }
+
+  return records;
+};
 
 export default function History() {
   const [balances, setBalances] = useState([]);
   const [accountsList, setAccountsList] = useState([]);
   const [status, setStatus] = useState("");
-  const [sortDir, setSortDir] = useState("desc"); // "desc" or "asc"
+  const [sortDir, setSortDir] = useState("desc");
 
-  const [editingRowKey, setEditingRowKey] = useState(null); // draft id or date string
+  const [editingRowKey, setEditingRowKey] = useState(null);
   const [editingDate, setEditingDate] = useState("");
   const [editingValues, setEditingValues] = useState({});
 
@@ -99,9 +185,27 @@ export default function History() {
     setAccountsList(accts);
   };
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
+
+  const deleteAllData = async () => {
+    const ok = window.confirm(
+      "⚠️ Delete ALL history?\n\nThis will permanently remove every balance entry. This cannot be undone."
+    );
+    if (!ok) return;
+
+    try {
+      setStatus("Deleting all data...");
+      const current = await getBalances();
+      for (const row of current) {
+        await deleteBalance(row.id);
+      }
+      await load();
+      setStatus("All history deleted.");
+    } catch (err) {
+      console.error(err);
+      setStatus("Error deleting all data.");
+    }
+  };
 
   const accountCategory = useMemo(() => {
     const map = new Map();
@@ -152,18 +256,22 @@ export default function History() {
     setLiabilityCols(accountsByType.liabilities.map(a => a.name));
   }, [accountsByType]);
 
-  const allColumns = useMemo(() => [...assetCols, ...liabilityCols], [assetCols, liabilityCols]);
+  const allColumns = useMemo(
+    () => [...assetCols, ...liabilityCols],
+    [assetCols, liabilityCols]
+  );
 
   const dates = useMemo(() => {
-    const d = new Set(balances.map(b => b.date));
+    const d = new Set(balances.map(b => toIsoDate(b.date)));
     return [...d].sort((a, b) => dateMs(b) - dateMs(a));
   }, [balances]);
 
   const byDate = useMemo(() => {
     const m = new Map();
     for (const b of balances) {
-      if (!m.has(b.date)) m.set(b.date, new Map());
-      m.get(b.date).set(b.account, b);
+      const iso = toIsoDate(b.date);
+      if (!m.has(iso)) m.set(iso, new Map());
+      m.get(iso).set(b.account, b);
     }
     return m;
   }, [balances]);
@@ -178,15 +286,14 @@ export default function History() {
         originalDate: toIsoDate(dr.date)
       })),
       ...dates
-        .filter(date => !draftRows.some(dr => dr.date === date))
+        .filter(date => !draftRows.some(dr => toIsoDate(dr.date) === date))
         .map(date => {
           const values = {};
           allColumns.forEach(a => {
             const entry = byDate.get(date)?.get(a);
             values[a] = entry ? entry.balance : "";
           });
-          const iso = toIsoDate(date);
-          return { key: iso, dateIso: iso, values, isDraft: false, originalDate: iso };
+          return { key: date, dateIso: date, values, isDraft: false, originalDate: date };
         })
     ];
     return rows.sort((a, b) => {
@@ -206,6 +313,7 @@ export default function History() {
 
     const id = `draft-${Date.now()}`;
     const isoDate = toIsoDate(latestDate);
+
     setDraftRows(prev => [{ id, date: isoDate, values }, ...prev]);
     setEditingRowKey(id);
     setEditingDate(isoDate);
@@ -229,7 +337,6 @@ export default function History() {
   const saveRow = async ({ key, isDraft, originalDate }) => {
     if (!editingRowKey || editingRowKey !== key) return;
 
-    // validate numbers first
     for (const acct of allColumns) {
       const raw = editingValues[acct];
       if (raw === "" || raw == null) continue;
@@ -256,13 +363,16 @@ export default function History() {
       for (const acct of allColumns) {
         const raw = editingValues[acct];
         const existing = byDate.get(originalDate)?.get(acct);
+
         if (raw === "" || raw == null) {
           if (!isDraft && existing && editingDate === originalDate) {
             await deleteBalance(existing.id);
           }
           continue;
         }
+
         const num = Number(String(raw).replace(/,/g, ""));
+
         if (!isDraft && existing && editingDate === originalDate) {
           await updateBalance(existing.id, num);
         } else {
@@ -270,9 +380,7 @@ export default function History() {
         }
       }
 
-      if (isDraft) {
-        setDraftRows(prev => prev.filter(dr => dr.id !== key));
-      }
+      if (isDraft) setDraftRows(prev => prev.filter(dr => dr.id !== key));
 
       setStatus("Row saved.");
       cancelEditRow();
@@ -282,34 +390,7 @@ export default function History() {
     }
   };
 
-  const parseCsv = (text) => {
-    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    if (lines.length === 0) return [];
-
-    let startIdx = 0;
-    const firstCols = lines[0].split(",").map(c => c.trim().toLowerCase());
-    const headerLooksRight =
-      firstCols.includes("date") && firstCols.includes("account") && firstCols.includes("balance");
-    if (headerLooksRight) startIdx = 1;
-
-    const records = [];
-    for (let i = startIdx; i < lines.length; i++) {
-      const cols = lines[i].split(",").map(c => c.trim());
-      if (cols.length < 3) continue;
-      const [dateCol, accountCol, balanceCol] = cols;
-      if (!dateCol || !accountCol || balanceCol === undefined) continue;
-
-      const balanceNum = Number(balanceCol.replace(/,/g, ""));
-      if (Number.isNaN(balanceNum)) continue;
-
-      records.push({
-        date: toIsoDate(dateCol),
-        account: accountCol,
-        balance: balanceNum
-      });
-    }
-    return records;
-  };
+  /** ---------------- CSV upload ---------------- */
 
   const onCsvUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -318,90 +399,124 @@ export default function History() {
 
     try {
       const text = await file.text();
-      const records = parseCsv(text);
+      console.log("CSV raw text first 300 chars:", text.slice(0, 300));
+
+      const records = parseCsvLong(text);
+      console.log("Parsed CSV records count:", records.length);
+      console.log("Parsed CSV sample:", records.slice(0, 5));
+
       if (records.length === 0) {
-        setStatus("No valid rows found.");
+        setStatus("No valid rows found. Check headers: date, account, category, type, balance");
         return;
       }
 
-      const ok = window.confirm("Replace all history with this CSV? This will delete existing entries.");
-      if (!ok) {
-        setStatus("Import canceled.");
-        return;
+      const accountsByName = new Map(accountsList.map(a => [a.name, a]));
+      const metaByAccount = new Map();
+      const defaultCategoryForType = (t) => (t === "liability" ? "other liability" : "other");
+
+      for (const rec of records) {
+        const accountName = String(rec.account || "").trim();
+        if (!accountName) continue;
+        const existingCategory = sanitizeCategory(accountCategory.get(accountName) || rec.category || "other");
+        const typeFromCategory = categoryType(existingCategory);
+        const type = normalizeType(rec.type) || typeFromCategory;
+        const category = sanitizeCategory(rec.category || defaultCategoryForType(type));
+        metaByAccount.set(accountName, { type, category });
       }
 
-      // delete existing balances first
+      for (const [accountName, meta] of metaByAccount.entries()) {
+        const existing = accountsByName.get(accountName);
+        const category = meta.category || defaultCategoryForType(meta.type);
+
+        if (!existing) {
+          try {
+            await addAccount(accountName, category);
+          } catch (err) {
+            console.error("FAILED addAccount during import:", accountName, err.message);
+          }
+        } else if (sanitizeCategory(existing.category) !== sanitizeCategory(category)) {
+          try {
+            await updateAccount(existing.id, { name: existing.name, category });
+          } catch (err) {
+            console.error("FAILED updateAccount during import:", existing.name, err.message);
+          }
+        }
+      }
+
       const current = await getBalances();
       for (const row of current) {
         await deleteBalance(row.id);
       }
 
       let imported = 0;
+      let failed = 0;
+      
       for (const rec of records) {
-        await addBalance(rec);
-        imported += 1;
+        try {
+          const cleaned = {
+            account: String(rec.account || "").trim(),
+            date: toIsoDate(rec.date),
+            balance: Number(rec.balance),
+          };
+
+          if (!cleaned.account || !cleaned.date || !Number.isFinite(cleaned.balance)) {
+            console.warn("Skipping invalid record:", rec, cleaned);
+            failed++;
+            continue;
+          }
+
+          await addBalance(cleaned);
+          imported++;
+        } catch (err) {
+          console.error("FAILED addBalance:", rec, err.message);
+          failed++;
+        }
       }
 
       await load();
-      setStatus(`Imported ${imported} rows from CSV (replaced previous history).`);
+      setStatus(`Imported ${imported} rows.${failed ? ` ${failed} failed (open Console).` : ""}`);
     } catch (err) {
+      console.error(err);
       setStatus("Error importing CSV.");
     } finally {
       e.target.value = "";
     }
   };
 
+  /** ---------------- CSV download (long format) ---------------- */
+
   const downloadCsv = () => {
-    const cols = allColumns; // account names
+    const cols = allColumns;
     const rows = [];
-    rows.push(["date", "account", "balance"].join(","));
-  
+    rows.push(["date", "account", "category", "type", "balance"].join(","));
+
     const sortedDates = [...dates].sort((a, b) => dateMs(a) - dateMs(b));
-  
+
     for (const date of sortedDates) {
-      const iso = toIsoDate(date);
-  
-      // Try both keys because your byDate might be keyed by raw date or ISO
-      let entries = byDate.get?.(date) ?? byDate.get?.(iso) ?? byDate[date] ?? byDate[iso];
-  
-      // Normalize entries to a Map-ish accessor
-      const getEntry = (acct) => {
-        if (!entries) return undefined;
-        if (entries instanceof Map) return entries.get(acct);
-        return entries[acct]; // plain object case
-      };
-  
+      const entries = byDate.get(date) || new Map();
+
       for (const acct of cols) {
-        const entry = getEntry(acct);
-        if (entry == null) continue; // skip blanks to match your attached CSV
-  
-        // Support entry being {balance: x} or directly a number
-        const bal =
-          typeof entry === "object" && entry !== null
-            ? entry.balance
-            : entry;
-  
+        const entry = entries.get(acct);
+        if (!entry) continue;
+        const bal = entry.balance;
         if (bal == null || bal === "") continue;
-  
-        // Use same date style as your original file (change to `iso` if you want ISO)
-        const dateOut = date;
-  
-        rows.push([dateOut, acct, bal].join(","));
+        const type = categoryType(accountCategory.get(acct) || "other");
+        const category = sanitizeCategory(accountCategory.get(acct) || "other");
+        rows.push([formatDate(date), acct, category, type, bal].join(","));
       }
     }
-  
+
     const csvContent = rows.join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-  
+
     const link = document.createElement("a");
     link.href = url;
     link.download = "balances_long.csv";
     link.click();
-  
+
     URL.revokeObjectURL(url);
   };
-  
 
   const deleteRow = async (date) => {
     const iso = toIsoDate(date);
@@ -432,6 +547,7 @@ export default function History() {
             formatDate(rowDate)
           )}
         </td>
+
         {columns.map(acct => {
           const val = isEditing ? editingValues[acct] ?? "" : values[acct] ?? "";
           const shown = isEditing ? val : formatNumber(val);
@@ -450,6 +566,7 @@ export default function History() {
             </td>
           );
         })}
+
         <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
           {isEditing ? (
             <>
@@ -458,20 +575,14 @@ export default function History() {
             </>
           ) : (
             <>
-              <button
-                style={btnStyle}
-                onClick={() => startEditRow(key, dateIso, { ...values })}
-              >
+              <button style={btnStyle} onClick={() => startEditRow(key, dateIso, { ...values })}>
                 Edit
               </button>
               <button
                 style={{ ...btnStyle, marginLeft: 6 }}
                 onClick={() => {
-                  if (isDraft) {
-                    setDraftRows(prev => prev.filter(dr => dr.id !== key));
-                  } else {
-                    deleteRow(dateIso);
-                  }
+                  if (isDraft) setDraftRows(prev => prev.filter(dr => dr.id !== key));
+                  else deleteRow(dateIso);
                 }}
               >
                 Delete row
@@ -489,16 +600,31 @@ export default function History() {
 
       {status && <p>{status}</p>}
       {dates.length === 0 && draftRows.length === 0 && <p>No balances yet.</p>}
+
+      {/* ✅ BUTTONS LIVE HERE */}
       {allColumns.length > 0 && (
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button style={btnStyle} onClick={addDateRow}>Add date</button>
+
+          <button
+            type="button"
+            onClick={deleteAllData}
+            style={{
+              ...btnStyle,
+              border: "1px solid #c0392b",
+              color: "#c0392b",
+              fontWeight: 700
+            }}
+          >
+            Delete ALL data
+          </button>
         </div>
       )}
 
       <section style={{ padding: 0, marginBottom: 12 }}>
         <h3 style={{ marginBottom: 6 }}>Upload CSV</h3>
         <p style={{ marginTop: 0, marginBottom: 8 }}>
-          CSV columns: date, account, balance. Header row optional.
+          CSV columns: date, account, category, type (asset/liability), balance. Header row optional (legacy 3- or 4-column files still import; missing category defaults to "other" or "other liability").
         </p>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
           <input type="file" accept=".csv,text/csv" onChange={onCsvUpload} />
@@ -508,21 +634,18 @@ export default function History() {
 
       {(dates.length > 0 || draftRows.length > 0) && (
         <>
+          {/* ASSETS TABLE */}
           <div
-  style={{
-    background: "#000",
-    color: "#fff",
-    padding: "8px 12px",
-    borderRadius: 8,
-    marginBottom: 8
-  }}
->
-  <h3 style={{ margin: 0 }}>Assets</h3>
-</div>
-
-<div style={{ overflowX: "auto" }}>
-  ...
-</div>
+            style={{
+              background: "#000",
+              color: "#fff",
+              padding: "8px 12px",
+              borderRadius: 8,
+              marginBottom: 8
+            }}
+          >
+            <h3 style={{ margin: 0 }}>Assets</h3>
+          </div>
 
           <div style={{ overflowX: "auto", marginBottom: 12 }}>
             {assetCols.length === 0 ? (
@@ -538,6 +661,7 @@ export default function History() {
                     >
                       Date {sortDir === "desc" ? "▼" : "▲"}
                     </th>
+
                     {assetCols.map(acct => {
                       const cat = accountCategory.get(acct) || "other";
                       const colors = colorForCategory(cat);
@@ -572,6 +696,7 @@ export default function History() {
                         </th>
                       );
                     })}
+
                     <th style={{ width: 120 }}></th>
                   </tr>
                 </thead>
@@ -582,21 +707,18 @@ export default function History() {
             )}
           </div>
 
+          {/* LIABILITIES TABLE */}
           <div
-  style={{
-    background: "#000",
-    color: "#fff",
-    padding: "8px 12px",
-    borderRadius: 8,
-    marginBottom: 8
-  }}
->
-  <h3 style={{ margin: 0 }}>Liabilities</h3>
-</div>
-
-<div style={{ overflowX: "auto" }}>
-  ...
-</div>
+            style={{
+              background: "#000",
+              color: "#fff",
+              padding: "8px 12px",
+              borderRadius: 8,
+              marginBottom: 8
+            }}
+          >
+            <h3 style={{ margin: 0 }}>Liabilities</h3>
+          </div>
 
           <div style={{ overflowX: "auto" }}>
             {liabilityCols.length === 0 ? (
@@ -612,6 +734,7 @@ export default function History() {
                     >
                       Date {sortDir === "desc" ? "▼" : "▲"}
                     </th>
+
                     {liabilityCols.map(acct => {
                       const cat = accountCategory.get(acct) || "other liability";
                       const colors = colorForCategory(cat);
@@ -646,6 +769,7 @@ export default function History() {
                         </th>
                       );
                     })}
+
                     <th style={{ width: 120 }}></th>
                   </tr>
                 </thead>

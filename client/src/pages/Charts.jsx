@@ -96,34 +96,41 @@ const categoriesOrder = [...assetCategories, ...liabilityCategories];
 
 // Net worth chart: start at $2.0m, ticks every $0.5m
 const computeYNetWorth = (rows) => {
-  const vals = rows
-    .map(r => Number(r.netWorth))
-    .filter(v => Number.isFinite(v));
-
-  const step = 500_000;      // 0.5m
-  const minTick = 2_000_000; // 2.0m floor
-
-  if (vals.length === 0) {
-    return {
-      domain: [minTick, minTick + step],
-      ticks: [minTick, minTick + step]
-    };
-  }
-
-  let max = Math.max(...vals);
-
-  // small headroom
-  const pad = (max - minTick) * 0.05;
-  max += pad;
-
-  const maxTick = Math.ceil(max / step) * step;
-
-  const ticks = [];
-  for (let t = minTick; t <= maxTick; t += step) ticks.push(t);
-
-  return { domain: [minTick, maxTick], ticks };
-};
-
+    const vals = rows
+      .map(r => Number(r.netWorth))
+      .filter(v => Number.isFinite(v));
+  
+    if (vals.length === 0) return { domain: ["auto", "auto"], ticks: [] };
+  
+    let min = Math.min(...vals);
+    let max = Math.max(...vals);
+  
+    // if flat line, expand a little
+    if (min === max) {
+      const bump = Math.abs(min) || 1;
+      min -= bump;
+      max += bump;
+    }
+  
+    // add small padding so line isn't glued to edges
+    const range = max - min;
+    const pad = range * 0.05;
+    min -= pad;
+    max += pad;
+  
+    const step = 500_000; // 0.5m ticks
+  
+    const minTick = Math.floor(min / step) * step;
+    const maxTick = Math.ceil(max / step) * step;
+  
+    const ticks = [];
+    for (let t = minTick; t <= maxTick; t += step) {
+      ticks.push(t);
+    }
+  
+    return { domain: [minTick, maxTick], ticks };
+  };
+  
 // Stacked chart: include negatives, ticks every $0.5m
 const computeYStacked = (rows) => {
   const totals = [];
@@ -444,8 +451,8 @@ export default function Charts() {
               tick={{ fill: "#ccc" }}
             />
             <YAxis
-              domain={yMetaNetWorth.domain}
-              ticks={yMetaNetWorth.ticks}
+              domain={yMetaStacked.domain}
+              ticks={yMetaStacked.ticks}
               tickFormatter={formatCurrencyShort}
               stroke="#aaa"
               tick={{ fill: "#ccc" }}
