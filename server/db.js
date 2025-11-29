@@ -62,6 +62,56 @@ db.serialize(() => {
   db.run(`INSERT OR IGNORE INTO users(id, username, password_hash) VALUES (1, 'demo', '$2b$10$HU0iaoR6nZP5ZruVYB.o/.q/YokZhGMevAbpSuaV6TgGO8vchUEeO')`);
   db.run(`UPDATE accounts SET user_id=1 WHERE user_id IS NULL`);
   db.run(`UPDATE balances SET user_id=1 WHERE user_id IS NULL`);
+
+  // Enforce per-user account uniqueness on legacy databases too.
+  db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_user_name ON accounts(user_id, name)`);
+  // If any old global-name unique indexes exist, drop them so different users can share account names.
+  db.run(`DROP INDEX IF EXISTS accounts_name`);
+  db.run(`DROP INDEX IF EXISTS idx_accounts_name`);
+
+  // If the table itself was created with a global UNIQUE(name) constraint, rebuild it to remove that constraint.
+  db.all(`PRAGMA index_list(accounts)`, (err, rows = []) => {
+    if (err) {
+      console.error("Failed to inspect account indexes:", err.message);
+      return;
+    }
+
+    const legacyAuto = rows.find(r => String(r.name || "").startsWith("sqlite_autoindex_accounts") && r.origin === "u");
+    if (!legacyAuto) return;
+
+    // Double-check that the legacy autoindex only covers the name column.
+    db.all(`PRAGMA index_info(${legacyAuto.name})`, (infoErr, cols = []) => {
+      if (infoErr) {
+        console.error("Failed to inspect legacy autoindex:", infoErr.message);
+        return;
+      }
+      const isNameOnly = cols.length === 1 && String(cols[0].name).toLowerCase() === "name";
+      if (!isNameOnly) return;
+
+      console.warn("Rebuilding accounts table to remove global UNIQUE(name) constraint...");
+      db.serialize(() => {
+        db.run("PRAGMA foreign_keys=OFF");
+        db.run(`
+          CREATE TABLE IF NOT EXISTS accounts_new (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            category TEXT NOT NULL DEFAULT 'other',
+            UNIQUE(user_id, name),
+            FOREIGN KEY(user_id) REFERENCES users(id)
+          )
+        `);
+        db.run(`
+          INSERT OR IGNORE INTO accounts_new (id, user_id, name, category)
+          SELECT id, user_id, name, COALESCE(category, 'other') FROM accounts
+        `);
+        db.run(`DROP TABLE accounts`);
+        db.run(`ALTER TABLE accounts_new RENAME TO accounts`);
+        db.run("PRAGMA foreign_keys=ON");
+        db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_user_name ON accounts(user_id, name)`);
+      });
+    });
+  });
 });
 
 export default db;

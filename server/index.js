@@ -119,7 +119,7 @@ app.get("/balances", authMiddleware, async (req, res) => {
   const rows = await all(`
     SELECT b.id, b.date, b.balance, a.name AS account
     FROM balances b
-    JOIN accounts a ON a.id = b.account_id
+    JOIN accounts a ON a.id = b.account_id AND a.user_id = b.user_id
     WHERE b.user_id=?
     ORDER BY b.date ASC, a.name ASC
   `, [req.user.id]);
@@ -184,7 +184,7 @@ app.get("/timeseries", authMiddleware, async (req, res) => {
   const rows = await all(`
     SELECT b.date, a.name AS account, b.balance
     FROM balances b
-    JOIN accounts a ON a.id = b.account_id
+    JOIN accounts a ON a.id = b.account_id AND a.user_id = b.user_id
     WHERE b.user_id=?
     ORDER BY b.date ASC, a.name ASC
   `, [req.user.id]);
