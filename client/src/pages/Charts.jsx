@@ -114,11 +114,11 @@ const computeYNetWorth = (rows) => {
   
     // add small padding so line isn't glued to edges
     const range = max - min;
-    const pad = range * 0.05;
+    const pad = range * 0.02;
     min -= pad;
     max += pad;
   
-    const step = 500_000; // 0.5m ticks
+    const step = 10_000; // 0.1m ticks
   
     const minTick = Math.floor(min / step) * step;
     const maxTick = Math.ceil(max / step) * step;
@@ -131,7 +131,7 @@ const computeYNetWorth = (rows) => {
     return { domain: [minTick, maxTick], ticks };
   };
   
-// Stacked chart: include negatives, ticks every $0.5m
+// Stacked chart: include negatives
 const computeYStacked = (rows) => {
   const totals = [];
 
@@ -162,7 +162,7 @@ const computeYStacked = (rows) => {
   }
 
   const range = max - min;
-  const pad = range * 0.05;
+  const pad = range * 0.02;
   min -= pad;
   max += pad;
 
@@ -170,7 +170,7 @@ const computeYStacked = (rows) => {
   min = Math.min(min, 0);
   max = Math.max(max, 0);
 
-  const step = 500_000;
+  const step = 10_000;
 
   const minTick = Math.floor(min / step) * step;
   const maxTick = Math.ceil(max / step) * step;
@@ -451,8 +451,8 @@ export default function Charts() {
               tick={{ fill: "#ccc" }}
             />
             <YAxis
-              domain={yMetaStacked.domain}
-              ticks={yMetaStacked.ticks}
+              domain={yMetaNetWorth.domain}
+              ticks={yMetaNetWorth.ticks}
               tickFormatter={formatCurrencyShort}
               stroke="#aaa"
               tick={{ fill: "#ccc" }}
