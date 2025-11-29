@@ -78,6 +78,22 @@ export default function AddEntry() {
     setEditingCategory("other");
   };
 
+  const deleteAllAccounts = async () => {
+    if (accounts.length === 0) return;
+    const ok = window.confirm("Delete ALL accounts and their balances? This cannot be undone.");
+    if (!ok) return;
+    try {
+      for (const acct of accounts) {
+        await deleteAccount(acct.id);
+      }
+      setAccounts([]);
+      setStatus("All accounts deleted.");
+    } catch (err) {
+      console.error(err);
+      setStatus("Error deleting accounts.");
+    }
+  };
+
   const saveEdit = async (id) => {
     if (!editingName.trim()) return;
     try {
@@ -121,6 +137,11 @@ export default function AddEntry() {
 
       <section style={{ padding: 12, border: "1px solid #eee", borderRadius: 12 }}>
         <h2 style={{ marginTop: 0 }}>Accounts</h2>
+        {accounts.length > 0 && (
+          <button type="button" onClick={deleteAllAccounts} style={{ marginBottom: 8 }}>
+            Delete ALL accounts
+          </button>
+        )}
         {accounts.length === 0 && <p style={{ margin: 0 }}>No accounts yet. Add one above.</p>}
         <div style={{ display: "grid", gap: 8 }}>
           {accounts.length > 0 && (
