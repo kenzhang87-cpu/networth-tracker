@@ -391,7 +391,6 @@ export default function History() {
   };
 
   /** ---------------- CSV upload ---------------- */
-
   const onCsvUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -399,68 +398,92 @@ export default function History() {
 
     try {
       const text = await file.text();
-      console.log("CSV raw text first 300 chars:", text.slice(0, 300));
-
       const records = parseCsvLong(text);
-      console.log("Parsed CSV records count:", records.length);
-      console.log("Parsed CSV sample:", records.slice(0, 5));
 
       if (records.length === 0) {
         setStatus("No valid rows found. Check headers: date, account, category, type, balance");
         return;
       }
 
-      const accountsByName = new Map(accountsList.map(a => [a.name, a]));
-      const metaByAccount = new Map();
+      const ok = window.confirm(
+        `Replace all history with this CSV?\n\nThis will delete existing entries and import ${records.length} rows.\nAccounts and categories will be updated to match the CSV.`
+      );
+      if (!ok) {
+        setStatus("Import canceled.");
+        return;
+      }
+
+      // Fetch current accounts and ensure they match CSV categories/types
+      const acctList = await getAccounts();
+      const acctMap = new Map(acctList.map(a => [String(a.name).trim().toLowerCase(), a]));
+
+      const desiredMeta = new Map();
       const defaultCategoryForType = (t) => (t === "liability" ? "other liability" : "other");
 
       for (const rec of records) {
-        const accountName = String(rec.account || "").trim();
-        if (!accountName) continue;
-        const existingCategory = sanitizeCategory(accountCategory.get(accountName) || rec.category || "other");
-        const typeFromCategory = categoryType(existingCategory);
-        const type = normalizeType(rec.type) || typeFromCategory;
-        const category = sanitizeCategory(rec.category || defaultCategoryForType(type));
-        metaByAccount.set(accountName, { type, category });
+        const name = String(rec.account || "").trim();
+        if (!name) continue;
+        const key = name.toLowerCase();
+        const categoryFromCsv = sanitizeCategory(rec.category);
+        const existingCategory = sanitizeCategory(acctMap.get(key)?.category);
+        const typeFromCsv = normalizeType(rec.type);
+        const typeFromCategory = categoryType(categoryFromCsv || existingCategory);
+        const type = typeFromCsv || typeFromCategory || "asset";
+        const category = categoryFromCsv || existingCategory || defaultCategoryForType(type);
+        desiredMeta.set(key, { name, category });
       }
 
-      for (const [accountName, meta] of metaByAccount.entries()) {
-        const existing = accountsByName.get(accountName);
-        const category = meta.category || defaultCategoryForType(meta.type);
+      for (const meta of desiredMeta.values()) {
+        const key = meta.name.toLowerCase();
+        const existing = acctMap.get(key);
 
         if (!existing) {
+          const updatedList = await addAccount(meta.name, meta.category);
+          const added = Array.isArray(updatedList)
+            ? updatedList.find(a => String(a.name).trim().toLowerCase() === key)
+            : null;
+          acctMap.set(key, added || { name: meta.name, category: meta.category });
+        } else if (sanitizeCategory(existing.category) !== sanitizeCategory(meta.category)) {
           try {
-            await addAccount(accountName, category);
+            await updateAccount(existing.id, { name: existing.name, category: meta.category });
+            acctMap.set(key, { ...existing, category: meta.category });
           } catch (err) {
-            console.error("FAILED addAccount during import:", accountName, err.message);
-          }
-        } else if (sanitizeCategory(existing.category) !== sanitizeCategory(category)) {
-          try {
-            await updateAccount(existing.id, { name: existing.name, category });
-          } catch (err) {
-            console.error("FAILED updateAccount during import:", existing.name, err.message);
+            console.error("FAILED updateAccount during import:", existing.name, err);
           }
         }
       }
 
+      // Delete existing balances before import
       const current = await getBalances();
       for (const row of current) {
-        await deleteBalance(row.id);
+        if (row?.id != null) await deleteBalance(row.id);
       }
 
       let imported = 0;
       let failed = 0;
-      
+
       for (const rec of records) {
         try {
+          const accountName = String(rec.account || "").trim();
+          const key = accountName.toLowerCase();
+
+          if (!accountName) {
+            failed++;
+            continue;
+          }
+
+          // Ensure account exists (in case it was missing and not covered above for some reason)
+          if (!acctMap.has(key)) {
+            await addAccount(accountName, "other");
+          }
+
           const cleaned = {
-            account: String(rec.account || "").trim(),
             date: toIsoDate(rec.date),
+            account: accountName, // server resolves by name
             balance: Number(rec.balance),
           };
 
-          if (!cleaned.account || !cleaned.date || !Number.isFinite(cleaned.balance)) {
-            console.warn("Skipping invalid record:", rec, cleaned);
+          if (!cleaned.date || !Number.isFinite(cleaned.balance)) {
             failed++;
             continue;
           }
@@ -468,13 +491,13 @@ export default function History() {
           await addBalance(cleaned);
           imported++;
         } catch (err) {
-          console.error("FAILED addBalance:", rec, err.message);
+          console.error("FAILED addBalance:", rec, err);
           failed++;
         }
       }
 
       await load();
-      setStatus(`Imported ${imported} rows.${failed ? ` ${failed} failed (open Console).` : ""}`);
+      setStatus(`Imported ${imported} rows.${failed ? ` ${failed} failed (see Console).` : ""}`);
     } catch (err) {
       console.error(err);
       setStatus("Error importing CSV.");
@@ -482,6 +505,7 @@ export default function History() {
       e.target.value = "";
     }
   };
+  
 
   /** ---------------- CSV download (long format) ---------------- */
 
