@@ -192,13 +192,37 @@ export default function History() {
       "⚠️ Delete ALL history?\n\nThis will permanently remove every balance entry. This cannot be undone."
     );
     if (!ok) return;
-
+  
     try {
       setStatus("Deleting all data...");
+  
       const current = await getBalances();
-      for (const row of current) {
-        await deleteBalance(row.id);
+      if (!Array.isArray(current) || current.length === 0) {
+        setStatus("No data to delete.");
+        return;
       }
+  
+      const total = current.length;
+  
+      // helper to chunk an array
+      const chunk = (arr, size) =>
+        Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+          arr.slice(i * size, i * size + size)
+        );
+  
+      let deleted = 0;
+  
+      // delete in batches of 100 (tweak if you want)
+      for (const group of chunk(current, 100)) {
+        await Promise.all(
+          group
+            .filter(row => row?.id != null)
+            .map(row => deleteBalance(row.id))
+        );
+        deleted += group.length;
+        setStatus(`Deleting all data... ${deleted}/${total}`);
+      }
+  
       await load();
       setStatus("All history deleted.");
     } catch (err) {
@@ -206,6 +230,7 @@ export default function History() {
       setStatus("Error deleting all data.");
     }
   };
+  
 
   const accountCategory = useMemo(() => {
     const map = new Map();
