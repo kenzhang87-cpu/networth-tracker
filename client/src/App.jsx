@@ -47,7 +47,7 @@ export default function App() {
   if (!token) {
     return (
       <div style={{ fontFamily: "system-ui, sans-serif", maxWidth: 480, margin: "0 auto", padding: 16 }}>
-        <h1 style={{ marginTop: 0 }}>Net Worth Tracker</h1>
+        <h1 style={{ marginTop: 0 }}>Net Wealth Tracker</h1>
         <form onSubmit={onAuth} style={{ display: "grid", gap: 8, marginTop: 12 }}>
           <label style={{ display: "grid", gap: 4 }}>
             Username
@@ -75,7 +75,7 @@ export default function App() {
     <BrowserRouter>
       <div style={{ fontFamily: "system-ui, sans-serif", maxWidth: 960, margin: "0 auto", padding: 16 }}>
         <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-          <h1 style={{ margin: 0 }}>Net Worth Tracker</h1>
+          <h1 style={{ margin: 0 }}>Net Wealth Tracker</h1>
           <nav style={{ display: "flex", gap: 8 }}>
             <NavLink to="/" style={navStyle} end>Accounts</NavLink>
             <NavLink to="/history" style={navStyle}>Data</NavLink>
