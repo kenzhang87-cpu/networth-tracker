@@ -390,122 +390,176 @@ export default function History() {
     }
   };
 
-  /** ---------------- CSV upload ---------------- */
-  const onCsvUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setStatus("Processing CSV...");
+  /** ---------------- CSV upload (FASTER) ---------------- */
+const onCsvUpload = async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  setStatus("Processing CSV...");
 
-    try {
-      const text = await file.text();
-      const records = parseCsvLong(text);
+  // small helper: chunk an array into groups
+  const chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+      arr.slice(i * size, i * size + size)
+    );
 
-      if (records.length === 0) {
-        setStatus("No valid rows found. Check headers: date, account, category, type, balance");
-        return;
-      }
+  try {
+    const text = await file.text();
+    const records = parseCsvLong(text);
 
-      const ok = window.confirm(
-        `Replace all history with this CSV?\n\nThis will delete existing entries and import ${records.length} rows.\nAccounts and categories will be updated to match the CSV.`
+    if (records.length === 0) {
+      setStatus("No valid rows found. Check headers: date, account, category, type, balance");
+      return;
+    }
+
+    const ok = window.confirm(
+      `Replace all history with this CSV?\n\nThis will delete existing entries and import ${records.length} rows.\nAccounts and categories will be updated to match the CSV.`
+    );
+    if (!ok) {
+      setStatus("Import canceled.");
+      return;
+    }
+
+    setStatus("Syncing accounts...");
+
+    // Fetch current accounts
+    const acctList = await getAccounts();
+    const acctMap = new Map(
+      acctList.map(a => [String(a.name).trim().toLowerCase(), a])
+    );
+
+    const desiredMeta = new Map();
+    const defaultCategoryForType = (t) =>
+      (t === "liability" ? "other liability" : "other");
+
+    // Build desiredMeta once (unique accounts only)
+    for (const rec of records) {
+      const name = String(rec.account || "").trim();
+      if (!name) continue;
+      const key = name.toLowerCase();
+
+      const categoryFromCsv = sanitizeCategory(rec.category);
+      const existingCategory = sanitizeCategory(acctMap.get(key)?.category);
+
+      const typeFromCsv = normalizeType(rec.type);
+      const typeFromCategory = categoryType(
+        categoryFromCsv || existingCategory
       );
-      if (!ok) {
-        setStatus("Import canceled.");
-        return;
-      }
 
-      // Fetch current accounts and ensure they match CSV categories/types
-      const acctList = await getAccounts();
-      const acctMap = new Map(acctList.map(a => [String(a.name).trim().toLowerCase(), a]));
+      const type = typeFromCsv || typeFromCategory || "asset";
+      const category =
+        categoryFromCsv ||
+        existingCategory ||
+        defaultCategoryForType(type);
 
-      const desiredMeta = new Map();
-      const defaultCategoryForType = (t) => (t === "liability" ? "other liability" : "other");
+      desiredMeta.set(key, { name, category });
+    }
 
-      for (const rec of records) {
-        const name = String(rec.account || "").trim();
-        if (!name) continue;
-        const key = name.toLowerCase();
-        const categoryFromCsv = sanitizeCategory(rec.category);
-        const existingCategory = sanitizeCategory(acctMap.get(key)?.category);
-        const typeFromCsv = normalizeType(rec.type);
-        const typeFromCategory = categoryType(categoryFromCsv || existingCategory);
-        const type = typeFromCsv || typeFromCategory || "asset";
-        const category = categoryFromCsv || existingCategory || defaultCategoryForType(type);
-        desiredMeta.set(key, { name, category });
-      }
+    // Prepare create/update tasks (don’t execute yet)
+    const createTasks = [];
+    const updateTasks = [];
 
-      for (const meta of desiredMeta.values()) {
-        const key = meta.name.toLowerCase();
-        const existing = acctMap.get(key);
+    for (const meta of desiredMeta.values()) {
+      const key = meta.name.toLowerCase();
+      const existing = acctMap.get(key);
 
-        if (!existing) {
-          const updatedList = await addAccount(meta.name, meta.category);
-          const added = Array.isArray(updatedList)
-            ? updatedList.find(a => String(a.name).trim().toLowerCase() === key)
-            : null;
-          acctMap.set(key, added || { name: meta.name, category: meta.category });
-        } else if (sanitizeCategory(existing.category) !== sanitizeCategory(meta.category)) {
+      if (!existing) {
+        createTasks.push(async () => {
+          await addAccount(meta.name, meta.category);
+          // put a placeholder so later balance inserts don't try again
+          acctMap.set(key, { id: null, name: meta.name, category: meta.category });
+        });
+      } else if (
+        sanitizeCategory(existing.category) !== sanitizeCategory(meta.category)
+      ) {
+        updateTasks.push(async () => {
           try {
-            await updateAccount(existing.id, { name: existing.name, category: meta.category });
+            await updateAccount(existing.id, {
+              name: existing.name,
+              category: meta.category
+            });
             acctMap.set(key, { ...existing, category: meta.category });
           } catch (err) {
             console.error("FAILED updateAccount during import:", existing.name, err);
           }
-        }
+        });
       }
-
-      // Delete existing balances before import
-      const current = await getBalances();
-      for (const row of current) {
-        if (row?.id != null) await deleteBalance(row.id);
-      }
-
-      let imported = 0;
-      let failed = 0;
-
-      for (const rec of records) {
-        try {
-          const accountName = String(rec.account || "").trim();
-          const key = accountName.toLowerCase();
-
-          if (!accountName) {
-            failed++;
-            continue;
-          }
-
-          // Ensure account exists (in case it was missing and not covered above for some reason)
-          if (!acctMap.has(key)) {
-            await addAccount(accountName, "other");
-          }
-
-          const cleaned = {
-            date: toIsoDate(rec.date),
-            account: accountName, // server resolves by name
-            balance: Number(rec.balance),
-          };
-
-          if (!cleaned.date || !Number.isFinite(cleaned.balance)) {
-            failed++;
-            continue;
-          }
-
-          await addBalance(cleaned);
-          imported++;
-        } catch (err) {
-          console.error("FAILED addBalance:", rec, err);
-          failed++;
-        }
-      }
-
-      await load();
-      setStatus(`Imported ${imported} rows.${failed ? ` ${failed} failed (see Console).` : ""}`);
-    } catch (err) {
-      console.error(err);
-      setStatus("Error importing CSV.");
-    } finally {
-      e.target.value = "";
     }
-  };
-  
+
+    // Run creates + updates in parallel batches
+    const runTasksInBatches = async (tasks, batchSize, label) => {
+      let done = 0;
+      for (const group of chunk(tasks, batchSize)) {
+        await Promise.all(group.map(fn => fn()));
+        done += group.length;
+        if (label) setStatus(`${label} ${done}/${tasks.length}...`);
+      }
+    };
+
+    await runTasksInBatches(createTasks, 10, "Creating accounts");
+    await runTasksInBatches(updateTasks, 10, "Updating accounts");
+
+    setStatus("Deleting old balances...");
+
+    // Delete existing balances IN PARALLEL batches
+    const current = await getBalances();
+    const deleteTasks = current
+      .filter(row => row?.id != null)
+      .map(row => () => deleteBalance(row.id));
+
+    await runTasksInBatches(deleteTasks, 100, "Deleting balances");
+
+    setStatus("Importing balances...");
+
+    // Clean + validate records first (so we skip trash fast)
+    const cleanedRecords = records
+      .map(rec => {
+        const accountName = String(rec.account || "").trim();
+        if (!accountName) return null;
+
+        const date = toIsoDate(rec.date);
+        const balance = Number(rec.balance);
+
+        if (!date || !Number.isFinite(balance)) return null;
+
+        return {
+          date,
+          account: accountName,
+          balance
+        };
+      })
+      .filter(Boolean);
+
+    let imported = 0;
+    let failed = 0;
+
+    // Add balances in parallel batches
+    for (const group of chunk(cleanedRecords, 100)) {
+      const results = await Promise.allSettled(
+        group.map(rec => addBalance(rec))
+      );
+
+      for (const r of results) {
+        if (r.status === "fulfilled") imported++;
+        else {
+          failed++;
+          console.error("FAILED addBalance:", r.reason);
+        }
+      }
+
+      setStatus(`Importing balances... ${imported}/${cleanedRecords.length}`);
+    }
+
+    await load();
+    setStatus(
+      `Imported ${imported} rows.${failed ? ` ${failed} failed (see Console).` : ""}`
+    );
+  } catch (err) {
+    console.error(err);
+    setStatus("Error importing CSV.");
+  } finally {
+    e.target.value = "";
+  }
+};
 
   /** ---------------- CSV download (long format) ---------------- */
 
