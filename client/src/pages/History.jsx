@@ -376,12 +376,33 @@ export default function History() {
     if (!ok) return;
 
     try {
+      // small helpers so we can fire requests in parallel batches
+      const chunk = (arr, size) =>
+        Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+          arr.slice(i * size, i * size + size)
+        );
+      const runTasksInBatches = async (tasks, batchSize = 50) => {
+        if (tasks.length === 0) return;
+        let done = 0;
+        for (const group of chunk(tasks, batchSize)) {
+          await Promise.all(group.map(fn => fn()));
+          done += group.length;
+          if (tasks.length > batchSize) {
+            setStatus(`Saving row... ${done}/${tasks.length}`);
+          }
+        }
+      };
+
+      const deleteTasks = [];
+      const upsertTasks = [];
+
+      // If the date moved, wipe the old entries first.
       if (!isDraft && editingDate !== originalDate) {
         const entries = allColumns
           .map(acct => byDate.get(originalDate)?.get(acct))
           .filter(Boolean);
         for (const entry of entries) {
-          await deleteBalance(entry.id);
+          deleteTasks.push(() => deleteBalance(entry.id));
         }
       }
 
@@ -391,19 +412,24 @@ export default function History() {
 
         if (raw === "" || raw == null) {
           if (!isDraft && existing && editingDate === originalDate) {
-            await deleteBalance(existing.id);
+            deleteTasks.push(() => deleteBalance(existing.id));
           }
           continue;
         }
 
         const num = Number(String(raw).replace(/,/g, ""));
 
-        if (!isDraft && existing && editingDate === originalDate) {
-          await updateBalance(existing.id, num);
-        } else {
-          await addBalance({ account: acct, date: editingDate, balance: num });
-        }
+        upsertTasks.push(() => {
+          if (!isDraft && existing && editingDate === originalDate) {
+            return updateBalance(existing.id, num);
+          }
+          return addBalance({ account: acct, date: editingDate, balance: num });
+        });
       }
+
+      setStatus("Saving row...");
+      await runTasksInBatches(deleteTasks);
+      await runTasksInBatches(upsertTasks);
 
       if (isDraft) setDraftRows(prev => prev.filter(dr => dr.id !== key));
 

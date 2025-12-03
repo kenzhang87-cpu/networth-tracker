@@ -1,0 +1,1865 @@
+date,account,category,type,balance
+12/20/23,52CityMills,property,asset,687420
+12/20/23,52CityMillsMortgage,mortgage,liability,-288300
+12/20/23,Blue Mound,retirement,asset,16500
+12/20/23,Chase,cash,asset,19243
+12/20/23,Citizens,cash,asset,28987
+12/20/23,Coinbase acct,crypto,asset,80000
+12/20/23,Concierge,retirement,asset,54017
+12/20/23,Crawford Cash,retirement,asset,5000
+12/20/23,In Silico,other,asset,10000
+12/20/23,Kingdom Cash,retirement,asset,1335
+12/20/23,KZCASH cash,cash,asset,361000
+12/20/23,KZCASH stocks,other,asset,346000
+12/20/23,L&G UK Retirement,retirement,asset,32758.109
+12/20/23,LTAF-A3 2023,retirement,asset,80000
+12/20/23,LTAF-Betterment,retirement,asset,50000
+12/20/23,Marcus,other,asset,79758
+12/20/23,Motorcycle,other,asset,10000
+12/20/23,Natwest Current,other,asset,39564
+12/20/23,Natwest E-ISA,other,asset,1558.29
+12/20/23,Omega,other,asset,5000
+12/20/23,Pirate Studios,other,asset,20000
+12/20/23,Rolex,other,asset,20000
+12/20/23,Roth IRA u2466090,retirement,asset,161000
+12/20/23,Towers Watson UK Retirement,retirement,asset,32315.105
+12/20/23,Traditional IRA u2061893,retirement,asset,62190
+12/20/23,Transamerica Strike  401(k) Plan,retirement,asset,229888
+3/21/24,52CityMills,property,asset,711200
+3/21/24,52CityMillsMortgage,mortgage,liability,-288300
+3/21/24,Blue Mound,retirement,asset,16500
+3/21/24,Chase,cash,asset,22015
+3/21/24,Citizens,cash,asset,70837
+3/21/24,Coinbase acct,crypto,asset,123512
+3/21/24,Concierge,retirement,asset,54017
+3/21/24,In Silico,other,asset,15240
+3/21/24,Kingdom Cash,retirement,asset,1335
+3/21/24,KZCASH cash,cash,asset,158000
+3/21/24,KZCASH stocks,other,asset,700100
+3/21/24,L&G UK Retirement,retirement,asset,32776.16
+3/21/24,LTAF-A3 2023,retirement,asset,80000
+3/21/24,LTAF-A3 2024,retirement,asset,67500
+3/21/24,LTAF-Betterment,retirement,asset,50000
+3/21/24,Marcus,other,asset,80352
+3/21/24,Motorcycle,other,asset,10000
+3/21/24,Natwest Current,other,asset,41033.7
+3/21/24,Natwest E-ISA,other,asset,1558.29
+3/21/24,Omega,other,asset,5000
+3/21/24,Pirate Studios,other,asset,25400
+3/21/24,Rolex,other,asset,20000
+3/21/24,Roth IRA u2466090,retirement,asset,261100
+3/21/24,Seven Willoughby,other,asset,11479.85
+3/21/24,Towers Watson UK Retirement,retirement,asset,32133.54
+3/21/24,Traditional IRA u2061893,retirement,asset,102800
+3/21/24,Transamerica Strike  401(k) Plan,retirement,asset,230296
+4/12/24,128Newton,other,property,1425000
+4/12/24,128NewtonMortgage,mortgage,liability,-1282500
+4/12/24,52CityMills,property,asset,694400
+4/12/24,52CityMillsMortgage,mortgage,liability,-288300
+4/12/24,Blue Mound,retirement,asset,16500
+4/12/24,Chase,cash,asset,22015
+4/12/24,Citizens,cash,asset,70837
+4/12/24,Coinbase acct,crypto,asset,123512
+4/12/24,Concierge,retirement,asset,54017
+4/12/24,GTS Equity Fund,other,asset,0
+4/12/24,In Silico,other,asset,14880
+4/12/24,Kingdom Cash,retirement,asset,1335
+4/12/24,KZCASH cash,cash,asset,158000
+4/12/24,KZCASH stocks,other,asset,700100
+4/12/24,L&G UK Retirement,retirement,asset,32002
+4/12/24,LTAF-A3 2023,retirement,asset,62500
+4/12/24,LTAF-A3 2024,retirement,asset,39636
+4/12/24,LTAF-Betterment,retirement,asset,50000
+4/12/24,Marcus,other,asset,80352
+4/12/24,Motorcycle,other,asset,10000
+4/12/24,Natwest Current,other,asset,40064.4
+4/12/24,Natwest E-ISA,other,asset,1521.48
+4/12/24,New Legacy Owl (Invisible),retirement,asset,0
+4/12/24,NL Raven II (xAI),retirement,asset,0
+4/12/24,NS&I Bond,other,asset,0
+4/12/24,Omega,other,asset,5000
+4/12/24,Pirate Studios,other,asset,25800
+4/12/24,Rolex,other,asset,20000
+4/12/24,Roth IRA u2466090,retirement,asset,261100
+4/12/24,Seven Willoughby,other,asset,11480
+4/12/24,Towers Watson UK Retirement,retirement,asset,31374
+4/12/24,Traditional IRA u2061893,retirement,asset,102800
+4/12/24,Transamerica Strike  401(k) Plan,retirement,asset,282504
+6/11/24,128Newton,other,property,1425000
+6/11/24,128NewtonMortgage,mortgage,liability,-1282500
+6/11/24,52CityMills,property,asset,694400
+6/11/24,52CityMillsMortgage,mortgage,liability,-288300
+6/11/24,Blue Mound,retirement,asset,16500
+6/11/24,Chase,cash,asset,60079
+6/11/24,Citizens,cash,asset,36472
+6/11/24,Coinbase acct,crypto,asset,122550
+6/11/24,Concierge,retirement,asset,54017
+6/11/24,Crawford Cash,retirement,asset,920
+6/11/24,GTS Equity Fund,other,asset,0
+6/11/24,In Silico,other,asset,14880
+6/11/24,Kingdom Cash,retirement,asset,1335
+6/11/24,KZCASH cash,cash,asset,338000
+6/11/24,KZCASH stocks,other,asset,451027
+6/11/24,L&G UK Retirement,retirement,asset,32002
+6/11/24,LTAF-A3 2023,retirement,asset,62500
+6/11/24,LTAF-A3 2024,retirement,asset,71735
+6/11/24,LTAF-Betterment,retirement,asset,50000
+6/11/24,Marcus,other,asset,169348
+6/11/24,Motorcycle,other,asset,10000
+6/11/24,Natwest Current,other,asset,32005.64
+6/11/24,Natwest E-ISA,other,asset,1532.64
+6/11/24,New Legacy Owl (Invisible),retirement,asset,50000
+6/11/24,NL Raven II (xAI),retirement,asset,50000
+6/11/24,NS&I Bond,other,asset,0
+6/11/24,Omega,other,asset,5000
+6/11/24,Pirate Studios,other,asset,25800
+6/11/24,Rolex,other,asset,20000
+6/11/24,Roth IRA u2466090,retirement,asset,167999
+6/11/24,Seven Willoughby,other,asset,11480
+6/11/24,Towers Watson UK Retirement,retirement,asset,31374
+6/11/24,Traditional IRA u2061893,retirement,asset,120886
+6/11/24,Transamerica Strike  401(k) Plan,retirement,asset,293944
+7/24/24,128Newton,other,property,1425000
+7/24/24,128NewtonMortgage,mortgage,liability,-997500
+7/24/24,52CityMills,property,asset,722400
+7/24/24,52CityMillsMortgage,mortgage,liability,-323790
+7/24/24,Blue Mound,retirement,asset,16500
+7/24/24,Chase,cash,asset,55021
+7/24/24,Citizens,cash,asset,30072
+7/24/24,Coinbase acct,crypto,asset,119609
+7/24/24,Concierge,retirement,asset,54017
+7/24/24,Crawford Cash,retirement,asset,920
+7/24/24,GTS Equity Fund,other,asset,0
+7/24/24,In Silico,other,asset,15000
+7/24/24,Kingdom Cash,retirement,asset,341
+7/24/24,KZCASH cash,cash,asset,524000
+7/24/24,KZCASH stocks,other,asset,157917
+7/24/24,L&G UK Retirement,retirement,asset,37042.6596
+7/24/24,LTAF-A3 2023,retirement,asset,62500
+7/24/24,LTAF-A3 2024,retirement,asset,88638
+7/24/24,LTAF-Betterment,retirement,asset,50000
+7/24/24,Marcus,other,asset,819
+7/24/24,Motorcycle,other,asset,10000
+7/24/24,Natwest Current,other,asset,8569.47
+7/24/24,Natwest E-ISA,other,asset,1594.44
+7/24/24,Natwest Savings,other,asset,0
+7/24/24,Natwest ZHK Holdings Limited,other,asset,0
+7/24/24,New Legacy Owl (Invisible),retirement,asset,50000
+7/24/24,NL Raven II (xAI),retirement,asset,50000
+7/24/24,NS&I Bond,other,asset,0
+7/24/24,Omega,other,asset,5000
+7/24/24,Pirate Studios,other,asset,25800
+7/24/24,Rolex,other,asset,20000
+7/24/24,Roth IRA u2466090,retirement,asset,172123
+7/24/24,Seven Willoughby,other,asset,5578
+7/24/24,Towers Watson UK Retirement,retirement,asset,34284.33
+7/24/24,Traditional IRA u2061893,retirement,asset,110159
+7/24/24,Transamerica Strike  401(k) Plan,retirement,asset,295479
+7/25/24,128Newton,other,property,1425000
+7/25/24,128NewtonMortgage,mortgage,liability,-997500
+7/25/24,52CityMills,property,asset,722400
+7/25/24,52CityMillsMortgage,mortgage,liability,-323790
+7/25/24,Blue Mound,retirement,asset,16500
+7/25/24,Chase,cash,asset,55021
+7/25/24,Citizens,cash,asset,30072
+7/25/24,Coinbase acct,crypto,asset,119609
+7/25/24,Concierge,retirement,asset,54017
+7/25/24,Crawford Cash,retirement,asset,920
+7/25/24,GTS Equity Fund,other,asset,0
+7/25/24,In Silico,other,asset,15000
+7/25/24,Kingdom Cash,retirement,asset,341
+7/25/24,KZCASH cash,cash,asset,304000
+7/25/24,KZCASH stocks,other,asset,373944
+7/25/24,L&G UK Retirement,retirement,asset,37042.6596
+7/25/24,LTAF-A3 2023,retirement,asset,62500
+7/25/24,LTAF-A3 2024,retirement,asset,88638
+7/25/24,LTAF-Betterment,retirement,asset,50000
+7/25/24,Marcus,other,asset,819
+7/25/24,Motorcycle,other,asset,10000
+7/25/24,Natwest Current,other,asset,8569.47
+7/25/24,Natwest E-ISA,other,asset,1594.44
+7/25/24,Natwest Savings,other,asset,0
+7/25/24,Natwest ZHK Holdings Limited,other,asset,0
+7/25/24,New Legacy Owl (Invisible),retirement,asset,50000
+7/25/24,NL Raven II (xAI),retirement,asset,50000
+7/25/24,NS&I Bond,other,asset,0
+7/25/24,Omega,other,asset,5000
+7/25/24,Pirate Studios,other,asset,25800
+7/25/24,Rolex,other,asset,20000
+7/25/24,Roth IRA u2466090,retirement,asset,170551
+7/25/24,Seven Willoughby,other,asset,5578
+7/25/24,Towers Watson UK Retirement,retirement,asset,34284.33
+7/25/24,Traditional IRA u2061893,retirement,asset,107306
+7/25/24,Transamerica Strike  401(k) Plan,retirement,asset,295479
+7/30/24,128Newton,other,property,1425000
+7/30/24,128NewtonMortgage,mortgage,liability,-997500
+7/30/24,52CityMills,property,asset,716800
+7/30/24,52CityMillsMortgage,mortgage,liability,-321280
+7/30/24,Blue Mound,retirement,asset,16500
+7/30/24,Chase,cash,asset,55021
+7/30/24,Citizens,cash,asset,36015
+7/30/24,Coinbase acct,crypto,asset,119609
+7/30/24,Concierge,retirement,asset,54017
+7/30/24,Crawford Cash,retirement,asset,920
+7/30/24,GTS Equity Fund,other,asset,0
+7/30/24,In Silico,other,asset,15000
+7/30/24,Kingdom Cash,retirement,asset,341
+7/30/24,KZCASH cash,cash,asset,307000
+7/30/24,KZCASH stocks,other,asset,369169
+7/30/24,L&G UK Retirement,retirement,asset,37042.6596
+7/30/24,LTAF-A3 2023,retirement,asset,62500
+7/30/24,LTAF-A3 2024,retirement,asset,88638
+7/30/24,LTAF-Betterment,retirement,asset,50000
+7/30/24,Marcus,other,asset,819
+7/30/24,Motorcycle,other,asset,10000
+7/30/24,Natwest Current,other,asset,8569.47
+7/30/24,Natwest E-ISA,other,asset,1594.44
+7/30/24,Natwest Savings,other,asset,0
+7/30/24,Natwest ZHK Holdings Limited,other,asset,0
+7/30/24,New Legacy Owl (Invisible),retirement,asset,50000
+7/30/24,NL Raven II (xAI),retirement,asset,50000
+7/30/24,NS&I Bond,other,asset,0
+7/30/24,Omega,other,asset,5000
+7/30/24,Pirate Studios,other,asset,25800
+7/30/24,Rolex,other,asset,20000
+7/30/24,Roth IRA u2466090,retirement,asset,167549
+7/30/24,Seven Willoughby,other,asset,5578
+7/30/24,Towers Watson UK Retirement,retirement,asset,34284.33
+7/30/24,Traditional IRA u2061893,retirement,asset,101628
+7/30/24,Transamerica Strike  401(k) Plan,retirement,asset,295479
+8/1/24,128Newton,other,property,1425000
+8/1/24,128NewtonMortgage,mortgage,liability,-997500
+8/1/24,52CityMills,property,asset,711200
+8/1/24,52CityMillsMortgage,mortgage,liability,-318770
+8/1/24,Blue Mound,retirement,asset,16500
+8/1/24,Chase,cash,asset,55021
+8/1/24,Citizens,cash,asset,36015
+8/1/24,Coinbase acct,crypto,asset,119609
+8/1/24,Concierge,retirement,asset,54017
+8/1/24,Crawford Cash,retirement,asset,920
+8/1/24,GTS Equity Fund,other,asset,0
+8/1/24,In Silico,other,asset,15000
+8/1/24,Kingdom Cash,retirement,asset,341
+8/1/24,KZCASH cash,cash,asset,248000
+8/1/24,KZCASH stocks,other,asset,428339
+8/1/24,L&G UK Retirement,retirement,asset,37042.6596
+8/1/24,LTAF-A3 2023,retirement,asset,62500
+8/1/24,LTAF-A3 2024,retirement,asset,88638
+8/1/24,LTAF-Betterment,retirement,asset,50000
+8/1/24,Marcus,other,asset,819
+8/1/24,Motorcycle,other,asset,10000
+8/1/24,Natwest Current,other,asset,8569.47
+8/1/24,Natwest E-ISA,other,asset,1594.44
+8/1/24,Natwest Savings,other,asset,0
+8/1/24,Natwest ZHK Holdings Limited,other,asset,0
+8/1/24,New Legacy Owl (Invisible),retirement,asset,50000
+8/1/24,NL Raven II (xAI),retirement,asset,50000
+8/1/24,NS&I Bond,other,asset,0
+8/1/24,Omega,other,asset,5000
+8/1/24,Pirate Studios,other,asset,25800
+8/1/24,Rolex,other,asset,20000
+8/1/24,Roth IRA u2466090,retirement,asset,171273
+8/1/24,Seven Willoughby,other,asset,5578
+8/1/24,Towers Watson UK Retirement,retirement,asset,34284.33
+8/1/24,Traditional IRA u2061893,retirement,asset,104077
+8/1/24,Transamerica Strike  401(k) Plan,retirement,asset,295479
+8/15/24,128Newton,other,property,1425000
+8/15/24,128NewtonMortgage,mortgage,liability,-997500
+8/15/24,52CityMills,property,asset,716800
+8/15/24,52CityMillsMortgage,mortgage,liability,-321280
+8/15/24,Blue Mound,retirement,asset,16500
+8/15/24,Chase,cash,asset,32923.48
+8/15/24,Citizens,cash,asset,29771.79
+8/15/24,Coinbase acct,crypto,asset,119609
+8/15/24,Concierge,retirement,asset,54017
+8/15/24,Crawford Cash,retirement,asset,920
+8/15/24,GTS Equity Fund,other,asset,0
+8/15/24,In Silico,other,asset,15000
+8/15/24,Kingdom Cash,retirement,asset,341
+8/15/24,KZCASH cash,cash,asset,185000
+8/15/24,KZCASH stocks,other,asset,502620
+8/15/24,L&G UK Retirement,retirement,asset,37042.6596
+8/15/24,LTAF-A3 2023,retirement,asset,62500
+8/15/24,LTAF-A3 2024,retirement,asset,88638
+8/15/24,LTAF-Betterment,retirement,asset,50000
+8/15/24,Marcus,other,asset,822
+8/15/24,Motorcycle,other,asset,10000
+8/15/24,Natwest Current,other,asset,8569.47
+8/15/24,Natwest E-ISA,other,asset,1594.44
+8/15/24,Natwest Savings,other,asset,0
+8/15/24,Natwest ZHK Holdings Limited,other,asset,0
+8/15/24,New Legacy Owl (Invisible),retirement,asset,50000
+8/15/24,NL Raven II (xAI),retirement,asset,50000
+8/15/24,NS&I Bond,other,asset,0
+8/15/24,Omega,other,asset,5000
+8/15/24,Pirate Studios,other,asset,25800
+8/15/24,Rolex,other,asset,20000
+8/15/24,Roth IRA u2466090,retirement,asset,179363
+8/15/24,Seven Willoughby,other,asset,5578
+8/15/24,Towers Watson UK Retirement,retirement,asset,34284.33
+8/15/24,Traditional IRA u2061893,retirement,asset,111713
+8/15/24,Transamerica Strike  401(k) Plan,retirement,asset,295479
+8/19/24,128Newton,other,property,1425000
+8/19/24,128NewtonMortgage,mortgage,liability,-997500
+8/19/24,52CityMills,property,asset,728000
+8/19/24,52CityMillsMortgage,mortgage,liability,-326300
+8/19/24,Blue Mound,retirement,asset,16500
+8/19/24,Chase,cash,asset,32923.48
+8/19/24,Citizens,cash,asset,29771.79
+8/19/24,Coinbase acct,crypto,asset,119609
+8/19/24,Concierge,retirement,asset,54017
+8/19/24,Crawford Cash,retirement,asset,920
+8/19/24,GTS Equity Fund,other,asset,0
+8/19/24,In Silico,other,asset,15000
+8/19/24,Kingdom Cash,retirement,asset,341
+8/19/24,KZCASH cash,cash,asset,185000
+8/19/24,KZCASH stocks,other,asset,512551
+8/19/24,L&G UK Retirement,retirement,asset,37042.6596
+8/19/24,LTAF-A3 2023,retirement,asset,62500
+8/19/24,LTAF-A3 2024,retirement,asset,88638
+8/19/24,LTAF-Betterment,retirement,asset,50000
+8/19/24,Marcus,other,asset,822
+8/19/24,Motorcycle,other,asset,10000
+8/19/24,Natwest Current,other,asset,8569.47
+8/19/24,Natwest E-ISA,other,asset,1594.44
+8/19/24,Natwest Savings,other,asset,0
+8/19/24,Natwest ZHK Holdings Limited,other,asset,0
+8/19/24,New Legacy Owl (Invisible),retirement,asset,50000
+8/19/24,NL Raven II (xAI),retirement,asset,50000
+8/19/24,NS&I Bond,other,asset,0
+8/19/24,Omega,other,asset,5000
+8/19/24,Pirate Studios,other,asset,25800
+8/19/24,Rolex,other,asset,20000
+8/19/24,Roth IRA u2466090,retirement,asset,182155
+8/19/24,Seven Willoughby,other,asset,5578
+8/19/24,Towers Watson UK Retirement,retirement,asset,34284.33
+8/19/24,Traditional IRA u2061893,retirement,asset,118980
+8/19/24,Transamerica Strike  401(k) Plan,retirement,asset,295479
+9/13/24,128Newton,other,property,1425000
+9/13/24,128NewtonMortgage,mortgage,liability,-996598
+9/13/24,52CityMills,property,asset,728000
+9/13/24,52CityMillsMortgage,mortgage,liability,-326300
+9/13/24,Blue Mound,retirement,asset,16500
+9/13/24,Chase,cash,asset,33999
+9/13/24,Citizens,cash,asset,29771.79
+9/13/24,Coinbase acct,crypto,asset,105000
+9/13/24,Concierge,retirement,asset,54017
+9/13/24,Crawford Cash,retirement,asset,920
+9/13/24,GTS Equity Fund,other,asset,0
+9/13/24,In Silico,other,asset,15000
+9/13/24,Kingdom Cash,retirement,asset,341
+9/13/24,KZCASH cash,cash,asset,137000
+9/13/24,KZCASH stocks,other,asset,565776
+9/13/24,L&G UK Retirement,retirement,asset,37042.6596
+9/13/24,LTAF-A3 2023,retirement,asset,79550
+9/13/24,LTAF-A3 2024,retirement,asset,88638
+9/13/24,LTAF-Betterment,retirement,asset,50000
+9/13/24,Marcus,other,asset,822
+9/13/24,Motorcycle,other,asset,10000
+9/13/24,Natwest Current,other,asset,8569.47
+9/13/24,Natwest E-ISA,other,asset,1594.44
+9/13/24,Natwest Savings,other,asset,0
+9/13/24,Natwest ZHK Holdings Limited,other,asset,0
+9/13/24,New Legacy Owl (Invisible),retirement,asset,50000
+9/13/24,NL Raven II (xAI),retirement,asset,50000
+9/13/24,NS&I Bond,other,asset,0
+9/13/24,Omega,other,asset,5000
+9/13/24,Pirate Studios,other,asset,25800
+9/13/24,Rolex,other,asset,20000
+9/13/24,Roth IRA u2466090,retirement,asset,183984
+9/13/24,Seven Willoughby,other,asset,5578
+9/13/24,Towers Watson UK Retirement,retirement,asset,34284.33
+9/13/24,Traditional IRA u2061893,retirement,asset,115849
+9/13/24,Transamerica Strike  401(k) Plan,retirement,asset,295479
+11/6/24,128Newton,other,property,1425000
+11/6/24,128NewtonMortgage,mortgage,liability,-994780
+11/6/24,52CityMills,property,asset,722400
+11/6/24,52CityMillsMortgage,mortgage,liability,-323790
+11/6/24,Blue Mound,retirement,asset,16500
+11/6/24,Chase,cash,asset,67569
+11/6/24,Citizens,cash,asset,29771.79
+11/6/24,Coinbase acct,crypto,asset,130000
+11/6/24,Concierge,retirement,asset,54017
+11/6/24,Crawford Cash,retirement,asset,920
+11/6/24,GTS Equity Fund,other,asset,0
+11/6/24,In Silico,other,asset,15000
+11/6/24,Kingdom Cash,retirement,asset,341
+11/6/24,KZCASH cash,cash,asset,313000
+11/6/24,KZCASH stocks,other,asset,378219
+11/6/24,L&G UK Retirement,retirement,asset,38598.09
+11/6/24,LTAF-A3 2023,retirement,asset,79550
+11/6/24,LTAF-A3 2024,retirement,asset,88638
+11/6/24,LTAF-Betterment,retirement,asset,50000
+11/6/24,Marcus,other,asset,822
+11/6/24,Motorcycle,other,asset,10000
+11/6/24,Natwest Current,other,asset,8569.47
+11/6/24,Natwest E-ISA,other,asset,1594.44
+11/6/24,Natwest Savings,other,asset,0
+11/6/24,Natwest ZHK Holdings Limited,other,asset,0
+11/6/24,New Legacy Owl (Invisible),retirement,asset,50000
+11/6/24,NL Raven II (xAI),retirement,asset,50000
+11/6/24,NS&I Bond,other,asset,0
+11/6/24,Omega,other,asset,5000
+11/6/24,Pirate Studios,other,asset,25800
+11/6/24,Rolex,other,asset,20000
+11/6/24,Roth IRA u2466090,retirement,asset,206216
+11/6/24,Seven Willoughby,other,asset,5578
+11/6/24,Towers Watson UK Retirement,retirement,asset,35901.99
+11/6/24,Traditional IRA u2061893,retirement,asset,118250
+11/6/24,Transamerica Strike  401(k) Plan,retirement,asset,316893
+11/11/24,128Newton,other,property,1425000
+11/11/24,128NewtonMortgage,mortgage,liability,-994780
+11/11/24,52CityMills,property,asset,722400
+11/11/24,52CityMillsMortgage,mortgage,liability,-323790
+11/11/24,Blue Mound,retirement,asset,16500
+11/11/24,Chase,cash,asset,67569
+11/11/24,Citizens,cash,asset,29771.79
+11/11/24,Coinbase acct,crypto,asset,147000
+11/11/24,Concierge,retirement,asset,54017
+11/11/24,Crawford Cash,retirement,asset,920
+11/11/24,GTS Equity Fund,other,asset,0
+11/11/24,In Silico,other,asset,15000
+11/11/24,Kingdom Cash,retirement,asset,341
+11/11/24,KZCASH cash,cash,asset,302000
+11/11/24,KZCASH stocks,other,asset,400391
+11/11/24,L&G UK Retirement,retirement,asset,38598.09
+11/11/24,LTAF-A3 2023,retirement,asset,79550
+11/11/24,LTAF-A3 2024,retirement,asset,88638
+11/11/24,LTAF-Betterment,retirement,asset,50000
+11/11/24,Marcus,other,asset,822
+11/11/24,Motorcycle,other,asset,10000
+11/11/24,Natwest Current,other,asset,8569.47
+11/11/24,Natwest E-ISA,other,asset,1594.44
+11/11/24,Natwest Savings,other,asset,0
+11/11/24,Natwest ZHK Holdings Limited,other,asset,0
+11/11/24,New Legacy Owl (Invisible),retirement,asset,50000
+11/11/24,NL Raven II (xAI),retirement,asset,50000
+11/11/24,NS&I Bond,other,asset,0
+11/11/24,Omega,other,asset,5000
+11/11/24,Pirate Studios,other,asset,25800
+11/11/24,Rolex,other,asset,20000
+11/11/24,Roth IRA u2466090,retirement,asset,233426
+11/11/24,Seven Willoughby,other,asset,5578
+11/11/24,Towers Watson UK Retirement,retirement,asset,35901.99
+11/11/24,Traditional IRA u2061893,retirement,asset,117534
+11/11/24,Transamerica Strike  401(k) Plan,retirement,asset,316893
+11/26/24,128Newton,other,property,1425000
+11/26/24,128NewtonMortgage,mortgage,liability,-994780
+11/26/24,52CityMills,property,asset,700000
+11/26/24,52CityMillsMortgage,mortgage,liability,-313750
+11/26/24,Blue Mound,retirement,asset,16500
+11/26/24,Chase,cash,asset,42713
+11/26/24,Citizens,cash,asset,29771.79
+11/26/24,Coinbase acct,crypto,asset,158950
+11/26/24,Concierge,retirement,asset,54017
+11/26/24,Crawford Cash,retirement,asset,920
+11/26/24,GTS Equity Fund,other,asset,0
+11/26/24,In Silico,other,asset,5000
+11/26/24,Kingdom Cash,retirement,asset,341
+11/26/24,KZCASH cash,cash,asset,224000
+11/26/24,KZCASH stocks,other,asset,466083
+11/26/24,L&G UK Retirement,retirement,asset,38598.09
+11/26/24,LTAF-A3 2023,retirement,asset,79550
+11/26/24,LTAF-A3 2024,retirement,asset,88638
+11/26/24,LTAF-Betterment,retirement,asset,50000
+11/26/24,Marcus,other,asset,822
+11/26/24,Motorcycle,other,asset,10000
+11/26/24,Natwest Current,other,asset,8569.47
+11/26/24,Natwest E-ISA,other,asset,1594.44
+11/26/24,Natwest Savings,other,asset,0
+11/26/24,Natwest ZHK Holdings Limited,other,asset,0
+11/26/24,New Legacy Owl (Invisible),retirement,asset,50000
+11/26/24,NL Raven II (xAI),retirement,asset,50000
+11/26/24,NL Raven II (xAI) Personal,other,asset,10706
+11/26/24,NS&I Bond,other,asset,0
+11/26/24,Omega,other,asset,5000
+11/26/24,Pirate Studios,other,asset,25800
+11/26/24,Rolex,other,asset,20000
+11/26/24,Roth IRA u2466090,retirement,asset,219034
+11/26/24,Seven Willoughby,other,asset,5578
+11/26/24,Towers Watson UK Retirement,retirement,asset,35901.99
+11/26/24,Traditional IRA u2061893,retirement,asset,102928
+11/26/24,Transamerica Strike  401(k) Plan,retirement,asset,316893
+12/16/24,128Newton,other,property,1425000
+12/16/24,128NewtonMortgage,mortgage,liability,-994780
+12/16/24,52CityMills,property,asset,710640
+12/16/24,52CityMillsMortgage,mortgage,liability,-318519
+12/16/24,Blue Mound,retirement,asset,16500
+12/16/24,Chase,cash,asset,44343
+12/16/24,Citizens,cash,asset,57260
+12/16/24,Coinbase acct,crypto,asset,184735
+12/16/24,Concierge,retirement,asset,54017
+12/16/24,Crawford Cash,retirement,asset,920
+12/16/24,GTS Equity Fund,other,asset,0
+12/16/24,In Silico,other,asset,5000
+12/16/24,Kingdom Cash,retirement,asset,341
+12/16/24,KZCASH cash,cash,asset,197000
+12/16/24,KZCASH stocks,other,asset,531535
+12/16/24,L&G UK Retirement,retirement,asset,38598.09
+12/16/24,LTAF-A3 2023,retirement,asset,79550
+12/16/24,LTAF-A3 2024,retirement,asset,88638
+12/16/24,LTAF-Betterment,retirement,asset,50000
+12/16/24,Marcus,other,asset,833
+12/16/24,Motorcycle,other,asset,10000
+12/16/24,Natwest Current,other,asset,17853.6
+12/16/24,Natwest E-ISA,other,asset,1594.44
+12/16/24,Natwest Savings,other,asset,0
+12/16/24,Natwest ZHK Holdings Limited,other,asset,0
+12/16/24,New Legacy Owl (Invisible),retirement,asset,50000
+12/16/24,NL Raven II (xAI),retirement,asset,50000
+12/16/24,NL Raven II (xAI) Personal,other,asset,10706
+12/16/24,NS&I Bond,other,asset,0
+12/16/24,Omega,other,asset,5000
+12/16/24,Pirate Studios,other,asset,25800
+12/16/24,Rolex,other,asset,20000
+12/16/24,Roth IRA u2466090,retirement,asset,274138
+12/16/24,Seven Willoughby,other,asset,5578
+12/16/24,Towers Watson UK Retirement,retirement,asset,34284.33
+12/16/24,Traditional IRA u2061893,retirement,asset,111002
+12/16/24,Transamerica Strike  401(k) Plan,retirement,asset,335271
+3/24/25,128Newton,other,property,1425000
+3/24/25,128NewtonMortgage,mortgage,liability,-991084
+3/24/25,52CityMills,property,asset,722400
+3/24/25,52CityMillsMortgage,mortgage,liability,-323790
+3/24/25,Blue Mound,retirement,asset,16500
+3/24/25,Chase,cash,asset,21260
+3/24/25,Citizens,cash,asset,251200
+3/24/25,Coinbase acct,crypto,asset,162289
+3/24/25,Concierge,retirement,asset,54017
+3/24/25,Crawford Cash,retirement,asset,61927
+3/24/25,GTS Equity Fund,other,asset,0
+3/24/25,In Silico,other,asset,5000
+3/24/25,Kingdom Cash,retirement,asset,0
+3/24/25,KZCASH cash,cash,asset,72400
+3/24/25,KZCASH stocks,other,asset,580858
+3/24/25,L&G UK Retirement,retirement,asset,38598.09
+3/24/25,LTAF-A3 2023,retirement,asset,0
+3/24/25,LTAF-A3 2024,retirement,asset,0
+3/24/25,LTAF-A3 2025,retirement,asset,5000
+3/24/25,LTAF-Betterment,retirement,asset,99505
+3/24/25,Marcus,other,asset,841
+3/24/25,Motorcycle,other,asset,0
+3/24/25,Natwest Current,other,asset,19370.64
+3/24/25,Natwest E-ISA,other,asset,1613.2353
+3/24/25,Natwest Savings,other,asset,0
+3/24/25,Natwest ZHK Holdings Limited,other,asset,0
+3/24/25,New Legacy Owl (Invisible),retirement,asset,50000
+3/24/25,NL Raven II (xAI),retirement,asset,50000
+3/24/25,NL Raven II (xAI) Personal,other,asset,10706
+3/24/25,NS&I Bond,other,asset,0
+3/24/25,Omega,other,asset,5000
+3/24/25,Pirate Studios,other,asset,25800
+3/24/25,Rolex,other,asset,20000
+3/24/25,Roth IRA u2466090,retirement,asset,185436
+3/24/25,Seven Willoughby,other,asset,5577
+3/24/25,Towers Watson UK Retirement,retirement,asset,34284.33
+3/24/25,Traditional IRA u2061893,retirement,asset,102754
+3/24/25,Transamerica Strike  401(k) Plan,retirement,asset,314967
+4/22/25,128Newton,other,property,1425000
+4/22/25,128NewtonMortgage,mortgage,liability,-991084
+4/22/25,52CityMills,property,asset,750400
+4/22/25,52CityMillsMortgage,mortgage,liability,-336340
+4/22/25,Blue Mound,retirement,asset,16500
+4/22/25,Chase,cash,asset,12522
+4/22/25,Citizens,cash,asset,207008
+4/22/25,Coinbase acct,crypto,asset,162289
+4/22/25,Concierge,retirement,asset,54017
+4/22/25,Crawford Cash,retirement,asset,61927
+4/22/25,GTS Equity Fund,other,asset,0
+4/22/25,In Silico,other,asset,5000
+4/22/25,Kingdom Cash,retirement,asset,0
+4/22/25,KZCASH cash,cash,asset,24100
+4/22/25,KZCASH stocks,other,asset,588613
+4/22/25,L&G UK Retirement,retirement,asset,38598.09
+4/22/25,LTAF-A3 2023,retirement,asset,0
+4/22/25,LTAF-A3 2024,retirement,asset,0
+4/22/25,LTAF-A3 2025,retirement,asset,5000
+4/22/25,LTAF-Betterment,retirement,asset,99505
+4/22/25,Marcus,other,asset,841
+4/22/25,Motorcycle,other,asset,18250
+4/22/25,Natwest Current,other,asset,20121.44
+4/22/25,Natwest E-ISA,other,asset,1675.7638
+4/22/25,Natwest Savings,other,asset,0
+4/22/25,Natwest ZHK Holdings Limited,other,asset,0
+4/22/25,New Legacy Owl (Invisible),retirement,asset,50000
+4/22/25,NL Raven II (xAI),retirement,asset,50000
+4/22/25,NL Raven II (xAI) Personal,other,asset,10706
+4/22/25,NS&I Bond,other,asset,0
+4/22/25,Omega,other,asset,5000
+4/22/25,Pirate Studios,other,asset,0
+4/22/25,Rolex,other,asset,20000
+4/22/25,Roth IRA u2466090,retirement,asset,168161
+4/22/25,Seven Willoughby,other,asset,5577
+4/22/25,Towers Watson UK Retirement,retirement,asset,34284.33
+4/22/25,Traditional IRA u2061893,retirement,asset,85949
+4/22/25,Transamerica Strike  401(k) Plan,retirement,asset,290355
+4/23/25,128Newton,other,property,1425000
+4/23/25,128NewtonMortgage,mortgage,liability,-991084
+4/23/25,52CityMills,property,asset,744800
+4/23/25,52CityMillsMortgage,mortgage,liability,-333830
+4/23/25,Blue Mound,retirement,asset,16500
+4/23/25,Chase,cash,asset,12522
+4/23/25,Citizens,cash,asset,207008
+4/23/25,Coinbase acct,crypto,asset,168477
+4/23/25,Concierge,retirement,asset,54017
+4/23/25,Crawford Cash,retirement,asset,61927
+4/23/25,GTS Equity Fund,other,asset,0
+4/23/25,In Silico,other,asset,5000
+4/23/25,Kingdom Cash,retirement,asset,0
+4/23/25,KZCASH cash,cash,asset,24100
+4/23/25,KZCASH stocks,other,asset,616917
+4/23/25,L&G UK Retirement,retirement,asset,38598.09
+4/23/25,LTAF-A3 2023,retirement,asset,0
+4/23/25,LTAF-A3 2024,retirement,asset,0
+4/23/25,LTAF-A3 2025,retirement,asset,5000
+4/23/25,LTAF-Betterment,retirement,asset,99505
+4/23/25,Marcus,other,asset,841
+4/23/25,Motorcycle,other,asset,18250
+4/23/25,Natwest Current,other,asset,19971.28
+4/23/25,Natwest E-ISA,other,asset,1663.2581
+4/23/25,Natwest Savings,other,asset,0
+4/23/25,Natwest ZHK Holdings Limited,other,asset,0
+4/23/25,New Legacy Owl (Invisible),retirement,asset,50000
+4/23/25,NL Raven II (xAI),retirement,asset,50000
+4/23/25,NL Raven II (xAI) Personal,other,asset,10706
+4/23/25,NS&I Bond,other,asset,0
+4/23/25,Omega,other,asset,5000
+4/23/25,Pirate Studios,other,asset,0
+4/23/25,Rolex,other,asset,20000
+4/23/25,Roth IRA u2466090,retirement,asset,176114
+4/23/25,Seven Willoughby,other,asset,5577
+4/23/25,Towers Watson UK Retirement,retirement,asset,34284.33
+4/23/25,Traditional IRA u2061893,retirement,asset,91569
+4/23/25,Transamerica Strike  401(k) Plan,retirement,asset,290355
+4/25/25,128Newton,other,property,1425000
+4/25/25,128NewtonMortgage,mortgage,liability,-991084
+4/25/25,52CityMills,property,asset,744800
+4/25/25,52CityMillsMortgage,mortgage,liability,-333830
+4/25/25,Blue Mound,retirement,asset,16500
+4/25/25,Chase,cash,asset,12522
+4/25/25,Citizens,cash,asset,207008
+4/25/25,Coinbase acct,crypto,asset,172000
+4/25/25,Concierge,retirement,asset,54017
+4/25/25,Crawford Cash,retirement,asset,61927
+4/25/25,GTS Equity Fund,other,asset,0
+4/25/25,In Silico,other,asset,5000
+4/25/25,Kingdom Cash,retirement,asset,0
+4/25/25,KZCASH cash,cash,asset,24100
+4/25/25,KZCASH stocks,other,asset,634074
+4/25/25,L&G UK Retirement,retirement,asset,38598.09
+4/25/25,LTAF-A3 2023,retirement,asset,0
+4/25/25,LTAF-A3 2024,retirement,asset,0
+4/25/25,LTAF-A3 2025,retirement,asset,5000
+4/25/25,LTAF-Betterment,retirement,asset,99505
+4/25/25,Marcus,other,asset,841
+4/25/25,Motorcycle,other,asset,18250
+4/25/25,Natwest Current,other,asset,20372.94
+4/25/25,Natwest E-ISA,other,asset,1663.2581
+4/25/25,Natwest Savings,other,asset,0
+4/25/25,Natwest ZHK Holdings Limited,other,asset,0
+4/25/25,New Legacy Owl (Invisible),retirement,asset,50000
+4/25/25,NL Raven II (xAI),retirement,asset,50000
+4/25/25,NL Raven II (xAI) Personal,other,asset,10706
+4/25/25,NS&I Bond,other,asset,0
+4/25/25,Omega,other,asset,5000
+4/25/25,Pirate Studios,other,asset,0
+4/25/25,Rolex,other,asset,20000
+4/25/25,Roth IRA u2466090,retirement,asset,184933
+4/25/25,Seven Willoughby,other,asset,5577
+4/25/25,Towers Watson UK Retirement,retirement,asset,34284.33
+4/25/25,Traditional IRA u2061893,retirement,asset,94435
+4/25/25,Transamerica Strike  401(k) Plan,retirement,asset,309358
+5/4/25,128Newton,other,property,1425000
+5/4/25,128NewtonMortgage,mortgage,liability,-991084
+5/4/25,52CityMills,property,asset,744800
+5/4/25,52CityMillsMortgage,mortgage,liability,-333830
+5/4/25,Blue Mound,retirement,asset,16500
+5/4/25,Chase,cash,asset,12522
+5/4/25,Citizens,cash,asset,207008
+5/4/25,Coinbase acct,crypto,asset,172000
+5/4/25,Concierge,retirement,asset,54017
+5/4/25,Crawford Cash,retirement,asset,61927
+5/4/25,GTS Equity Fund,other,asset,0
+5/4/25,In Silico,other,asset,5000
+5/4/25,Kingdom Cash,retirement,asset,0
+5/4/25,KZCASH cash,cash,asset,-17700
+5/4/25,KZCASH stocks,other,asset,709769
+5/4/25,L&G UK Retirement,retirement,asset,38598.09
+5/4/25,LTAF-A3 2023,retirement,asset,0
+5/4/25,LTAF-A3 2024,retirement,asset,0
+5/4/25,LTAF-A3 2025,retirement,asset,5000
+5/4/25,LTAF-Betterment,retirement,asset,99505
+5/4/25,Marcus,other,asset,841
+5/4/25,Motorcycle,other,asset,18250
+5/4/25,Natwest Current,other,asset,20372.94
+5/4/25,Natwest E-ISA,other,asset,1663.2581
+5/4/25,Natwest Savings,other,asset,0
+5/4/25,Natwest ZHK Holdings Limited,other,asset,0
+5/4/25,New Legacy Owl (Invisible),retirement,asset,50000
+5/4/25,NL Raven II (xAI),retirement,asset,50000
+5/4/25,NL Raven II (xAI) Personal,other,asset,10706
+5/4/25,NS&I Bond,other,asset,0
+5/4/25,Omega,other,asset,5000
+5/4/25,Pirate Studios,other,asset,0
+5/4/25,Rolex,other,asset,20000
+5/4/25,Roth IRA u2466090,retirement,asset,184933
+5/4/25,Seven Willoughby,other,asset,5577
+5/4/25,Towers Watson UK Retirement,retirement,asset,34284.33
+5/4/25,Traditional IRA u2061893,retirement,asset,101796
+5/4/25,Transamerica Strike  401(k) Plan,retirement,asset,309358
+5/13/25,128Newton,other,property,1425000
+5/13/25,128NewtonMortgage,mortgage,liability,-991084
+5/13/25,52CityMills,property,asset,739200
+5/13/25,52CityMillsMortgage,mortgage,liability,-331320
+5/13/25,Blue Mound,retirement,asset,10113
+5/13/25,Chase,cash,asset,6260
+5/13/25,Citizens,cash,asset,207266
+5/13/25,Coinbase acct,crypto,asset,191563
+5/13/25,Concierge,retirement,asset,54017
+5/13/25,Crawford Cash,retirement,asset,58777
+5/13/25,GTS Equity Fund,other,asset,0
+5/13/25,In Silico,other,asset,5000
+5/13/25,Kingdom Cash,retirement,asset,0
+5/13/25,KZCASH cash,cash,asset,-86400
+5/13/25,KZCASH stocks,other,asset,819774
+5/13/25,L&G UK Retirement,retirement,asset,38598.09
+5/13/25,LTAF-A3 2023,retirement,asset,0
+5/13/25,LTAF-A3 2024,retirement,asset,0
+5/13/25,LTAF-A3 2025,retirement,asset,17000
+5/13/25,LTAF-Betterment,retirement,asset,99505
+5/13/25,Marcus,other,asset,841
+5/13/25,Motorcycle,other,asset,18250
+5/13/25,Natwest Current,other,asset,22331.76
+5/13/25,Natwest E-ISA,other,asset,1650.7524
+5/13/25,Natwest Savings,other,asset,0
+5/13/25,Natwest ZHK Holdings Limited,other,asset,0
+5/13/25,New Legacy Owl (Invisible),retirement,asset,50000
+5/13/25,NL Raven II (xAI),retirement,asset,50000
+5/13/25,NL Raven II (xAI) Personal,other,asset,10706
+5/13/25,NS&I Bond,other,asset,0
+5/13/25,Omega,other,asset,5000
+5/13/25,Pirate Studios,other,asset,0
+5/13/25,Rolex,other,asset,20000
+5/13/25,Roth IRA u2466090,retirement,asset,205374
+5/13/25,Seven Willoughby,other,asset,5577
+5/13/25,Towers Watson UK Retirement,retirement,asset,34284.33
+5/13/25,Traditional IRA u2061893,retirement,asset,108115
+5/13/25,Transamerica Strike  401(k) Plan,retirement,asset,332256
+5/13/25,Watershed Technologies,retirement,asset,40000
+5/14/25,128Newton,other,property,1425000
+5/14/25,128NewtonMortgage,mortgage,liability,-991084
+5/14/25,52CityMills,property,asset,744800
+5/14/25,52CityMillsMortgage,mortgage,liability,-333830
+5/14/25,Blue Mound,retirement,asset,10113
+5/14/25,Chase,cash,asset,6260
+5/14/25,Citizens,cash,asset,207266
+5/14/25,Coinbase acct,crypto,asset,191563
+5/14/25,Concierge,retirement,asset,54017
+5/14/25,Crawford Cash,retirement,asset,58777
+5/14/25,GTS Equity Fund,other,asset,0
+5/14/25,In Silico,other,asset,5000
+5/14/25,Kingdom Cash,retirement,asset,0
+5/14/25,KZCASH cash,cash,asset,-86400
+5/14/25,KZCASH stocks,other,asset,841571
+5/14/25,L&G UK Retirement,retirement,asset,38598.09
+5/14/25,LTAF-A3 2023,retirement,asset,0
+5/14/25,LTAF-A3 2024,retirement,asset,0
+5/14/25,LTAF-A3 2025,retirement,asset,17000
+5/14/25,LTAF-Betterment,retirement,asset,99505
+5/14/25,Marcus,other,asset,841
+5/14/25,Motorcycle,other,asset,18250
+5/14/25,Natwest Current,other,asset,22500.94
+5/14/25,Natwest E-ISA,other,asset,1663.2581
+5/14/25,Natwest Savings,other,asset,0
+5/14/25,Natwest ZHK Holdings Limited,other,asset,0
+5/14/25,New Legacy Owl (Invisible),retirement,asset,50000
+5/14/25,NL Raven II (xAI),retirement,asset,50000
+5/14/25,NL Raven II (xAI) Personal,other,asset,10706
+5/14/25,NS&I Bond,other,asset,0
+5/14/25,Omega,other,asset,5000
+5/14/25,Pirate Studios,other,asset,0
+5/14/25,Rolex,other,asset,20000
+5/14/25,Roth IRA u2466090,retirement,asset,212793
+5/14/25,Seven Willoughby,other,asset,5577
+5/14/25,Towers Watson UK Retirement,retirement,asset,34284.33
+5/14/25,Traditional IRA u2061893,retirement,asset,106938
+5/14/25,Transamerica Strike  401(k) Plan,retirement,asset,332256
+5/14/25,Watershed Technologies,retirement,asset,40000
+5/27/25,128Newton,other,property,1425000
+5/27/25,128NewtonMortgage,mortgage,liability,-991084
+5/27/25,52CityMills,property,asset,756000
+5/27/25,52CityMillsMortgage,mortgage,liability,-338850
+5/27/25,Blue Mound,retirement,asset,10113
+5/27/25,Chase,cash,asset,16381
+5/27/25,Citizens,cash,asset,207907
+5/27/25,Coinbase acct,crypto,asset,201740
+5/27/25,Concierge,retirement,asset,54017
+5/27/25,Crawford Cash,retirement,asset,58777
+5/27/25,GTS Equity Fund,other,asset,0
+5/27/25,In Silico,other,asset,5000
+5/27/25,Kingdom Cash,retirement,asset,0
+5/27/25,KZCASH cash,cash,asset,-126000
+5/27/25,KZCASH stocks,other,asset,891291
+5/27/25,L&G UK Retirement,retirement,asset,38598.09
+5/27/25,LTAF-A3 2023,retirement,asset,0
+5/27/25,LTAF-A3 2024,retirement,asset,0
+5/27/25,LTAF-A3 2025,retirement,asset,17000
+5/27/25,LTAF-Betterment,retirement,asset,99505
+5/27/25,Marcus,other,asset,841
+5/27/25,Motorcycle,other,asset,18250
+5/27/25,Natwest Current,other,asset,22974.3
+5/27/25,Natwest E-ISA,other,asset,1692.9
+5/27/25,Natwest Savings,other,asset,0
+5/27/25,Natwest ZHK Holdings Limited,other,asset,0
+5/27/25,New Legacy Owl (Invisible),retirement,asset,50000
+5/27/25,NL Raven II (xAI),retirement,asset,50000
+5/27/25,NL Raven II (xAI) Personal,other,asset,10706
+5/27/25,NS&I Bond,other,asset,0
+5/27/25,Omega,other,asset,5000
+5/27/25,Pirate Studios,other,asset,0
+5/27/25,Rolex,other,asset,20000
+5/27/25,Roth IRA u2466090,retirement,asset,213438
+5/27/25,Seven Willoughby,other,asset,5577
+5/27/25,Towers Watson UK Retirement,retirement,asset,34284.33
+5/27/25,Traditional IRA u2061893,retirement,asset,104135
+5/27/25,Transamerica Strike  401(k) Plan,retirement,asset,333020
+5/27/25,Watershed Technologies,retirement,asset,40000
+5/29/25,128Newton,other,property,1425000
+5/29/25,128NewtonMortgage,mortgage,liability,-991084
+5/29/25,52CityMills,property,asset,756000
+5/29/25,52CityMillsMortgage,mortgage,liability,-338850
+5/29/25,Blue Mound,retirement,asset,10113
+5/29/25,Chase,cash,asset,16381
+5/29/25,Citizens,cash,asset,207907
+5/29/25,Coinbase acct,crypto,asset,201740
+5/29/25,Concierge,retirement,asset,54017
+5/29/25,Crawford Cash,retirement,asset,58777
+5/29/25,GTS Equity Fund,other,asset,0
+5/29/25,In Silico,other,asset,5000
+5/29/25,Kingdom Cash,retirement,asset,0
+5/29/25,KZCASH cash,cash,asset,-167000
+5/29/25,KZCASH stocks,other,asset,925256
+5/29/25,L&G UK Retirement,retirement,asset,38598.09
+5/29/25,LTAF-A3 2023,retirement,asset,0
+5/29/25,LTAF-A3 2024,retirement,asset,0
+5/29/25,LTAF-A3 2025,retirement,asset,17000
+5/29/25,LTAF-Betterment,retirement,asset,99505
+5/29/25,Marcus,other,asset,841
+5/29/25,Motorcycle,other,asset,18250
+5/29/25,Natwest Current,other,asset,22974.3
+5/29/25,Natwest E-ISA,other,asset,1692.9
+5/29/25,Natwest Savings,other,asset,0
+5/29/25,Natwest ZHK Holdings Limited,other,asset,0
+5/29/25,New Legacy Owl (Invisible),retirement,asset,50000
+5/29/25,NL Raven II (xAI),retirement,asset,50000
+5/29/25,NL Raven II (xAI) Personal,other,asset,10706
+5/29/25,NS&I Bond,other,asset,0
+5/29/25,Omega,other,asset,5000
+5/29/25,Pirate Studios,other,asset,0
+5/29/25,Rolex,other,asset,20000
+5/29/25,Roth IRA u2466090,retirement,asset,214583
+5/29/25,Seven Willoughby,other,asset,5577
+5/29/25,Towers Watson UK Retirement,retirement,asset,34284.33
+5/29/25,Traditional IRA u2061893,retirement,asset,106281
+5/29/25,Transamerica Strike  401(k) Plan,retirement,asset,333020
+5/29/25,Watershed Technologies,retirement,asset,40000
+6/9/25,128Newton,other,property,1425000
+6/9/25,128NewtonMortgage,mortgage,liability,-991084
+6/9/25,52CityMills,property,asset,761600
+6/9/25,52CityMillsMortgage,mortgage,liability,-341360
+6/9/25,Blue Mound,retirement,asset,10113
+6/9/25,Chase,cash,asset,17767
+6/9/25,Churpse,other,asset,100000
+6/9/25,Citizens,cash,asset,205723
+6/9/25,Coinbase acct,crypto,asset,197107
+6/9/25,Concierge,retirement,asset,20000
+6/9/25,Crawford Cash,retirement,asset,67082
+6/9/25,GTS Equity Fund,other,asset,0
+6/9/25,In Silico,other,asset,0
+6/9/25,Kingdom Cash,retirement,asset,0
+6/9/25,KZCASH cash,cash,asset,-267000
+6/9/25,KZCASH stocks,other,asset,927946
+6/9/25,L&G UK Retirement,retirement,asset,38598.09
+6/9/25,LTAF-A3 2023,retirement,asset,0
+6/9/25,LTAF-A3 2024,retirement,asset,0
+6/9/25,LTAF-A3 2025,retirement,asset,17000
+6/9/25,LTAF-Betterment,retirement,asset,99505
+6/9/25,Marcus,other,asset,841
+6/9/25,Motorcycle,other,asset,18250
+6/9/25,Natwest Current,other,asset,23672.16
+6/9/25,Natwest E-ISA,other,asset,1705.44
+6/9/25,Natwest Savings,other,asset,0
+6/9/25,Natwest ZHK Holdings Limited,other,asset,0
+6/9/25,New Legacy Owl (Invisible),retirement,asset,50000
+6/9/25,NL Raven II (xAI),retirement,asset,50000
+6/9/25,NL Raven II (xAI) Personal,other,asset,10706
+6/9/25,NS&I Bond,other,asset,0
+6/9/25,Omega,other,asset,5000
+6/9/25,Pirate Studios,other,asset,0
+6/9/25,Rolex,other,asset,20000
+6/9/25,Roth IRA u2466090,retirement,asset,200657
+6/9/25,Seven Willoughby,other,asset,5577
+6/9/25,Towers Watson UK Retirement,retirement,asset,34284.33
+6/9/25,Traditional IRA u2061893,retirement,asset,106877
+6/9/25,Transamerica Strike  401(k) Plan,retirement,asset,346404
+6/9/25,Watershed Technologies,retirement,asset,40000
+6/24/25,128Newton,other,property,1425000
+6/24/25,128NewtonMortgage,mortgage,liability,-991084
+6/24/25,52CityMills,property,asset,761600
+6/24/25,52CityMillsMortgage,mortgage,liability,-341360
+6/24/25,Blue Mound,retirement,asset,10113
+6/24/25,Chase,cash,asset,17603
+6/24/25,Churpse,other,asset,100000
+6/24/25,Citizens,cash,asset,208786
+6/24/25,Coinbase acct,crypto,asset,197107
+6/24/25,Concierge,retirement,asset,20000
+6/24/25,Crawford Cash,retirement,asset,98079
+6/24/25,GTS Equity Fund,other,asset,0
+6/24/25,In Silico,other,asset,0
+6/24/25,Kingdom Cash,retirement,asset,0
+6/24/25,KZCASH cash,cash,asset,-267000
+6/24/25,KZCASH stocks,other,asset,961503
+6/24/25,L&G UK Retirement,retirement,asset,38598.09
+6/24/25,LTAF-A3 2023,retirement,asset,0
+6/24/25,LTAF-A3 2024,retirement,asset,0
+6/24/25,LTAF-A3 2025,retirement,asset,33207
+6/24/25,LTAF-Betterment,retirement,asset,99505
+6/24/25,Marcus,other,asset,841
+6/24/25,Motorcycle,other,asset,18250
+6/24/25,Natwest Current,other,asset,23415.12
+6/24/25,Natwest E-ISA,other,asset,1705.44
+6/24/25,Natwest Savings,other,asset,0
+6/24/25,Natwest ZHK Holdings Limited,other,asset,0
+6/24/25,New Legacy Owl (Invisible),retirement,asset,50000
+6/24/25,NL Raven II (xAI),retirement,asset,126550
+6/24/25,NL Raven II (xAI) Personal,other,asset,16562
+6/24/25,NS&I Bond,other,asset,0
+6/24/25,Omega,other,asset,5000
+6/24/25,Pirate Studios,other,asset,0
+6/24/25,Rolex,other,asset,20000
+6/24/25,Roth IRA u2466090,retirement,asset,215290
+6/24/25,Seven Willoughby,other,asset,5577
+6/24/25,Towers Watson UK Retirement,retirement,asset,34284.33
+6/24/25,Traditional IRA u2061893,retirement,asset,107827
+6/24/25,Transamerica Strike  401(k) Plan,retirement,asset,348175
+6/24/25,Watershed Technologies,retirement,asset,40000
+7/14/25,128Newton,other,property,1425000
+7/14/25,128NewtonMortgage,mortgage,liability,-991084
+7/14/25,52CityMills,property,asset,750400
+7/14/25,52CityMillsMortgage,mortgage,liability,-336340
+7/14/25,Blue Mound,retirement,asset,10113
+7/14/25,Chase,cash,asset,11088
+7/14/25,Churpse,other,asset,100000
+7/14/25,Citizens,cash,asset,207355
+7/14/25,Coinbase acct,crypto,asset,220000
+7/14/25,Concierge,retirement,asset,20000
+7/14/25,Crawford Cash,retirement,asset,98079
+7/14/25,GTS Equity Fund,other,asset,0
+7/14/25,In Silico,other,asset,0
+7/14/25,Kingdom Cash,retirement,asset,0
+7/14/25,KZCASH cash,cash,asset,-268295
+7/14/25,KZCASH stocks,other,asset,1003241
+7/14/25,L&G UK Retirement,retirement,asset,38598.09
+7/14/25,LTAF-A3 2023,retirement,asset,0
+7/14/25,LTAF-A3 2024,retirement,asset,0
+7/14/25,LTAF-A3 2025,retirement,asset,33207
+7/14/25,LTAF-Betterment,retirement,asset,99505
+7/14/25,Marcus,other,asset,841
+7/14/25,Motorcycle,other,asset,18250
+7/14/25,Natwest Current,other,asset,23921.68
+7/14/25,Natwest E-ISA,other,asset,1683.04
+7/14/25,Natwest Savings,other,asset,0
+7/14/25,Natwest ZHK Holdings Limited,other,asset,0
+7/14/25,New Legacy Owl (Invisible),retirement,asset,50000
+7/14/25,NL Raven II (xAI),retirement,asset,126550
+7/14/25,NL Raven II (xAI) Personal,other,asset,16562
+7/14/25,NS&I Bond,other,asset,0
+7/14/25,Omega,other,asset,5000
+7/14/25,Pirate Studios,other,asset,0
+7/14/25,Rolex,other,asset,20000
+7/14/25,Roth IRA u2466090,retirement,asset,211448
+7/14/25,Seven Willoughby,other,asset,5577
+7/14/25,Towers Watson UK Retirement,retirement,asset,34284.33
+7/14/25,Traditional IRA u2061893,retirement,asset,116673
+7/14/25,Transamerica Strike  401(k) Plan,retirement,asset,360646
+7/14/25,Watershed Technologies,retirement,asset,40000
+7/15/25,128Newton,other,property,1425000
+7/15/25,128NewtonMortgage,mortgage,liability,-991084
+7/15/25,52CityMills,property,asset,750400
+7/15/25,52CityMillsMortgage,mortgage,liability,-336340
+7/15/25,Blue Mound,retirement,asset,10113
+7/15/25,Chase,cash,asset,11088
+7/15/25,Churpse,other,asset,100000
+7/15/25,Citizens,cash,asset,207355
+7/15/25,Coinbase acct,crypto,asset,213603
+7/15/25,Concierge,retirement,asset,20000
+7/15/25,Crawford Cash,retirement,asset,98079
+7/15/25,GTS Equity Fund,other,asset,0
+7/15/25,In Silico,other,asset,0
+7/15/25,Kingdom Cash,retirement,asset,0
+7/15/25,KZCASH cash,cash,asset,-268295
+7/15/25,KZCASH stocks,other,asset,1005484
+7/15/25,L&G UK Retirement,retirement,asset,38598.09
+7/15/25,LTAF-A3 2023,retirement,asset,0
+7/15/25,LTAF-A3 2024,retirement,asset,0
+7/15/25,LTAF-A3 2025,retirement,asset,33207
+7/15/25,LTAF-Betterment,retirement,asset,99505
+7/15/25,Marcus,other,asset,841
+7/15/25,Motorcycle,other,asset,18250
+7/15/25,Natwest Current,other,asset,23921.68
+7/15/25,Natwest E-ISA,other,asset,1683.04
+7/15/25,Natwest Savings,other,asset,0
+7/15/25,Natwest ZHK Holdings Limited,other,asset,0
+7/15/25,New Legacy Owl (Invisible),retirement,asset,50000
+7/15/25,NL Raven II (xAI),retirement,asset,126550
+7/15/25,NL Raven II (xAI) Personal,other,asset,16562
+7/15/25,NS&I Bond,other,asset,0
+7/15/25,Omega,other,asset,5000
+7/15/25,Pirate Studios,other,asset,0
+7/15/25,Rolex,other,asset,20000
+7/15/25,Roth IRA u2466090,retirement,asset,211178
+7/15/25,Seven Willoughby,other,asset,5577
+7/15/25,Towers Watson UK Retirement,retirement,asset,34284.33
+7/15/25,Traditional IRA u2061893,retirement,asset,120773
+7/15/25,Transamerica Strike  401(k) Plan,retirement,asset,360646
+7/15/25,Watershed Technologies,retirement,asset,40000
+8/6/25,128Newton,other,property,1425000
+8/6/25,128NewtonMortgage,mortgage,liability,-991084
+8/6/25,52CityMills,property,asset,750400
+8/6/25,52CityMillsMortgage,mortgage,liability,-336340
+8/6/25,Blue Mound,retirement,asset,10113
+8/6/25,Chase,cash,asset,11088
+8/6/25,Churpse,other,asset,100000
+8/6/25,Citizens,cash,asset,207355
+8/6/25,Coinbase acct,crypto,asset,213603
+8/6/25,Concierge,retirement,asset,20000
+8/6/25,Crawford Cash,retirement,asset,1539
+8/6/25,GTS Equity Fund,other,asset,0
+8/6/25,In Silico,other,asset,0
+8/6/25,Kingdom Cash,retirement,asset,0
+8/6/25,KZCASH cash,cash,asset,-269571
+8/6/25,KZCASH stocks,other,asset,1039204
+8/6/25,L&G UK Retirement,retirement,asset,38598.09
+8/6/25,LTAF-A3 2023,retirement,asset,0
+8/6/25,LTAF-A3 2024,retirement,asset,0
+8/6/25,LTAF-A3 2025,retirement,asset,33207
+8/6/25,LTAF-Betterment,retirement,asset,99505
+8/6/25,Marcus,other,asset,841
+8/6/25,Motorcycle,other,asset,18250
+8/6/25,Natwest Current,other,asset,37855
+8/6/25,Natwest E-ISA,other,asset,1684.38
+8/6/25,Natwest Savings,other,asset,0
+8/6/25,Natwest ZHK Holdings Limited,other,asset,0
+8/6/25,New Legacy Falcon (SpaceX),other,asset,75000
+8/6/25,New Legacy Owl (Invisible),retirement,asset,50000
+8/6/25,NL Raven II (xAI),retirement,asset,126550
+8/6/25,NL Raven II (xAI) Personal,other,asset,16562
+8/6/25,NS&I Bond,other,asset,0
+8/6/25,Omega,other,asset,5000
+8/6/25,Pirate Studios,other,asset,0
+8/6/25,Rolex,other,asset,20000
+8/6/25,Roth IRA u2466090,retirement,asset,211755
+8/6/25,Seven Willoughby,other,asset,5577
+8/6/25,Towers Watson UK Retirement,retirement,asset,34284.33
+8/6/25,Traditional IRA u2061893,retirement,asset,126293
+8/6/25,Transamerica Strike  401(k) Plan,retirement,asset,366203
+8/6/25,Watershed Technologies,retirement,asset,40000
+8/6/25,WLLTAF (edx),retirement,asset,21500
+8/7/25,128Newton,other,property,1425000
+8/7/25,128NewtonMortgage,mortgage,liability,-991084
+8/7/25,52CityMills,property,asset,750400
+8/7/25,52CityMillsMortgage,mortgage,liability,-336340
+8/7/25,Blue Mound,retirement,asset,10113
+8/7/25,Chase,cash,asset,11088
+8/7/25,Churpse,other,asset,100000
+8/7/25,Citizens,cash,asset,207355
+8/7/25,Coinbase acct,crypto,asset,213603
+8/7/25,Concierge,retirement,asset,20000
+8/7/25,Crawford Cash,retirement,asset,1539
+8/7/25,GTS Equity Fund,other,asset,0
+8/7/25,In Silico,other,asset,0
+8/7/25,Kingdom Cash,retirement,asset,0
+8/7/25,KZCASH cash,cash,asset,-269571
+8/7/25,KZCASH stocks,other,asset,1046440
+8/7/25,L&G UK Retirement,retirement,asset,38598.09
+8/7/25,LTAF-A3 2023,retirement,asset,0
+8/7/25,LTAF-A3 2024,retirement,asset,0
+8/7/25,LTAF-A3 2025,retirement,asset,33207
+8/7/25,LTAF-Betterment,retirement,asset,99505
+8/7/25,Marcus,other,asset,841
+8/7/25,Motorcycle,other,asset,18250
+8/7/25,Natwest Current,other,asset,37855
+8/7/25,Natwest E-ISA,other,asset,1684.38
+8/7/25,Natwest Savings,other,asset,0
+8/7/25,Natwest ZHK Holdings Limited,other,asset,0
+8/7/25,New Legacy Falcon (SpaceX),other,asset,75000
+8/7/25,New Legacy Owl (Invisible),retirement,asset,50000
+8/7/25,NL Raven II (xAI),retirement,asset,126550
+8/7/25,NL Raven II (xAI) Personal,other,asset,16562
+8/7/25,NS&I Bond,other,asset,0
+8/7/25,Omega,other,asset,5000
+8/7/25,Pirate Studios,other,asset,0
+8/7/25,Rolex,other,asset,20000
+8/7/25,Roth IRA u2466090,retirement,asset,211977
+8/7/25,Seven Willoughby,other,asset,5577
+8/7/25,Towers Watson UK Retirement,retirement,asset,34284.33
+8/7/25,Traditional IRA u2061893,retirement,asset,128790
+8/7/25,Transamerica Strike  401(k) Plan,retirement,asset,366203
+8/7/25,Watershed Technologies,retirement,asset,40000
+8/7/25,WLLTAF (edx),retirement,asset,21500
+8/11/25,128Newton,other,property,1425000
+8/11/25,128NewtonMortgage,mortgage,liability,-991084
+8/11/25,52CityMills,property,asset,750400
+8/11/25,52CityMillsMortgage,mortgage,liability,-336340
+8/11/25,Blue Mound,retirement,asset,10113
+8/11/25,Chase,cash,asset,11088
+8/11/25,Churpse,other,asset,100000
+8/11/25,Citizens,cash,asset,207355
+8/11/25,Coinbase acct,crypto,asset,227435
+8/11/25,Concierge,retirement,asset,20000
+8/11/25,Crawford Cash,retirement,asset,1539
+8/11/25,GTS Equity Fund,other,asset,0
+8/11/25,In Silico,other,asset,0
+8/11/25,Kingdom Cash,retirement,asset,0
+8/11/25,KZCASH cash,cash,asset,-269571
+8/11/25,KZCASH stocks,other,asset,1061311
+8/11/25,L&G UK Retirement,retirement,asset,38598.09
+8/11/25,LTAF-A3 2023,retirement,asset,0
+8/11/25,LTAF-A3 2024,retirement,asset,0
+8/11/25,LTAF-A3 2025,retirement,asset,33207
+8/11/25,LTAF-Betterment,retirement,asset,99505
+8/11/25,Marcus,other,asset,841
+8/11/25,Motorcycle,other,asset,18250
+8/11/25,Natwest Current,other,asset,37855
+8/11/25,Natwest E-ISA,other,asset,1684.38
+8/11/25,Natwest Savings,other,asset,0
+8/11/25,Natwest ZHK Holdings Limited,other,asset,0
+8/11/25,New Legacy Falcon (SpaceX),other,asset,75000
+8/11/25,New Legacy Owl (Invisible),retirement,asset,50000
+8/11/25,NL Raven II (xAI),retirement,asset,126550
+8/11/25,NL Raven II (xAI) Personal,other,asset,16562
+8/11/25,NS&I Bond,other,asset,0
+8/11/25,Omega,other,asset,5000
+8/11/25,Pirate Studios,other,asset,0
+8/11/25,Rolex,other,asset,20000
+8/11/25,Roth IRA u2466090,retirement,asset,218460
+8/11/25,Seven Willoughby,other,asset,5577
+8/11/25,Towers Watson UK Retirement,retirement,asset,34284.33
+8/11/25,Traditional IRA u2061893,retirement,asset,128961
+8/11/25,Transamerica Strike  401(k) Plan,retirement,asset,366203
+8/11/25,Watershed Technologies,retirement,asset,40000
+8/11/25,WLLTAF (edx),retirement,asset,21500
+9/3/25,128Newton,other,property,1425000
+9/3/25,128NewtonMortgage,mortgage,liability,-991084
+9/3/25,52CityMills,property,asset,750400
+9/3/25,52CityMillsMortgage,mortgage,liability,-336340
+9/3/25,Blue Mound,retirement,asset,10113
+9/3/25,Chase,cash,asset,11088
+9/3/25,Churpse,other,asset,100000
+9/3/25,Citizens,cash,asset,195884
+9/3/25,Coinbase acct,crypto,asset,227435
+9/3/25,Concierge,retirement,asset,20000
+9/3/25,Crawford Cash,retirement,asset,1539
+9/3/25,GTS Equity Fund,other,asset,0
+9/3/25,In Silico,other,asset,0
+9/3/25,Kingdom Cash,retirement,asset,0
+9/3/25,KZCASH cash,cash,asset,-235041
+9/3/25,KZCASH stocks,other,asset,950821
+9/3/25,L&G UK Retirement,retirement,asset,38598.09
+9/3/25,LTAF-A3 2023,retirement,asset,0
+9/3/25,LTAF-A3 2024,retirement,asset,0
+9/3/25,LTAF-A3 2025,retirement,asset,33207
+9/3/25,LTAF-Betterment,retirement,asset,99505
+9/3/25,Marcus,other,asset,841
+9/3/25,Motorcycle,other,asset,18250
+9/3/25,Natwest Current,other,asset,37063.06
+9/3/25,Natwest E-ISA,other,asset,1687.06
+9/3/25,Natwest Savings,other,asset,0
+9/3/25,Natwest ZHK Holdings Limited,other,asset,0
+9/3/25,New Legacy Falcon (SpaceX),other,asset,75000
+9/3/25,New Legacy Owl (Invisible),retirement,asset,50000
+9/3/25,NL Raven II (xAI),retirement,asset,126550
+9/3/25,NL Raven II (xAI) Personal,other,asset,16562
+9/3/25,NS&I Bond,other,asset,0
+9/3/25,Omega,other,asset,5000
+9/3/25,Pirate Studios,other,asset,0
+9/3/25,Rolex,other,asset,20000
+9/3/25,Roth IRA u2466090,retirement,asset,218896
+9/3/25,Seven Willoughby,other,asset,5577
+9/3/25,Towers Watson UK Retirement,retirement,asset,34284.33
+9/3/25,Traditional IRA u2061893,retirement,asset,122983
+9/3/25,Transamerica Strike  401(k) Plan,retirement,asset,366203
+9/3/25,Watershed Technologies,retirement,asset,40000
+9/3/25,WLLTAF (edx),retirement,asset,21500
+9/13/25,128Newton,other,property,1425000
+9/13/25,128NewtonMortgage,mortgage,liability,-991084
+9/13/25,52CityMills,property,asset,750400
+9/13/25,52CityMillsMortgage,mortgage,liability,-336340
+9/13/25,Blue Mound,retirement,asset,10113
+9/13/25,Chase,cash,asset,11088
+9/13/25,Churpse,other,asset,100000
+9/13/25,Citizens,cash,asset,195884
+9/13/25,Coinbase acct,crypto,asset,227435
+9/13/25,Concierge,retirement,asset,20000
+9/13/25,Crawford Cash,retirement,asset,1539
+9/13/25,GTS Equity Fund,other,asset,0
+9/13/25,In Silico,other,asset,0
+9/13/25,Kingdom Cash,retirement,asset,0
+9/13/25,KZCASH cash,cash,asset,-235041
+9/13/25,KZCASH stocks,other,asset,1010000
+9/13/25,L&G UK Retirement,retirement,asset,38598.09
+9/13/25,LTAF-A3 2023,retirement,asset,0
+9/13/25,LTAF-A3 2024,retirement,asset,0
+9/13/25,LTAF-A3 2025,retirement,asset,33207
+9/13/25,LTAF-Betterment,retirement,asset,99505
+9/13/25,Marcus,other,asset,841
+9/13/25,Motorcycle,other,asset,18250
+9/13/25,Natwest Current,other,asset,37063.06
+9/13/25,Natwest E-ISA,other,asset,1687.06
+9/13/25,Natwest Savings,other,asset,0
+9/13/25,Natwest ZHK Holdings Limited,other,asset,0
+9/13/25,New Legacy Falcon (SpaceX),other,asset,75000
+9/13/25,New Legacy Owl (Invisible),retirement,asset,50000
+9/13/25,NL Raven II (xAI),retirement,asset,126550
+9/13/25,NL Raven II (xAI) Personal,other,asset,16562
+9/13/25,NS&I Bond,other,asset,0
+9/13/25,Omega,other,asset,5000
+9/13/25,Pirate Studios,other,asset,0
+9/13/25,Rolex,other,asset,20000
+9/13/25,Roth IRA u2466090,retirement,asset,218896
+9/13/25,Seven Willoughby,other,asset,5577
+9/13/25,Towers Watson UK Retirement,retirement,asset,34284.33
+9/13/25,Traditional IRA u2061893,retirement,asset,122983
+9/13/25,Transamerica Strike  401(k) Plan,retirement,asset,366203
+9/13/25,Watershed Technologies,retirement,asset,40000
+9/13/25,WLLTAF (edx),retirement,asset,21500
+9/15/25,128Newton,other,property,1425000
+9/15/25,128NewtonMortgage,mortgage,liability,-991084
+9/15/25,52CityMills,property,asset,761600
+9/15/25,52CityMillsMortgage,mortgage,liability,-341360
+9/15/25,Blue Mound,retirement,asset,10113
+9/15/25,Chase,cash,asset,11088
+9/15/25,Churpse,other,asset,100000
+9/15/25,Citizens,cash,asset,125884
+9/15/25,Coinbase acct,crypto,asset,223800
+9/15/25,Concierge,retirement,asset,20000
+9/15/25,Crawford Cash,retirement,asset,1539
+9/15/25,GTS Equity Fund,other,asset,0
+9/15/25,In Silico,other,asset,0
+9/15/25,Kingdom Cash,retirement,asset,0
+9/15/25,KZCASH cash,cash,asset,-236000
+9/15/25,KZCASH stocks,other,asset,1014212
+9/15/25,L&G UK Retirement,retirement,asset,45376.4
+9/15/25,LTAF-A3 2023,retirement,asset,0
+9/15/25,LTAF-A3 2024,retirement,asset,0
+9/15/25,LTAF-A3 2025,retirement,asset,55000
+9/15/25,LTAF-Betterment,retirement,asset,99505
+9/15/25,Marcus,other,asset,841
+9/15/25,Motorcycle,other,asset,18250
+9/15/25,Natwest Current,other,asset,37549.6
+9/15/25,Natwest E-ISA,other,asset,1712.24
+9/15/25,Natwest Savings,other,asset,0
+9/15/25,Natwest ZHK Holdings Limited,other,asset,0
+9/15/25,New Legacy Falcon (SpaceX),other,asset,75000
+9/15/25,New Legacy Owl (Invisible),retirement,asset,50000
+9/15/25,NL Raven II (xAI),retirement,asset,126550
+9/15/25,NL Raven II (xAI) Personal,other,asset,16562
+9/15/25,NS&I Bond,other,asset,0
+9/15/25,Omega,other,asset,5000
+9/15/25,Pirate Studios,other,asset,0
+9/15/25,Rolex,other,asset,20000
+9/15/25,Roth IRA u2466090,retirement,asset,245435
+9/15/25,Seven Willoughby,other,asset,5577
+9/15/25,Towers Watson UK Retirement,retirement,asset,45376.4
+9/15/25,Traditional IRA u2061893,retirement,asset,124042
+9/15/25,Transamerica Strike  401(k) Plan,retirement,asset,387570
+9/15/25,Watershed Technologies,retirement,asset,40000
+9/15/25,WLLTAF (edx),retirement,asset,21500
+9/18/25,128Newton,other,property,1425000
+9/18/25,128NewtonMortgage,mortgage,liability,-991084
+9/18/25,52CityMills,property,asset,756000
+9/18/25,52CityMillsMortgage,mortgage,liability,-338850
+9/18/25,Blue Mound,retirement,asset,10113
+9/18/25,Chase,cash,asset,11088
+9/18/25,Churpse,other,asset,100000
+9/18/25,Citizens,cash,asset,125884
+9/18/25,Coinbase acct,crypto,asset,223800
+9/18/25,Concierge,retirement,asset,20000
+9/18/25,Crawford Cash,retirement,asset,1539
+9/18/25,GTS Equity Fund,other,asset,0
+9/18/25,In Silico,other,asset,0
+9/18/25,Kingdom Cash,retirement,asset,0
+9/18/25,KZCASH cash,cash,asset,-235000
+9/18/25,KZCASH stocks,other,asset,1017299
+9/18/25,L&G UK Retirement,retirement,asset,45042.75
+9/18/25,LTAF-A3 2023,retirement,asset,0
+9/18/25,LTAF-A3 2024,retirement,asset,0
+9/18/25,LTAF-A3 2025,retirement,asset,55000
+9/18/25,LTAF-Betterment,retirement,asset,99505
+9/18/25,Marcus,other,asset,841
+9/18/25,Motorcycle,other,asset,18250
+9/18/25,Natwest Current,other,asset,37273.5
+9/18/25,Natwest E-ISA,other,asset,1699.65
+9/18/25,Natwest Savings,other,asset,0
+9/18/25,Natwest ZHK Holdings Limited,other,asset,0
+9/18/25,New Legacy Falcon (SpaceX),other,asset,75000
+9/18/25,New Legacy Owl (Invisible),retirement,asset,50000
+9/18/25,NL Raven II (xAI),retirement,asset,126550
+9/18/25,NL Raven II (xAI) Personal,other,asset,16562
+9/18/25,NS&I Bond,other,asset,0
+9/18/25,Omega,other,asset,5000
+9/18/25,Pirate Studios,other,asset,0
+9/18/25,Rolex,other,asset,20000
+9/18/25,Roth IRA u2466090,retirement,asset,247278
+9/18/25,Seven Willoughby,other,asset,5577
+9/18/25,Towers Watson UK Retirement,retirement,asset,45042.75
+9/18/25,Traditional IRA u2061893,retirement,asset,125843
+9/18/25,Transamerica Strike  401(k) Plan,retirement,asset,387570
+9/18/25,Watershed Technologies,retirement,asset,40000
+9/18/25,WLLTAF (edx),retirement,asset,21500
+9/22/25,128Newton,other,property,1425000
+9/22/25,128NewtonMortgage,mortgage,liability,-991084
+9/22/25,52CityMills,property,asset,756000
+9/22/25,52CityMillsMortgage,mortgage,liability,-338850
+9/22/25,Blue Mound,retirement,asset,10113
+9/22/25,Chase,cash,asset,11088
+9/22/25,Churpse,other,asset,100000
+9/22/25,Citizens,cash,asset,125884
+9/22/25,Coinbase acct,crypto,asset,223800
+9/22/25,Concierge,retirement,asset,20000
+9/22/25,Crawford Cash,retirement,asset,1539
+9/22/25,GTS Equity Fund,other,asset,0
+9/22/25,In Silico,other,asset,0
+9/22/25,Kingdom Cash,retirement,asset,0
+9/22/25,KZCASH cash,cash,asset,-236288
+9/22/25,KZCASH stocks,other,asset,1033680
+9/22/25,L&G UK Retirement,retirement,asset,45042.75
+9/22/25,LTAF-A3 2023,retirement,asset,0
+9/22/25,LTAF-A3 2024,retirement,asset,0
+9/22/25,LTAF-A3 2025,retirement,asset,55000
+9/22/25,LTAF-Betterment,retirement,asset,99505
+9/22/25,Marcus,other,asset,841
+9/22/25,Motorcycle,other,asset,18250
+9/22/25,Natwest Current,other,asset,37273.5
+9/22/25,Natwest E-ISA,other,asset,1699.65
+9/22/25,Natwest Savings,other,asset,0
+9/22/25,Natwest ZHK Holdings Limited,other,asset,0
+9/22/25,New Legacy Falcon (SpaceX),other,asset,75000
+9/22/25,New Legacy Owl (Invisible),retirement,asset,50000
+9/22/25,NL Raven II (xAI),retirement,asset,126550
+9/22/25,NL Raven II (xAI) Personal,other,asset,16562
+9/22/25,NS&I Bond,other,asset,0
+9/22/25,Omega,other,asset,5000
+9/22/25,Pirate Studios,other,asset,0
+9/22/25,Rolex,other,asset,20000
+9/22/25,Roth IRA u2466090,retirement,asset,250754
+9/22/25,Seven Willoughby,other,asset,5577
+9/22/25,Towers Watson UK Retirement,retirement,asset,45042.75
+9/22/25,Traditional IRA u2061893,retirement,asset,129950
+9/22/25,Transamerica Strike  401(k) Plan,retirement,asset,387570
+9/22/25,Watershed Technologies,retirement,asset,40000
+9/22/25,WLLTAF (edx),retirement,asset,21500
+10/6/25,128Newton,other,property,1425000
+10/6/25,128NewtonMortgage,mortgage,liability,-991084
+10/6/25,52CityMills,property,asset,756000
+10/6/25,52CityMillsMortgage,mortgage,liability,-338850
+10/6/25,Blue Mound,retirement,asset,10113
+10/6/25,Chase,cash,asset,11088
+10/6/25,Churpse,other,asset,100000
+10/6/25,Citizens,cash,asset,125884
+10/6/25,Coinbase acct,crypto,asset,223800
+10/6/25,Concierge,retirement,asset,20000
+10/6/25,Crawford Cash,retirement,asset,1539
+10/6/25,GTS Equity Fund,other,asset,0
+10/6/25,In Silico,other,asset,0
+10/6/25,Kingdom Cash,retirement,asset,0
+10/6/25,KZCASH cash,cash,asset,-165606
+10/6/25,KZCASH stocks,other,asset,988184
+10/6/25,L&G UK Retirement,retirement,asset,45042.75
+10/6/25,LTAF-A3 2023,retirement,asset,0
+10/6/25,LTAF-A3 2024,retirement,asset,0
+10/6/25,LTAF-A3 2025,retirement,asset,55000
+10/6/25,LTAF-Betterment,retirement,asset,99505
+10/6/25,Marcus,other,asset,841
+10/6/25,Motorcycle,other,asset,18250
+10/6/25,Natwest Current,other,asset,35182.35
+10/6/25,Natwest E-ISA,other,asset,1699.65
+10/6/25,Natwest Savings,other,asset,0
+10/6/25,Natwest ZHK Holdings Limited,other,asset,0
+10/6/25,New Legacy Falcon (SpaceX),other,asset,75000
+10/6/25,New Legacy Owl (Invisible),retirement,asset,50000
+10/6/25,NL Raven II (xAI),retirement,asset,126550
+10/6/25,NL Raven II (xAI) Personal,other,asset,16562
+10/6/25,NS&I Bond,other,asset,0
+10/6/25,Omega,other,asset,5000
+10/6/25,Pirate Studios,other,asset,0
+10/6/25,Rolex,other,asset,20000
+10/6/25,Roth IRA u2466090,retirement,asset,253955
+10/6/25,Seven Willoughby,other,asset,5577
+10/6/25,Towers Watson UK Retirement,retirement,asset,45042.75
+10/6/25,Traditional IRA u2061893,retirement,asset,129175
+10/6/25,Transamerica Strike  401(k) Plan,retirement,asset,387570
+10/6/25,Watershed Technologies,retirement,asset,40000
+10/6/25,WLLTAF (edx),retirement,asset,21500
+10/8/25,128Newton,other,property,1425000
+10/8/25,128NewtonMortgage,mortgage,liability,-991084
+10/8/25,52CityMills,property,asset,750400
+10/8/25,52CityMillsMortgage,mortgage,liability,-336340
+10/8/25,Blue Mound,retirement,asset,10113
+10/8/25,Chase,cash,asset,22420
+10/8/25,Churpse,other,asset,100000
+10/8/25,Citizens,cash,asset,179917
+10/8/25,Coinbase acct,crypto,asset,223800
+10/8/25,Concierge,retirement,asset,20000
+10/8/25,Crawford Cash,retirement,asset,1539
+10/8/25,GTS Equity Fund,other,asset,0
+10/8/25,In Silico,other,asset,0
+10/8/25,Kingdom Cash,retirement,asset,0
+10/8/25,KZCASH cash,cash,asset,-165606
+10/8/25,KZCASH stocks,other,asset,992753
+10/8/25,L&G UK Retirement,retirement,asset,44709.1
+10/8/25,LTAF-A3 2023,retirement,asset,0
+10/8/25,LTAF-A3 2024,retirement,asset,0
+10/8/25,LTAF-A3 2025,retirement,asset,55000
+10/8/25,LTAF-Betterment,retirement,asset,99505
+10/8/25,Marcus,other,asset,841
+10/8/25,Motorcycle,other,asset,18250
+10/8/25,Natwest Current,other,asset,34921.74
+10/8/25,Natwest E-ISA,other,asset,1687.06
+10/8/25,Natwest Savings,other,asset,0
+10/8/25,Natwest ZHK Holdings Limited,other,asset,0
+10/8/25,New Legacy Falcon (SpaceX),other,asset,75000
+10/8/25,New Legacy Owl (Invisible),retirement,asset,50000
+10/8/25,NL Raven II (xAI),retirement,asset,126550
+10/8/25,NL Raven II (xAI) Personal,other,asset,16562
+10/8/25,NS&I Bond,other,asset,0
+10/8/25,Omega,other,asset,5000
+10/8/25,Pirate Studios,other,asset,0
+10/8/25,Rolex,other,asset,20000
+10/8/25,Roth IRA u2466090,retirement,asset,251196
+10/8/25,Seven Willoughby,other,asset,5577
+10/8/25,Towers Watson UK Retirement,retirement,asset,44709.1
+10/8/25,Traditional IRA u2061893,retirement,asset,130971
+10/8/25,Transamerica Strike  401(k) Plan,retirement,asset,395707
+10/8/25,Watershed Technologies,retirement,asset,40000
+10/8/25,WLLTAF (edx),retirement,asset,21500
+10/24/25,128Newton,other,property,1425000
+10/24/25,128NewtonMortgage,mortgage,liability,-991084
+10/24/25,52CityMills,property,asset,744800
+10/24/25,52CityMillsMortgage,mortgage,liability,-333830
+10/24/25,Blue Mound,retirement,asset,10113
+10/24/25,Chase,cash,asset,22420
+10/24/25,Churpse,other,asset,100000
+10/24/25,Citizens,cash,asset,179917
+10/24/25,Coinbase acct,crypto,asset,223800
+10/24/25,Concierge,retirement,asset,20000
+10/24/25,Crawford Cash,retirement,asset,1539
+10/24/25,GTS Equity Fund,other,asset,0
+10/24/25,In Silico,other,asset,0
+10/24/25,Kingdom Cash,retirement,asset,0
+10/24/25,KZCASH cash,cash,asset,1120
+10/24/25,KZCASH stocks,other,asset,820737
+10/24/25,L&G UK Retirement,retirement,asset,44375.45
+10/24/25,LTAF-A3 2023,retirement,asset,0
+10/24/25,LTAF-A3 2024,retirement,asset,0
+10/24/25,LTAF-A3 2025,retirement,asset,55000
+10/24/25,LTAF-Betterment,retirement,asset,99505
+10/24/25,Marcus,other,asset,841
+10/24/25,Motorcycle,other,asset,18250
+10/24/25,Natwest Current,other,asset,34661.13
+10/24/25,Natwest E-ISA,other,asset,1674.47
+10/24/25,Natwest Savings,other,asset,0
+10/24/25,Natwest ZHK Holdings Limited,other,asset,0
+10/24/25,New Legacy Falcon (SpaceX),other,asset,75000
+10/24/25,New Legacy Owl (Invisible),retirement,asset,50000
+10/24/25,NL Raven II (xAI),retirement,asset,126550
+10/24/25,NL Raven II (xAI) Personal,other,asset,16562
+10/24/25,NS&I Bond,other,asset,0
+10/24/25,Omega,other,asset,5000
+10/24/25,Pirate Studios,other,asset,0
+10/24/25,Rolex,other,asset,20000
+10/24/25,Roth IRA u2466090,retirement,asset,252567
+10/24/25,Seven Willoughby,other,asset,5577
+10/24/25,Towers Watson UK Retirement,retirement,asset,44375.45
+10/24/25,Traditional IRA u2061893,retirement,asset,127905
+10/24/25,Transamerica Strike  401(k) Plan,retirement,asset,398000
+10/24/25,Watershed Technologies,retirement,asset,40000
+10/24/25,WLLTAF (edx),retirement,asset,21500
+10/27/25,128Newton,other,property,1425000
+10/27/25,128NewtonMortgage,mortgage,liability,-983084
+10/27/25,52CityMills,property,asset,744800
+10/27/25,52CityMillsMortgage,mortgage,liability,-330771
+10/27/25,Blue Mound,retirement,asset,10113
+10/27/25,Chase,cash,asset,30000
+10/27/25,Churpse,other,asset,100000
+10/27/25,Citizens,cash,asset,160868
+10/27/25,Coinbase acct,crypto,asset,218227
+10/27/25,Concierge,retirement,asset,20000
+10/27/25,Crawford Cash,retirement,asset,1539
+10/27/25,GTS Equity Fund,other,asset,0
+10/27/25,In Silico,other,asset,0
+10/27/25,Kingdom Cash,retirement,asset,0
+10/27/25,KZCASH cash,cash,asset,1120
+10/27/25,KZCASH stocks,other,asset,839696
+10/27/25,L&G UK Retirement,retirement,asset,46173.61
+10/27/25,LTAF-A3 2023,retirement,asset,0
+10/27/25,LTAF-A3 2024,retirement,asset,0
+10/27/25,LTAF-A3 2025,retirement,asset,55000
+10/27/25,LTAF-Betterment,retirement,asset,99505
+10/27/25,Marcus,other,asset,841
+10/27/25,Motorcycle,other,asset,18250
+10/27/25,Natwest Current,other,asset,34661.13
+10/27/25,Natwest E-ISA,other,asset,1674.47
+10/27/25,Natwest Savings,other,asset,0
+10/27/25,Natwest ZHK Holdings Limited,other,asset,0
+10/27/25,New Legacy Falcon (SpaceX),other,asset,75000
+10/27/25,New Legacy Owl (Invisible),retirement,asset,50000
+10/27/25,NL Raven II (xAI),retirement,asset,126550
+10/27/25,NL Raven II (xAI) Personal,other,asset,16562
+10/27/25,NS&I Bond,other,asset,0
+10/27/25,Omega,other,asset,5000
+10/27/25,Pirate Studios,other,asset,0
+10/27/25,Rolex,other,asset,20000
+10/27/25,Roth IRA u2466090,retirement,asset,255113
+10/27/25,Seven Willoughby,other,asset,5577
+10/27/25,Towers Watson UK Retirement,retirement,asset,42356.51
+10/27/25,Traditional IRA u2061893,retirement,asset,130940
+10/27/25,Transamerica Strike  401(k) Plan,retirement,asset,398000
+10/27/25,Watershed Technologies,retirement,asset,40000
+10/27/25,WLLTAF (edx),retirement,asset,21500
+10/29/25,128Newton,other,property,1425000
+10/29/25,128NewtonMortgage,mortgage,liability,-983084
+10/29/25,52CityMills,property,asset,744800
+10/29/25,52CityMillsMortgage,mortgage,liability,-330771
+10/29/25,Blue Mound,retirement,asset,10113
+10/29/25,Chase,cash,asset,30000
+10/29/25,Churpse,other,asset,100000
+10/29/25,Citizens,cash,asset,160868
+10/29/25,Coinbase acct,crypto,asset,218227
+10/29/25,Concierge,retirement,asset,20000
+10/29/25,Crawford Cash,retirement,asset,1539
+10/29/25,GTS Equity Fund,other,asset,0
+10/29/25,In Silico,other,asset,0
+10/29/25,Kingdom Cash,retirement,asset,0
+10/29/25,KZCASH cash,cash,asset,1120
+10/29/25,KZCASH stocks,other,asset,851889
+10/29/25,L&G UK Retirement,retirement,asset,46173.61
+10/29/25,LTAF-A3 2023,retirement,asset,0
+10/29/25,LTAF-A3 2024,retirement,asset,0
+10/29/25,LTAF-A3 2025,retirement,asset,55000
+10/29/25,LTAF-Betterment,retirement,asset,99505
+10/29/25,Marcus,other,asset,841
+10/29/25,Motorcycle,other,asset,18250
+10/29/25,Natwest Current,other,asset,34661.13
+10/29/25,Natwest E-ISA,other,asset,1674.47
+10/29/25,Natwest Savings,other,asset,0
+10/29/25,Natwest ZHK Holdings Limited,other,asset,0
+10/29/25,New Legacy Falcon (SpaceX),other,asset,75000
+10/29/25,New Legacy Owl (Invisible),retirement,asset,50000
+10/29/25,NL Raven II (xAI),retirement,asset,126550
+10/29/25,NL Raven II (xAI) Personal,other,asset,16562
+10/29/25,NS&I Bond,other,asset,0
+10/29/25,Omega,other,asset,5000
+10/29/25,Pirate Studios,other,asset,0
+10/29/25,Rolex,other,asset,20000
+10/29/25,Roth IRA u2466090,retirement,asset,258616
+10/29/25,Seven Willoughby,other,asset,5577
+10/29/25,Towers Watson UK Retirement,retirement,asset,42356.51
+10/29/25,Traditional IRA u2061893,retirement,asset,137669
+10/29/25,Transamerica Strike  401(k) Plan,retirement,asset,406000
+10/29/25,Watershed Technologies,retirement,asset,40000
+10/29/25,WLLTAF (edx),retirement,asset,21500
+10/30/25,128Newton,other,property,1425000
+10/30/25,128NewtonMortgage,mortgage,liability,-983084
+10/30/25,52CityMills,property,asset,744800
+10/30/25,52CityMillsMortgage,mortgage,liability,-330771
+10/30/25,Blue Mound,retirement,asset,10113
+10/30/25,Chase,cash,asset,30000
+10/30/25,Churpse,other,asset,100000
+10/30/25,Citizens,cash,asset,160868
+10/30/25,Coinbase acct,crypto,asset,203401
+10/30/25,Concierge,retirement,asset,20000
+10/30/25,Crawford Cash,retirement,asset,1539
+10/30/25,GTS Equity Fund,other,asset,0
+10/30/25,In Silico,other,asset,0
+10/30/25,Kingdom Cash,retirement,asset,0
+10/30/25,KZCASH cash,cash,asset,1120
+10/30/25,KZCASH stocks,other,asset,846694
+10/30/25,L&G UK Retirement,retirement,asset,46173.61
+10/30/25,LTAF-A3 2023,retirement,asset,0
+10/30/25,LTAF-A3 2024,retirement,asset,0
+10/30/25,LTAF-A3 2025,retirement,asset,55000
+10/30/25,LTAF-Betterment,retirement,asset,99505
+10/30/25,Marcus,other,asset,841
+10/30/25,Motorcycle,other,asset,18250
+10/30/25,Natwest Current,other,asset,34661.13
+10/30/25,Natwest E-ISA,other,asset,1674.47
+10/30/25,Natwest Savings,other,asset,0
+10/30/25,Natwest ZHK Holdings Limited,other,asset,0
+10/30/25,New Legacy Falcon (SpaceX),other,asset,75000
+10/30/25,New Legacy Owl (Invisible),retirement,asset,50000
+10/30/25,NL Raven II (xAI),retirement,asset,126550
+10/30/25,NL Raven II (xAI) Personal,other,asset,16562
+10/30/25,NS&I Bond,other,asset,0
+10/30/25,Omega,other,asset,5000
+10/30/25,Pirate Studios,other,asset,0
+10/30/25,Rolex,other,asset,20000
+10/30/25,Roth IRA u2466090,retirement,asset,250743
+10/30/25,Seven Willoughby,other,asset,5577
+10/30/25,Towers Watson UK Retirement,retirement,asset,42356.51
+10/30/25,Traditional IRA u2061893,retirement,asset,136411
+10/30/25,Transamerica Strike  401(k) Plan,retirement,asset,406000
+10/30/25,Watershed Technologies,retirement,asset,40000
+10/30/25,WLLTAF (edx),retirement,asset,21500
+11/3/25,128Newton,other,property,1425000
+11/3/25,128NewtonMortgage,mortgage,liability,-983084
+11/3/25,52CityMills,property,asset,733600
+11/3/25,52CityMillsMortgage,mortgage,liability,-325797
+11/3/25,Blue Mound,retirement,asset,10113
+11/3/25,Chase,cash,asset,22338
+11/3/25,Churpse,other,asset,100000
+11/3/25,Citizens,cash,asset,160868
+11/3/25,Coinbase acct,crypto,asset,203401
+11/3/25,Concierge,retirement,asset,20000
+11/3/25,Crawford Cash,retirement,asset,1539
+11/3/25,GTS Equity Fund,other,asset,0
+11/3/25,In Silico,other,asset,0
+11/3/25,Kingdom Cash,retirement,asset,0
+11/3/25,KZCASH cash,cash,asset,1120
+11/3/25,KZCASH stocks,other,asset,859664
+11/3/25,L&G UK Retirement,retirement,asset,45479.27
+11/3/25,LTAF-A3 2023,retirement,asset,0
+11/3/25,LTAF-A3 2024,retirement,asset,0
+11/3/25,LTAF-A3 2025,retirement,asset,55000
+11/3/25,LTAF-Betterment,retirement,asset,99505
+11/3/25,Marcus,other,asset,841
+11/3/25,Motorcycle,other,asset,18250
+11/3/25,Natwest Current,other,asset,53561.97
+11/3/25,Natwest E-ISA,other,asset,1649.29
+11/3/25,Natwest Savings,other,asset,0
+11/3/25,Natwest ZHK Holdings Limited,other,asset,0
+11/3/25,New Legacy Falcon (SpaceX),other,asset,75000
+11/3/25,New Legacy Owl (Invisible),retirement,asset,50000
+11/3/25,NL Raven II (xAI),retirement,asset,126550
+11/3/25,NL Raven II (xAI) Personal,other,asset,16562
+11/3/25,NS&I Bond,other,asset,0
+11/3/25,Omega,other,asset,5000
+11/3/25,Pirate Studios,other,asset,0
+11/3/25,Rolex,other,asset,20000
+11/3/25,Roth IRA u2466090,retirement,asset,259275
+11/3/25,Seven Willoughby,other,asset,5577
+11/3/25,Towers Watson UK Retirement,retirement,asset,41719.57
+11/3/25,Traditional IRA u2061893,retirement,asset,140227
+11/3/25,Transamerica Strike  401(k) Plan,retirement,asset,406000
+11/3/25,Watershed Technologies,retirement,asset,40000
+11/3/25,WLLTAF (edx),retirement,asset,21500
+11/5/25,128Newton,other,property,1425000
+11/5/25,128NewtonMortgage,mortgage,liability,-983084
+11/5/25,52CityMills,property,asset,728000
+11/5/25,52CityMillsMortgage,mortgage,liability,-323310
+11/5/25,Blue Mound,retirement,asset,10113
+11/5/25,Chase,cash,asset,22338
+11/5/25,Churpse,other,asset,100000
+11/5/25,Citizens,cash,asset,160868
+11/5/25,Coinbase acct,crypto,asset,203401
+11/5/25,Concierge,retirement,asset,20000
+11/5/25,Crawford Cash,retirement,asset,1539
+11/5/25,GTS Equity Fund,other,asset,0
+11/5/25,In Silico,other,asset,0
+11/5/25,Kingdom Cash,retirement,asset,0
+11/5/25,KZCASH cash,cash,asset,135
+11/5/25,KZCASH stocks,other,asset,830116
+11/5/25,L&G UK Retirement,retirement,asset,45132.1
+11/5/25,LTAF-A3 2023,retirement,asset,0
+11/5/25,LTAF-A3 2024,retirement,asset,0
+11/5/25,LTAF-A3 2025,retirement,asset,55000
+11/5/25,LTAF-Betterment,retirement,asset,99505
+11/5/25,Marcus,other,asset,841
+11/5/25,Motorcycle,other,asset,18250
+11/5/25,Natwest Current,other,asset,53153.1
+11/5/25,Natwest E-ISA,other,asset,1636.7
+11/5/25,Natwest Savings,other,asset,0
+11/5/25,Natwest ZHK Holdings Limited,other,asset,0
+11/5/25,New Legacy Falcon (SpaceX),other,asset,75000
+11/5/25,New Legacy Owl (Invisible),retirement,asset,50000
+11/5/25,NL Raven II (xAI),retirement,asset,126550
+11/5/25,NL Raven II (xAI) Personal,other,asset,16562
+11/5/25,NS&I Bond,other,asset,0
+11/5/25,Omega,other,asset,5000
+11/5/25,Pirate Studios,other,asset,0
+11/5/25,Rolex,other,asset,20000
+11/5/25,Roth IRA u2466090,retirement,asset,254000
+11/5/25,Seven Willoughby,other,asset,5577
+11/5/25,Towers Watson UK Retirement,retirement,asset,41401.1
+11/5/25,Traditional IRA u2061893,retirement,asset,133359
+11/5/25,Transamerica Strike  401(k) Plan,retirement,asset,396000
+11/5/25,Watershed Technologies,retirement,asset,40000
+11/5/25,WLLTAF (edx),retirement,asset,21500
+11/7/25,128Newton,other,property,1425000
+11/7/25,128NewtonMortgage,mortgage,liability,-983084
+11/7/25,52CityMills,property,asset,733600
+11/7/25,52CityMillsMortgage,mortgage,liability,-325797
+11/7/25,Blue Mound,retirement,asset,10113
+11/7/25,Chase,cash,asset,21602
+11/7/25,Churpse,other,asset,100000
+11/7/25,Citizens,cash,asset,168424
+11/7/25,Coinbase acct,crypto,asset,203401
+11/7/25,Concierge,retirement,asset,20000
+11/7/25,Crawford Cash,retirement,asset,1539
+11/7/25,GTS Equity Fund,other,asset,0
+11/7/25,In Silico,other,asset,0
+11/7/25,Kingdom Cash,retirement,asset,0
+11/7/25,KZCASH cash,cash,asset,135
+11/7/25,KZCASH stocks,other,asset,780705
+11/7/25,L&G UK Retirement,retirement,asset,45479.27
+11/7/25,LTAF-A3 2023,retirement,asset,0
+11/7/25,LTAF-A3 2024,retirement,asset,0
+11/7/25,LTAF-A3 2025,retirement,asset,55000
+11/7/25,LTAF-Betterment,retirement,asset,99505
+11/7/25,Marcus,other,asset,841
+11/7/25,Motorcycle,other,asset,18250
+11/7/25,Natwest Current,other,asset,53561.97
+11/7/25,Natwest E-ISA,other,asset,1651.91
+11/7/25,Natwest Savings,other,asset,0
+11/7/25,Natwest ZHK Holdings Limited,other,asset,0
+11/7/25,New Legacy Falcon (SpaceX),other,asset,75000
+11/7/25,New Legacy Owl (Invisible),retirement,asset,50000
+11/7/25,NL Raven II (xAI),retirement,asset,126550
+11/7/25,NL Raven II (xAI) Personal,other,asset,16562
+11/7/25,NS&I Bond,other,asset,0
+11/7/25,Omega,other,asset,5000
+11/7/25,Pirate Studios,other,asset,0
+11/7/25,Rolex,other,asset,20000
+11/7/25,Roth IRA u2466090,retirement,asset,242781
+11/7/25,Seven Willoughby,other,asset,5577
+11/7/25,Towers Watson UK Retirement,retirement,asset,41719.57
+11/7/25,Traditional IRA u2061893,retirement,asset,121766
+11/7/25,Transamerica Strike  401(k) Plan,retirement,asset,391912
+11/7/25,Watershed Technologies,retirement,asset,40000
+11/7/25,WLLTAF (edx),retirement,asset,21500
+11/10/25,128Newton,other,property,1425000
+11/10/25,128NewtonMortgage,mortgage,liability,-983084
+11/10/25,52CityMills,property,asset,733600
+11/10/25,52CityMillsMortgage,mortgage,liability,-325797
+11/10/25,Blue Mound,retirement,asset,10113
+11/10/25,Chase,cash,asset,21602
+11/10/25,Churpse,other,asset,100000
+11/10/25,Citizens,cash,asset,168424
+11/10/25,Coinbase acct,crypto,asset,197722
+11/10/25,Concierge,retirement,asset,20000
+11/10/25,Crawford Cash,retirement,asset,1539
+11/10/25,GTS Equity Fund,other,asset,0
+11/10/25,In Silico,other,asset,0
+11/10/25,Kingdom Cash,retirement,asset,0
+11/10/25,KZCASH cash,cash,asset,74
+11/10/25,KZCASH stocks,other,asset,820718
+11/10/25,L&G UK Retirement,retirement,asset,45479.27
+11/10/25,LTAF-A3 2023,retirement,asset,0
+11/10/25,LTAF-A3 2024,retirement,asset,0
+11/10/25,LTAF-A3 2025,retirement,asset,55000
+11/10/25,LTAF-Betterment,retirement,asset,99505
+11/10/25,Marcus,other,asset,841
+11/10/25,Motorcycle,other,asset,18250
+11/10/25,Natwest Current,other,asset,53561.97
+11/10/25,Natwest E-ISA,other,asset,1651.91
+11/10/25,Natwest Savings,other,asset,0
+11/10/25,Natwest ZHK Holdings Limited,other,asset,0
+11/10/25,New Legacy Falcon (SpaceX),other,asset,75000
+11/10/25,New Legacy Owl (Invisible),retirement,asset,50000
+11/10/25,NL Raven II (xAI),retirement,asset,126550
+11/10/25,NL Raven II (xAI) Personal,other,asset,16562
+11/10/25,NS&I Bond,other,asset,0
+11/10/25,Omega,other,asset,5000
+11/10/25,Pirate Studios,other,asset,0
+11/10/25,Rolex,other,asset,20000
+11/10/25,Roth IRA u2466090,retirement,asset,250608
+11/10/25,Seven Willoughby,other,asset,5577
+11/10/25,Towers Watson UK Retirement,retirement,asset,41719.57
+11/10/25,Traditional IRA u2061893,retirement,asset,128663
+11/10/25,Transamerica Strike  401(k) Plan,retirement,asset,394436
+11/10/25,Watershed Technologies,retirement,asset,40000
+11/10/25,WLLTAF (edx),retirement,asset,21500
+11/21/25,128Newton,other,property,1425000
+11/21/25,128NewtonMortgage,mortgage,liability,-983084
+11/21/25,52CityMills,property,asset,733600
+11/21/25,52CityMillsMortgage,mortgage,liability,-325797
+11/21/25,Blue Mound,retirement,asset,10113
+11/21/25,Chase,cash,asset,17525
+11/21/25,Churpse,other,asset,100000
+11/21/25,Citizens,cash,asset,128977
+11/21/25,Coinbase acct,crypto,asset,155450
+11/21/25,Concierge,retirement,asset,20000
+11/21/25,Crawford Cash,retirement,asset,1539
+11/21/25,GTS Equity Fund,other,asset,0
+11/21/25,In Silico,other,asset,0
+11/21/25,Kingdom Cash,retirement,asset,0
+11/21/25,KZCASH cash,cash,asset,19068
+11/21/25,KZCASH stocks,other,asset,761058
+11/21/25,L&G UK Retirement,retirement,asset,45479.27
+11/21/25,LTAF-A3 2023,retirement,asset,0
+11/21/25,LTAF-A3 2024,retirement,asset,0
+11/21/25,LTAF-A3 2025,retirement,asset,55000
+11/21/25,LTAF-Betterment,retirement,asset,99505
+11/21/25,Marcus,other,asset,841
+11/21/25,Motorcycle,other,asset,18250
+11/21/25,Natwest Current,other,asset,53314.38
+11/21/25,Natwest E-ISA,other,asset,1651.91
+11/21/25,Natwest Savings,other,asset,0
+11/21/25,Natwest ZHK Holdings Limited,other,asset,0
+11/21/25,New Legacy Falcon (SpaceX),other,asset,75000
+11/21/25,New Legacy Owl (Invisible),retirement,asset,50000
+11/21/25,NL Raven II (xAI),retirement,asset,126550
+11/21/25,NL Raven II (xAI) Personal,other,asset,16562
+11/21/25,NS&I Bond,other,asset,0
+11/21/25,Omega,other,asset,5000
+11/21/25,Pirate Studios,other,asset,0
+11/21/25,Rolex,other,asset,20000
+11/21/25,Roth IRA u2466090,retirement,asset,218658
+11/21/25,Seven Willoughby,other,asset,4618
+11/21/25,Towers Watson UK Retirement,retirement,asset,41719.57
+11/21/25,Traditional IRA u2061893,retirement,asset,122297
+11/21/25,Transamerica Strike  401(k) Plan,retirement,asset,379170
+11/21/25,Watershed Technologies,retirement,asset,40000
+11/21/25,WLLTAF (edx),retirement,asset,21500
+11/24/25,128Newton,other,property,1425000
+11/24/25,128NewtonMortgage,mortgage,liability,-983084
+11/24/25,52CityMills,property,asset,733600
+11/24/25,52CityMillsMortgage,mortgage,liability,-325797
+11/24/25,Blue Mound,retirement,asset,10113
+11/24/25,Chase,cash,asset,17525
+11/24/25,Churpse,other,asset,100000
+11/24/25,Citizens,cash,asset,128977
+11/24/25,Coinbase acct,crypto,asset,155450
+11/24/25,Concierge,retirement,asset,20000
+11/24/25,Crawford Cash,retirement,asset,1539
+11/24/25,GTS Equity Fund,other,asset,0
+11/24/25,In Silico,other,asset,0
+11/24/25,Kingdom Cash,retirement,asset,0
+11/24/25,KZCASH cash,cash,asset,19068
+11/24/25,KZCASH stocks,other,asset,787821
+11/24/25,L&G UK Retirement,retirement,asset,45479.27
+11/24/25,LTAF-A3 2023,retirement,asset,0
+11/24/25,LTAF-A3 2024,retirement,asset,0
+11/24/25,LTAF-A3 2025,retirement,asset,55000
+11/24/25,LTAF-Betterment,retirement,asset,99505
+11/24/25,Marcus,other,asset,841
+11/24/25,Motorcycle,other,asset,18250
+11/24/25,Natwest Current,other,asset,53314.38
+11/24/25,Natwest E-ISA,other,asset,1651.91
+11/24/25,Natwest Savings,other,asset,0
+11/24/25,Natwest ZHK Holdings Limited,other,asset,0
+11/24/25,New Legacy Falcon (SpaceX),other,asset,75000
+11/24/25,New Legacy Owl (Invisible),retirement,asset,50000
+11/24/25,NL Raven II (xAI),retirement,asset,126550
+11/24/25,NL Raven II (xAI) Personal,other,asset,16562
+11/24/25,NS&I Bond,other,asset,0
+11/24/25,Omega,other,asset,5000
+11/24/25,Pirate Studios,other,asset,0
+11/24/25,Rolex,other,asset,20000
+11/24/25,Roth IRA u2466090,retirement,asset,228394
+11/24/25,Seven Willoughby,other,asset,4618
+11/24/25,Towers Watson UK Retirement,retirement,asset,41719.57
+11/24/25,Traditional IRA u2061893,retirement,asset,123197
+11/24/25,Transamerica Strike  401(k) Plan,retirement,asset,379170
+11/24/25,Watershed Technologies,retirement,asset,40000
+11/24/25,WLLTAF (edx),retirement,asset,21500
