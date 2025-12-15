@@ -1,6 +1,14 @@
 import sqlite3 from "sqlite3";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const db = new sqlite3.Database("./networth.db");
+// Always resolve the DB path relative to this file (server/db.js),
+// not relative to whatever directory you ran `node` from.
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dbPath = path.join(__dirname, "networth.db");
+
+const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
   db.run(`
@@ -100,6 +108,7 @@ db.serialize(() => {
       seedDemoUser(true);
     }
   });
+
   db.run(`UPDATE accounts SET user_id=1 WHERE user_id IS NULL`);
   db.run(`UPDATE balances SET user_id=1 WHERE user_id IS NULL`);
 
@@ -116,7 +125,9 @@ db.serialize(() => {
       return;
     }
 
-    const legacyAuto = rows.find(r => String(r.name || "").startsWith("sqlite_autoindex_accounts") && r.origin === "u");
+    const legacyAuto = rows.find(
+      (r) => String(r.name || "").startsWith("sqlite_autoindex_accounts") && r.origin === "u"
+    );
     if (!legacyAuto) return;
 
     // Double-check that the legacy autoindex only covers the name column.
