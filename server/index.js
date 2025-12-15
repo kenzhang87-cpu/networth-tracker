@@ -40,27 +40,103 @@ const authMiddleware = async (req, res, next) => {
 };
 
 app.post("/auth/register", async (req, res) => {
-  const { username, password } = req.body;
-  if (!username?.trim() || !password) return res.status(400).json({ error: "username and password required" });
+  const { username, password, email } = req.body;
+  if (!username?.trim() || !password) {
+    return res.status(400).json({ error: "username and password required" });
+  }
+
+  const emailVal = email?.trim() || null;
   const hash = await bcrypt.hash(password, 10);
+
   try {
-    await run(`INSERT INTO users(username, password_hash) VALUES (?, ?)`, [username.trim(), hash]);
+    await run(
+      `INSERT INTO users(username, password_hash, email) VALUES (?, ?, ?)`,
+      [username.trim(), hash, emailVal]
+    );
     res.json({ ok: true });
   } catch (e) {
-    res.status(400).json({ error: "user exists" });
+    const msg = String(e?.message || "").toLowerCase();
+    if (msg.includes("username")) return res.status(400).json({ error: "username already taken" });
+    if (msg.includes("email")) return res.status(400).json({ error: "email already in use" });
+    res.status(400).json({ error: "could not create user" });
   }
 });
 
 app.post("/auth/login", async (req, res) => {
   const { username, password } = req.body;
-  if (!username?.trim() || !password) return res.status(400).json({ error: "username and password required" });
-  const rows = await all(`SELECT * FROM users WHERE username=?`, [username.trim()]);
+  const identifier = username?.trim();
+  if (!identifier || !password) {
+    return res.status(400).json({ error: "username/email and password required" });
+  }
+
+  const rows = await all(
+    `SELECT * FROM users WHERE username=? OR lower(email)=lower(?) LIMIT 1`,
+    [identifier, identifier]
+  );
   const user = rows[0];
   if (!user) return res.status(401).json({ error: "invalid credentials" });
+
   const ok = await bcrypt.compare(password, user.password_hash);
   if (!ok) return res.status(401).json({ error: "invalid credentials" });
+
   const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: "7d" });
-  res.json({ token, username: user.username });
+  res.json({ token, username: user.username, email: user.email || null });
+});
+
+app.get("/auth/me", authMiddleware, async (req, res) => {
+  const rows = await all(`SELECT id, username, email FROM users WHERE id=?`, [req.user.id]);
+  const user = rows[0];
+  if (!user) return res.status(404).json({ error: "user not found" });
+  res.json(user);
+});
+
+app.post("/auth/change-password", authMiddleware, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: "currentPassword and newPassword required" });
+  }
+
+  const rows = await all(`SELECT password_hash FROM users WHERE id=?`, [req.user.id]);
+  const user = rows[0];
+  if (!user) return res.status(404).json({ error: "user not found" });
+
+  const ok = await bcrypt.compare(currentPassword, user.password_hash);
+  if (!ok) return res.status(401).json({ error: "current password incorrect" });
+
+  const hash = await bcrypt.hash(newPassword, 10);
+  await run(`UPDATE users SET password_hash=? WHERE id=?`, [hash, req.user.id]);
+  res.json({ ok: true });
+});
+
+app.patch("/auth/email", authMiddleware, async (req, res) => {
+  const { email } = req.body;
+  const emailVal = email?.trim();
+  if (!emailVal) return res.status(400).json({ error: "email required" });
+
+  try {
+    await run(`UPDATE users SET email=? WHERE id=?`, [emailVal, req.user.id]);
+    res.json({ email: emailVal });
+  } catch (e) {
+    const msg = String(e?.message || "").toLowerCase();
+    if (msg.includes("unique")) return res.status(400).json({ error: "email already in use" });
+    res.status(400).json({ error: "could not update email" });
+  }
+});
+
+app.post("/auth/forgot", async (req, res) => {
+  const email = req.body.email?.trim();
+  if (!email) return res.status(400).json({ error: "email required" });
+
+  const rows = await all(`SELECT id FROM users WHERE lower(email)=lower(?)`, [email]);
+  const user = rows[0];
+  if (!user) {
+    return res.json({ message: "If an account exists, you'll receive a reset email." });
+  }
+
+  const tempPassword = Math.random().toString(36).slice(-10);
+  const hash = await bcrypt.hash(tempPassword, 10);
+  await run(`UPDATE users SET password_hash=? WHERE id=?`, [hash, user.id]);
+  res.json({ tempPassword });
 });
 
 app.get("/accounts", authMiddleware, async (req, res) => {
@@ -119,7 +195,7 @@ app.get("/balances", authMiddleware, async (req, res) => {
   const rows = await all(`
     SELECT b.id, b.date, b.balance, a.name AS account
     FROM balances b
-    JOIN accounts a ON a.id = b.account_id AND a.user_id = b.user_id
+    JOIN accounts a ON a.id = b.account_id
     WHERE b.user_id=?
     ORDER BY b.date ASC, a.name ASC
   `, [req.user.id]);
@@ -184,7 +260,7 @@ app.get("/timeseries", authMiddleware, async (req, res) => {
   const rows = await all(`
     SELECT b.date, a.name AS account, b.balance
     FROM balances b
-    JOIN accounts a ON a.id = b.account_id AND a.user_id = b.user_id
+    JOIN accounts a ON a.id = b.account_id
     WHERE b.user_id=?
     ORDER BY b.date ASC, a.name ASC
   `, [req.user.id]);

@@ -6,6 +6,7 @@ db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE,
       username TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL
     )
@@ -58,8 +59,47 @@ db.serialize(() => {
     }
   });
 
-  // Ensure a default user exists for legacy data.
-  db.run(`INSERT OR IGNORE INTO users(id, username, password_hash) VALUES (1, 'demo', '$2b$10$HU0iaoR6nZP5ZruVYB.o/.q/YokZhGMevAbpSuaV6TgGO8vchUEeO')`);
+  const seedDemoUser = (hasEmail) => {
+    if (hasEmail) {
+      db.run(
+        `INSERT OR IGNORE INTO users(id, username, password_hash, email) VALUES (1, 'demo', '$2b$10$HU0iaoR6nZP5ZruVYB.o/.q/YokZhGMevAbpSuaV6TgGO8vchUEeO', 'demo@example.com')`
+      );
+      db.run(`UPDATE users SET email='demo@example.com' WHERE id=1 AND email IS NULL`);
+    } else {
+      db.run(
+        `INSERT OR IGNORE INTO users(id, username, password_hash) VALUES (1, 'demo', '$2b$10$HU0iaoR6nZP5ZruVYB.o/.q/YokZhGMevAbpSuaV6TgGO8vchUEeO')`
+      );
+    }
+  };
+
+  db.all(`PRAGMA table_info(users)`, (err, rows = []) => {
+    if (err) {
+      console.error("Failed to inspect users table:", err.message);
+      seedDemoUser(false);
+      return;
+    }
+    const hasEmail = rows.some((r) => String(r.name).toLowerCase() === "email");
+    const createIndex = () => {
+      db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users(email)`, (idxErr) => {
+        if (idxErr) console.error("Failed to add email index:", idxErr.message);
+      });
+    };
+
+    if (!hasEmail) {
+      db.run(`ALTER TABLE users ADD COLUMN email TEXT`, (alterErr) => {
+        if (alterErr && !String(alterErr.message).includes("duplicate column name")) {
+          console.error("Failed to add email to users:", alterErr.message);
+          seedDemoUser(false);
+          return;
+        }
+        createIndex();
+        seedDemoUser(true);
+      });
+    } else {
+      createIndex();
+      seedDemoUser(true);
+    }
+  });
   db.run(`UPDATE accounts SET user_id=1 WHERE user_id IS NULL`);
   db.run(`UPDATE balances SET user_id=1 WHERE user_id IS NULL`);
 

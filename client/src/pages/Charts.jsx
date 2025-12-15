@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { getTimeseries, getAccounts } from "../api.js";
 import {
+  assetCategories,
+  liabilityCategories,
+  colorForCategory
+} from "../palette.js";
+import {
   LineChart, Line, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell, ReferenceLine
 } from "recharts";
@@ -88,8 +93,6 @@ const formatCurrencyShort = (val) => {
 
 /** ---------------- Categories ---------------- */
 
-const assetCategories = ["cash", "stocks", "crypto", "retirement", "property", "other"];
-const liabilityCategories = ["mortgage", "credit card", "loans", "other liability"];
 const categoriesOrder = [...assetCategories, ...liabilityCategories];
 
 /** ---------------- Y-axis scaling ---------------- */
@@ -658,21 +661,6 @@ export default function Charts() {
 }
 
 /** ---------------- Colors + Legends ---------------- */
-
-const palette = {
-  cash: { fill: "rgb(4, 129, 38)", stroke: "#4a90e2" },
-  stocks: { fill: "rgb(61, 202, 122)", stroke: "#27ae60" },
-  crypto: { fill: "rgba(146, 253, 110, 0.9)", stroke: "#f39c12" },
-  retirement: { fill: "rgba(140, 211, 55, 0.9)", stroke: "#d35400" },
-  property: { fill: "rgba(232, 218, 239, 0.9)", stroke: "#8e44ad" },
-  mortgage: { fill: "rgba(10, 47, 233, 0.9)", stroke: "#2980b9" },
-  "credit card": { fill: "rgba(246, 23, 3, 0.45)", stroke: "#c0392b" },
-  loans: { fill: "rgba(215, 189, 226, 0.9)", stroke: "#7d3c98" },
-  "other liability": { fill: "rgba(236, 240, 241, 0.9)", stroke: "#7f8c8d" },
-  other: { fill: "rgba(242, 244, 244, 0.9)", stroke: "#7f8c8d" }
-};
-
-const colorForCategory = (cat) => palette[cat] || palette.other;
 
 const legendLabel = (name) => {
   const c = colorForCategory(name);
