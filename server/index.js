@@ -2,29 +2,13 @@ import express from "express";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import db from "./db.js";
+import { all, run, initDb } from "./db.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
-
-const run = (sql, params=[]) =>
-  new Promise((resolve, reject) =>
-    db.run(sql, params, function (err) {
-      if (err) reject(err);
-      else resolve(this);
-    })
-  );
-
-const all = (sql, params=[]) =>
-  new Promise((resolve, reject) =>
-    db.all(sql, params, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows);
-    })
-  );
 
 const authMiddleware = async (req, res, next) => {
   const header = req.headers.authorization || "";
@@ -50,14 +34,15 @@ app.post("/auth/register", async (req, res) => {
 
   try {
     await run(
-      `INSERT INTO users(username, password_hash, email) VALUES (?, ?, ?)`,
+      `INSERT INTO users(username, password_hash, email) VALUES ($1, $2, $3)`,
       [username.trim(), hash, emailVal]
     );
     res.json({ ok: true });
   } catch (e) {
-    const msg = String(e?.message || "").toLowerCase();
-    if (msg.includes("username")) return res.status(400).json({ error: "username already taken" });
-    if (msg.includes("email")) return res.status(400).json({ error: "email already in use" });
+    if (e.code === "23505") {
+      const target = String(e.detail || "").toLowerCase().includes("email") ? "email" : "username";
+      return res.status(400).json({ error: `${target} already in use` });
+    }
     res.status(400).json({ error: "could not create user" });
   }
 });
@@ -70,8 +55,8 @@ app.post("/auth/login", async (req, res) => {
   }
 
   const rows = await all(
-    `SELECT * FROM users WHERE username=? OR lower(email)=lower(?) LIMIT 1`,
-    [identifier, identifier]
+    `SELECT * FROM users WHERE username=$1 OR lower(email)=lower($1) LIMIT 1`,
+    [identifier]
   );
   const user = rows[0];
   if (!user) return res.status(401).json({ error: "invalid credentials" });
@@ -84,7 +69,7 @@ app.post("/auth/login", async (req, res) => {
 });
 
 app.get("/auth/me", authMiddleware, async (req, res) => {
-  const rows = await all(`SELECT id, username, email FROM users WHERE id=?`, [req.user.id]);
+  const rows = await all(`SELECT id, username, email FROM users WHERE id=$1`, [req.user.id]);
   const user = rows[0];
   if (!user) return res.status(404).json({ error: "user not found" });
   res.json(user);
@@ -96,7 +81,7 @@ app.post("/auth/change-password", authMiddleware, async (req, res) => {
     return res.status(400).json({ error: "currentPassword and newPassword required" });
   }
 
-  const rows = await all(`SELECT password_hash FROM users WHERE id=?`, [req.user.id]);
+  const rows = await all(`SELECT password_hash FROM users WHERE id=$1`, [req.user.id]);
   const user = rows[0];
   if (!user) return res.status(404).json({ error: "user not found" });
 
@@ -114,11 +99,10 @@ app.patch("/auth/email", authMiddleware, async (req, res) => {
   if (!emailVal) return res.status(400).json({ error: "email required" });
 
   try {
-    await run(`UPDATE users SET email=? WHERE id=?`, [emailVal, req.user.id]);
+    await run(`UPDATE users SET email=$1 WHERE id=$2`, [emailVal, req.user.id]);
     res.json({ email: emailVal });
   } catch (e) {
-    const msg = String(e?.message || "").toLowerCase();
-    if (msg.includes("unique")) return res.status(400).json({ error: "email already in use" });
+    if (e.code === "23505") return res.status(400).json({ error: "email already in use" });
     res.status(400).json({ error: "could not update email" });
   }
 });
@@ -127,7 +111,7 @@ app.post("/auth/forgot", async (req, res) => {
   const email = req.body.email?.trim();
   if (!email) return res.status(400).json({ error: "email required" });
 
-  const rows = await all(`SELECT id FROM users WHERE lower(email)=lower(?)`, [email]);
+  const rows = await all(`SELECT id FROM users WHERE lower(email)=lower($1)`, [email]);
   const user = rows[0];
   if (!user) {
     return res.json({ message: "If an account exists, you'll receive a reset email." });
@@ -141,7 +125,7 @@ app.post("/auth/forgot", async (req, res) => {
 
 app.get("/accounts", authMiddleware, async (req, res) => {
   const rows = await all(
-    `SELECT id, name, COALESCE(category, 'other') AS category FROM accounts WHERE user_id=? ORDER BY name`,
+    `SELECT id, name, COALESCE(category, 'other') AS category FROM accounts WHERE user_id=$1 ORDER BY name`,
     [req.user.id]
   );
   res.json(rows);
@@ -152,8 +136,11 @@ app.post("/accounts", authMiddleware, async (req, res) => {
   if (!name?.trim()) return res.status(400).json({ error: "name required" });
 
   try {
-    await run(`INSERT INTO accounts(user_id, name, category) VALUES (?, ?, ?)`, [req.user.id, name.trim(), category]);
-    const rows = await all(`SELECT * FROM accounts WHERE user_id=? ORDER BY name`, [req.user.id]);
+    await run(
+      `INSERT INTO accounts(user_id, name, category) VALUES ($1, $2, $3) ON CONFLICT(user_id, name) DO NOTHING`,
+      [req.user.id, name.trim(), category]
+    );
+    const rows = await all(`SELECT * FROM accounts WHERE user_id=$1 ORDER BY name`, [req.user.id]);
     res.json(rows);
   } catch (e) {
     res.status(400).json({ error: e.message });
@@ -167,11 +154,11 @@ app.patch("/accounts/:id", authMiddleware, async (req, res) => {
 
   try {
     const result = await run(
-      `UPDATE accounts SET name = ?, category = ? WHERE id = ? AND user_id = ?`,
+      `UPDATE accounts SET name = $1, category = $2 WHERE id = $3 AND user_id = $4`,
       [name.trim(), category || "other", id, req.user.id]
     );
-    if (result.changes === 0) return res.status(404).json({ error: "account not found" });
-    const rows = await all(`SELECT * FROM accounts WHERE user_id=? ORDER BY name`, [req.user.id]);
+    if (result.rowCount === 0) return res.status(404).json({ error: "account not found" });
+    const rows = await all(`SELECT * FROM accounts WHERE user_id=$1 ORDER BY name`, [req.user.id]);
     res.json(rows);
   } catch (e) {
     res.status(400).json({ error: e.message });
@@ -181,10 +168,10 @@ app.patch("/accounts/:id", authMiddleware, async (req, res) => {
 app.delete("/accounts/:id", authMiddleware, async (req, res) => {
   const { id } = req.params;
   try {
-    await run(`DELETE FROM balances WHERE account_id = ? AND user_id = ?`, [id, req.user.id]);
-    const result = await run(`DELETE FROM accounts WHERE id = ? AND user_id = ?`, [id, req.user.id]);
-    if (result.changes === 0) return res.status(404).json({ error: "account not found" });
-    const rows = await all(`SELECT * FROM accounts WHERE user_id=? ORDER BY name`, [req.user.id]);
+    await run(`DELETE FROM balances WHERE account_id = $1 AND user_id = $2`, [id, req.user.id]);
+    const result = await run(`DELETE FROM accounts WHERE id = $1 AND user_id = $2`, [id, req.user.id]);
+    if (result.rowCount === 0) return res.status(404).json({ error: "account not found" });
+    const rows = await all(`SELECT * FROM accounts WHERE user_id=$1 ORDER BY name`, [req.user.id]);
     res.json(rows);
   } catch (e) {
     res.status(400).json({ error: e.message });
@@ -196,7 +183,7 @@ app.get("/balances", authMiddleware, async (req, res) => {
     SELECT b.id, b.date, b.balance, a.name AS account
     FROM balances b
     JOIN accounts a ON a.id = b.account_id
-    WHERE b.user_id=?
+    WHERE b.user_id=$1
     ORDER BY b.date ASC, a.name ASC
   `, [req.user.id]);
   res.json(rows);
@@ -208,14 +195,17 @@ app.post("/balances", authMiddleware, async (req, res) => {
     return res.status(400).json({ error: "account, date, balance required" });
   }
 
-  await run(`INSERT OR IGNORE INTO accounts(user_id, name) VALUES (?, ?)`, [req.user.id, account]);
-  const [acct] = await all(`SELECT id FROM accounts WHERE user_id=? AND name=?`, [req.user.id, account]);
+  await run(
+    `INSERT INTO accounts(user_id, name) VALUES ($1, $2) ON CONFLICT(user_id, name) DO NOTHING`,
+    [req.user.id, account]
+  );
+  const [acct] = await all(`SELECT id FROM accounts WHERE user_id=$1 AND name=$2`, [req.user.id, account]);
 
   try {
     await run(
       `
       INSERT INTO balances(user_id, account_id, date, balance)
-      VALUES (?, ?, ?, ?)
+      VALUES ($1, $2, $3, $4)
       ON CONFLICT(account_id, date)
       DO UPDATE SET balance=excluded.balance
       `,
@@ -230,7 +220,7 @@ app.post("/balances", authMiddleware, async (req, res) => {
 app.delete("/balances/:id", authMiddleware, async (req, res) => {
   const { id } = req.params;
   try {
-    await run(`DELETE FROM balances WHERE id = ? AND user_id = ?`, [id, req.user.id]);
+    await run(`DELETE FROM balances WHERE id = $1 AND user_id = $2`, [id, req.user.id]);
     res.json({ ok: true });
   } catch (e) {
     res.status(400).json({ error: e.message });
@@ -246,8 +236,8 @@ app.patch("/balances/:id", authMiddleware, async (req, res) => {
   }
 
   try {
-    const result = await run(`UPDATE balances SET balance = ? WHERE id = ? AND user_id = ?`, [balance, id, req.user.id]);
-    if (result.changes === 0) {
+    const result = await run(`UPDATE balances SET balance = $1 WHERE id = $2 AND user_id = $3`, [balance, id, req.user.id]);
+    if (result.rowCount === 0) {
       return res.status(404).json({ error: "balance not found" });
     }
     res.json({ ok: true });
@@ -261,7 +251,7 @@ app.get("/timeseries", authMiddleware, async (req, res) => {
     SELECT b.date, a.name AS account, b.balance
     FROM balances b
     JOIN accounts a ON a.id = b.account_id
-    WHERE b.user_id=?
+    WHERE b.user_id=$1
     ORDER BY b.date ASC, a.name ASC
   `, [req.user.id]);
 
@@ -278,5 +268,13 @@ app.get("/timeseries", authMiddleware, async (req, res) => {
   res.json([...byDate.values()]);
 });
 
-const PORT = 4000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+const PORT = process.env.PORT || 4000;
+const start = async () => {
+  await initDb();
+  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+};
+
+start().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+});

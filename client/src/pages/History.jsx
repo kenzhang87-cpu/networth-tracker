@@ -201,6 +201,11 @@ export default function History() {
 
     main.addEventListener("scroll", onMain, { passive: true });
     float.addEventListener("scroll", onFloat, { passive: true });
+
+    // keep aligned after width/layout changes
+    const align = () => { float.scrollLeft = main.scrollLeft; };
+    align();
+
     return () => {
       main.removeEventListener("scroll", onMain);
       float.removeEventListener("scroll", onFloat);
@@ -346,6 +351,46 @@ export default function History() {
       return sortDir === "desc" ? cmp : -cmp;
     });
   }, [draftRows, dates, allColumns, byDate, sortDir]);
+
+  // keep floating scrollbar width in sync with content (robust for SSR/hosting)
+  useEffect(() => {
+    const updateWidth = () => {
+      const area = scrollAreaRef.current;
+      if (!area) return;
+      const w = Math.max(
+        area.scrollWidth || 0,
+        area.clientWidth || 0,
+        assetTableRef.current?.scrollWidth || 0,
+        liabilityTableRef.current?.scrollWidth || 0
+      );
+      setScrollWidth(w || 0);
+    };
+
+    updateWidth();
+    // run again on next paint and shortly after to catch layout after data uploads
+    const raf = requestAnimationFrame(updateWidth);
+    const timer = setTimeout(updateWidth, 50);
+    window.addEventListener("resize", updateWidth);
+
+    let observer;
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(updateWidth);
+      if (scrollAreaRef.current) observer.observe(scrollAreaRef.current);
+      if (assetTableRef.current) observer.observe(assetTableRef.current);
+      if (liabilityTableRef.current) observer.observe(liabilityTableRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateWidth);
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+      if (observer) {
+        if (scrollAreaRef.current) observer.unobserve(scrollAreaRef.current);
+        if (assetTableRef.current) observer.unobserve(assetTableRef.current);
+        if (liabilityTableRef.current) observer.unobserve(liabilityTableRef.current);
+      }
+    };
+  }, [assetCols, liabilityCols, balances, draftRows, sortDir, tableRows]);
 
   // keep floating scrollbar width in sync with content (robust for SSR/hosting)
   useEffect(() => {
