@@ -347,13 +347,39 @@ export default function History() {
     });
   }, [draftRows, dates, allColumns, byDate, sortDir]);
 
-  // keep floating scrollbar width in sync with widest table
+  // keep floating scrollbar width in sync with content (robust for SSR/hosting)
   useEffect(() => {
-    const w = Math.max(
-      assetTableRef.current?.scrollWidth || 0,
-      liabilityTableRef.current?.scrollWidth || 0
-    );
-    setScrollWidth(w);
+    const updateWidth = () => {
+      const area = scrollAreaRef.current;
+      if (!area) return;
+      const w = Math.max(
+        area.scrollWidth || 0,
+        area.clientWidth || 0,
+        assetTableRef.current?.scrollWidth || 0,
+        liabilityTableRef.current?.scrollWidth || 0
+      );
+      setScrollWidth(w || 0);
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+
+    let observer;
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(updateWidth);
+      if (scrollAreaRef.current) observer.observe(scrollAreaRef.current);
+      if (assetTableRef.current) observer.observe(assetTableRef.current);
+      if (liabilityTableRef.current) observer.observe(liabilityTableRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateWidth);
+      if (observer) {
+        if (scrollAreaRef.current) observer.unobserve(scrollAreaRef.current);
+        if (assetTableRef.current) observer.unobserve(assetTableRef.current);
+        if (liabilityTableRef.current) observer.unobserve(liabilityTableRef.current);
+      }
+    };
   }, [assetCols, liabilityCols, balances, draftRows, sortDir]);
 
   const addDateRow = () => {
