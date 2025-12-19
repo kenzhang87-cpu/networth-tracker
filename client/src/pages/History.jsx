@@ -786,18 +786,19 @@ const onCsvUpload = async (e) => {
             maxHeight: "60vh",
             border: "1px solid #eee",
             borderRadius: 8,
-            padding: 6
+            padding: 6,
+            fontSize: 10
           }}
         >
           {assetCols.length === 0 ? (
             <div style={{ color: "#777" }}>No asset accounts</div>
           ) : (
-            <table
-              ref={assetTableRef}
-              width="100%"
-              cellPadding="6"
-              style={{ borderCollapse: "collapse", minWidth: 400 }}
-            >
+                <table
+                  ref={assetTableRef}
+                  width="100%"
+                  cellPadding="4"
+                  style={{ borderCollapse: "collapse", minWidth: 400, fontSize: 12 }}
+                >
               <thead>
                 <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
                   <th
@@ -872,18 +873,19 @@ const onCsvUpload = async (e) => {
             maxHeight: "60vh",
             border: "1px solid #eee",
             borderRadius: 8,
-            padding: 6
+            padding: 6,
+            fontSize: 10
           }}
         >
           {liabilityCols.length === 0 ? (
             <div style={{ color: "#777" }}>No liability accounts</div>
           ) : (
-            <table
-              ref={liabilityTableRef}
-              width="100%"
-              cellPadding="6"
-              style={{ borderCollapse: "collapse", minWidth: 400 }}
-            >
+                <table
+                  ref={liabilityTableRef}
+                  width="100%"
+                  cellPadding="4"
+                  style={{ borderCollapse: "collapse", minWidth: 400, fontSize: 12 }}
+                >
               <thead>
                 <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
                   <th
