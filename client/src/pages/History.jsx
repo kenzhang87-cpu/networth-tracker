@@ -199,8 +199,8 @@ export default function History() {
     const onMain = () => sync(main, float);
     const onFloat = () => sync(float, main);
 
-    main.addEventListener("scroll", onMain);
-    float.addEventListener("scroll", onFloat);
+    main.addEventListener("scroll", onMain, { passive: true });
+    float.addEventListener("scroll", onFloat, { passive: true });
     return () => {
       main.removeEventListener("scroll", onMain);
       float.removeEventListener("scroll", onFloat);
@@ -362,6 +362,8 @@ export default function History() {
     };
 
     updateWidth();
+    // run again on next paint in case fonts/layout inflate width
+    const raf = requestAnimationFrame(updateWidth);
     window.addEventListener("resize", updateWidth);
 
     let observer;
@@ -374,6 +376,7 @@ export default function History() {
 
     return () => {
       window.removeEventListener("resize", updateWidth);
+      cancelAnimationFrame(raf);
       if (observer) {
         if (scrollAreaRef.current) observer.unobserve(scrollAreaRef.current);
         if (assetTableRef.current) observer.unobserve(assetTableRef.current);
