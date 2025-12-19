@@ -164,11 +164,8 @@ export default function History() {
   const [assetCols, setAssetCols] = useState([]);
   const [liabilityCols, setLiabilityCols] = useState([]);
   const [username, setUsername] = useState("user");
-  const scrollAreaRef = useRef(null);
-  const floatScrollRef = useRef(null);
   const assetTableRef = useRef(null);
   const liabilityTableRef = useRef(null);
-  const [scrollWidth, setScrollWidth] = useState(0);
 
   const load = async () => {
     const [data, accts] = await Promise.all([getBalances(), getAccounts()]);
@@ -185,32 +182,7 @@ export default function History() {
       .catch(() => {});
   }, []);
 
-  // sync floating scrollbar with main scroll area
-  useEffect(() => {
-    const main = scrollAreaRef.current;
-    const float = floatScrollRef.current;
-    if (!main || !float) return undefined;
-
-    const sync = (source, target) => {
-      if (!target || target.scrollLeft === source.scrollLeft) return;
-      target.scrollLeft = source.scrollLeft;
-    };
-
-    const onMain = () => sync(main, float);
-    const onFloat = () => sync(float, main);
-
-    main.addEventListener("scroll", onMain, { passive: true });
-    float.addEventListener("scroll", onFloat, { passive: true });
-
-    // keep aligned after width/layout changes
-    const align = () => { float.scrollLeft = main.scrollLeft; };
-    align();
-
-    return () => {
-      main.removeEventListener("scroll", onMain);
-      float.removeEventListener("scroll", onFloat);
-    };
-  }, []);
+  // no extra sync hook needed now that we're using a single native scrollbar
 
   const deleteAllData = async () => {
     const ok = window.confirm(
@@ -352,83 +324,7 @@ export default function History() {
     });
   }, [draftRows, dates, allColumns, byDate, sortDir]);
 
-  // keep floating scrollbar width in sync with content (robust for SSR/hosting)
-  useEffect(() => {
-    const updateWidth = () => {
-      const area = scrollAreaRef.current;
-      if (!area) return;
-      const w = Math.max(
-        area.scrollWidth || 0,
-        area.clientWidth || 0,
-        assetTableRef.current?.scrollWidth || 0,
-        liabilityTableRef.current?.scrollWidth || 0
-      );
-      setScrollWidth(w || 0);
-    };
-
-    updateWidth();
-    // run again on next paint and shortly after to catch layout after data uploads
-    const raf = requestAnimationFrame(updateWidth);
-    const timer = setTimeout(updateWidth, 50);
-    window.addEventListener("resize", updateWidth);
-
-    let observer;
-    if (typeof ResizeObserver !== "undefined") {
-      observer = new ResizeObserver(updateWidth);
-      if (scrollAreaRef.current) observer.observe(scrollAreaRef.current);
-      if (assetTableRef.current) observer.observe(assetTableRef.current);
-      if (liabilityTableRef.current) observer.observe(liabilityTableRef.current);
-    }
-
-    return () => {
-      window.removeEventListener("resize", updateWidth);
-      cancelAnimationFrame(raf);
-      clearTimeout(timer);
-      if (observer) {
-        if (scrollAreaRef.current) observer.unobserve(scrollAreaRef.current);
-        if (assetTableRef.current) observer.unobserve(assetTableRef.current);
-        if (liabilityTableRef.current) observer.unobserve(liabilityTableRef.current);
-      }
-    };
-  }, [assetCols, liabilityCols, balances, draftRows, sortDir, tableRows]);
-
-  // keep floating scrollbar width in sync with content (robust for SSR/hosting)
-  useEffect(() => {
-    const updateWidth = () => {
-      const area = scrollAreaRef.current;
-      if (!area) return;
-      const w = Math.max(
-        area.scrollWidth || 0,
-        area.clientWidth || 0,
-        assetTableRef.current?.scrollWidth || 0,
-        liabilityTableRef.current?.scrollWidth || 0
-      );
-      setScrollWidth(w || 0);
-    };
-
-    updateWidth();
-    // run again on next paint in case fonts/layout inflate width
-    const raf = requestAnimationFrame(updateWidth);
-    window.addEventListener("resize", updateWidth);
-
-    let observer;
-    if (typeof ResizeObserver !== "undefined") {
-      observer = new ResizeObserver(updateWidth);
-      if (scrollAreaRef.current) observer.observe(scrollAreaRef.current);
-      if (assetTableRef.current) observer.observe(assetTableRef.current);
-      if (liabilityTableRef.current) observer.observe(liabilityTableRef.current);
-    }
-
-    return () => {
-      window.removeEventListener("resize", updateWidth);
-      cancelAnimationFrame(raf);
-      if (observer) {
-        if (scrollAreaRef.current) observer.unobserve(scrollAreaRef.current);
-        if (assetTableRef.current) observer.unobserve(assetTableRef.current);
-        if (liabilityTableRef.current) observer.unobserve(liabilityTableRef.current);
-      }
-    };
-  }, [assetCols, liabilityCols, balances, draftRows, sortDir]);
+  // (scroll handled by native table wrappers per section)
 
   const addDateRow = () => {
     if (allColumns.length === 0) return;
@@ -870,185 +766,182 @@ const onCsvUpload = async (e) => {
 
       {(dates.length > 0 || draftRows.length > 0) && (
         <>
-          <div ref={scrollAreaRef} style={{ overflowX: "auto", fontSize: 14, paddingBottom: 16 }}>
-            {/* ASSETS TABLE */}
-            <div
-              style={{
-                background: "#000",
-                color: "#fff",
-                padding: "8px 12px",
-                borderRadius: 8,
-                marginBottom: 8
-              }}
+      <div style={{ display: "grid", gap: 16 }}>
+        {/* ASSETS TABLE */}
+        <div
+          style={{
+            background: "#000",
+            color: "#fff",
+            padding: "8px 12px",
+            borderRadius: 8
+          }}
+        >
+          <h3 style={{ margin: 0 }}>Assets</h3>
+        </div>
+        <div
+          style={{
+            overflowX: "auto",
+            overflowY: "auto",
+            maxWidth: "100%",
+            maxHeight: "60vh",
+            border: "1px solid #eee",
+            borderRadius: 8,
+            padding: 6
+          }}
+        >
+          {assetCols.length === 0 ? (
+            <div style={{ color: "#777" }}>No asset accounts</div>
+          ) : (
+            <table
+              ref={assetTableRef}
+              width="100%"
+              cellPadding="6"
+              style={{ borderCollapse: "collapse", minWidth: 400 }}
             >
-              <h3 style={{ margin: 0 }}>Assets</h3>
-            </div>
+              <thead>
+                <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
+                  <th
+                    style={{ width: 120, lineHeight: 1.2, whiteSpace: "nowrap", cursor: "pointer" }}
+                    onClick={() => setSortDir(d => (d === "desc" ? "asc" : "desc"))}
+                    title="Click to sort by date"
+                  >
+                    Date {sortDir === "desc" ? "▼" : "▲"}
+                  </th>
 
-            <div style={{ marginBottom: 12 }}>
-              {assetCols.length === 0 ? (
-                <div style={{ color: "#777" }}>No asset accounts</div>
-              ) : (
-                <table
-                  ref={assetTableRef}
-                  width="100%"
-                  cellPadding="6"
-                  style={{ borderCollapse: "collapse", minWidth: 400 }}
-                >
-                  <thead>
-                    <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
+                  {assetCols.map(acct => {
+                    const cat = accountCategory.get(acct) || "other";
+                    const colors = colorForCategory(cat);
+                    return (
                       <th
-                        style={{ width: 120, lineHeight: 1.2, whiteSpace: "nowrap", cursor: "pointer" }}
-                        onClick={() => setSortDir(d => (d === "desc" ? "asc" : "desc"))}
-                        title="Click to sort by date"
+                        key={acct}
+                        draggable
+                        onDragStart={(e) => e.dataTransfer.setData("text/plain", `asset::${acct}`)}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const data = e.dataTransfer.getData("text/plain");
+                          if (!data.startsWith("asset::")) return;
+                          const dragged = data.split("::")[1];
+                          setAssetCols(cols => {
+                            const next = cols.filter(c => c !== dragged);
+                            const idx = next.indexOf(acct);
+                            next.splice(idx, 0, dragged);
+                            return [...next];
+                          });
+                        }}
+                        style={{
+                          textAlign: "center",
+                          background: colors.fill,
+                          borderBottom: `1px solid ${colors.stroke}`,
+                          color: "#111",
+                          cursor: "grab"
+                        }}
+                        title={cat}
                       >
-                        Date {sortDir === "desc" ? "▼" : "▲"}
+                        {acct}
                       </th>
+                    );
+                  })}
 
-                      {assetCols.map(acct => {
-                        const cat = accountCategory.get(acct) || "other";
-                        const colors = colorForCategory(cat);
-                        return (
-                          <th
-                            key={acct}
-                            draggable
-                            onDragStart={(e) => e.dataTransfer.setData("text/plain", `asset::${acct}`)}
-                            onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => {
-                              e.preventDefault();
-                              const data = e.dataTransfer.getData("text/plain");
-                              if (!data.startsWith("asset::")) return;
-                              const dragged = data.split("::")[1];
-                              setAssetCols(cols => {
-                                const next = cols.filter(c => c !== dragged);
-                                const idx = next.indexOf(acct);
-                                next.splice(idx, 0, dragged);
-                                return [...next];
-                              });
-                            }}
-                            style={{
-                              textAlign: "center",
-                              background: colors.fill,
-                              borderBottom: `1px solid ${colors.stroke}`,
-                              color: "#111",
-                              cursor: "grab"
-                            }}
-                            title={cat}
-                          >
-                            {acct}
-                          </th>
-                        );
-                      })}
+                  <th style={{ width: 120 }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableRows.map(r => renderRow({ ...r, columns: assetCols }))}
+              </tbody>
+            </table>
+          )}
+        </div>
 
-                      <th style={{ width: 120 }}></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableRows.map(r => renderRow({ ...r, columns: assetCols }))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-
-            {/* LIABILITIES TABLE */}
-            <div
-              style={{
-                background: "#000",
-                color: "#fff",
-                padding: "8px 12px",
-                borderRadius: 8,
-                marginBottom: 8
-              }}
+        {/* LIABILITIES TABLE */}
+        <div
+          style={{
+            background: "#000",
+            color: "#fff",
+            padding: "8px 12px",
+            borderRadius: 8
+          }}
+        >
+          <h3 style={{ margin: 0 }}>Liabilities</h3>
+        </div>
+        <div
+          style={{
+            overflowX: "auto",
+            overflowY: "auto",
+            maxWidth: "100%",
+            maxHeight: "60vh",
+            border: "1px solid #eee",
+            borderRadius: 8,
+            padding: 6
+          }}
+        >
+          {liabilityCols.length === 0 ? (
+            <div style={{ color: "#777" }}>No liability accounts</div>
+          ) : (
+            <table
+              ref={liabilityTableRef}
+              width="100%"
+              cellPadding="6"
+              style={{ borderCollapse: "collapse", minWidth: 400 }}
             >
-              <h3 style={{ margin: 0 }}>Liabilities</h3>
-            </div>
+              <thead>
+                <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
+                  <th
+                    style={{ width: 120, lineHeight: 1.2, whiteSpace: "nowrap", cursor: "pointer" }}
+                    onClick={() => setSortDir(d => (d === "desc" ? "asc" : "desc"))}
+                    title="Click to sort by date"
+                  >
+                    Date {sortDir === "desc" ? "▼" : "▲"}
+                  </th>
 
-            <div>
-              {liabilityCols.length === 0 ? (
-                <div style={{ color: "#777" }}>No liability accounts</div>
-              ) : (
-                <table
-                  ref={liabilityTableRef}
-                  width="100%"
-                  cellPadding="6"
-                  style={{ borderCollapse: "collapse", minWidth: 400 }}
-                >
-                  <thead>
-                    <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
+                  {liabilityCols.map(acct => {
+                    const cat = accountCategory.get(acct) || "other liability";
+                    const colors = colorForCategory(cat);
+                    return (
                       <th
-                        style={{ width: 120, lineHeight: 1.2, whiteSpace: "nowrap", cursor: "pointer" }}
-                        onClick={() => setSortDir(d => (d === "desc" ? "asc" : "desc"))}
-                        title="Click to sort by date"
+                        key={acct}
+                        draggable
+                        onDragStart={(e) => e.dataTransfer.setData("text/plain", `liability::${acct}`)}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const data = e.dataTransfer.getData("text/plain");
+                          if (!data.startsWith("liability::")) return;
+                          const dragged = data.split("::")[1];
+                          setLiabilityCols(cols => {
+                            const next = cols.filter(c => c !== dragged);
+                            const idx = next.indexOf(acct);
+                            next.splice(idx, 0, dragged);
+                            return [...next];
+                          });
+                        }}
+                        style={{
+                          textAlign: "center",
+                          background: colors.fill,
+                          borderBottom: `1px solid ${colors.stroke}`,
+                          color: "#111",
+                          cursor: "grab"
+                        }}
+                        title={cat}
                       >
-                        Date {sortDir === "desc" ? "▼" : "▲"}
+                        {acct}
                       </th>
+                    );
+                  })}
 
-                      {liabilityCols.map(acct => {
-                        const cat = accountCategory.get(acct) || "other liability";
-                        const colors = colorForCategory(cat);
-                        return (
-                          <th
-                            key={acct}
-                            draggable
-                            onDragStart={(e) => e.dataTransfer.setData("text/plain", `liability::${acct}`)}
-                            onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => {
-                              e.preventDefault();
-                              const data = e.dataTransfer.getData("text/plain");
-                              if (!data.startsWith("liability::")) return;
-                              const dragged = data.split("::")[1];
-                              setLiabilityCols(cols => {
-                                const next = cols.filter(c => c !== dragged);
-                                const idx = next.indexOf(acct);
-                                next.splice(idx, 0, dragged);
-                                return [...next];
-                              });
-                            }}
-                            style={{
-                              textAlign: "center",
-                              background: colors.fill,
-                              borderBottom: `1px solid ${colors.stroke}`,
-                              color: "#111",
-                              cursor: "grab"
-                            }}
-                            title={cat}
-                          >
-                            {acct}
-                          </th>
-                        );
-                      })}
-
-                      <th style={{ width: 120 }}></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableRows.map(r => renderRow({ ...r, columns: liabilityCols }))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          </div>
+                  <th style={{ width: 120 }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableRows.map(r => renderRow({ ...r, columns: liabilityCols }))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
         </>
       )}
 
-      <div
-        ref={floatScrollRef}
-        style={{
-          position: "fixed",
-          left: 12,
-          right: 12,
-          bottom: 16,
-          zIndex: 30,
-          overflowX: "auto",
-          overflowY: "hidden",
-          padding: "4px 0",
-          background: "rgba(255,255,255,0.95)",
-          border: "1px solid #ddd",
-          borderRadius: 6,
-          boxShadow: "0 4px 10px rgba(0,0,0,0.12)"
-        }}
-      >
-        <div style={{ width: scrollWidth || "100%", height: 12 }} />
-      </div>
     </div>
   );
 }
