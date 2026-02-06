@@ -581,55 +581,27 @@ export default function Charts() {
     <section style={{ padding: 12, border: "1px solid #333", borderRadius: 12, background: "#000", color: "#f5f5f5" }}>
       <h2 style={{ marginTop: 0, color: "#f5f5f5" }}>Categories Snapshot</h2>
 
-      <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8 }}>
-        <label>
-          Date:&nbsp;
-          <input
-            type="date"
-            value={pieDate}
-            onChange={(e) => setPieDate(e.target.value)}
-            style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
-          />
-        </label>
-        <label>
-          Date A:&nbsp;
-          <input
-            type="date"
-            value={pieDateA}
-            onChange={(e) => setPieDateA(e.target.value)}
-            style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
-          />
-        </label>
-        <span style={{ color: "#aaa" }}>
-          Closest point: {pieDataA.closestLabel || "N/A"}
-        </span>
-        <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
-          Net Worth: {formatCurrency(pieDataA.totalAssets - pieDataA.totalLiab)}
-        </span>
-      </div>
-
-      <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
-        <label>
-          Date B:&nbsp;
-          <input
-            type="date"
-            value={pieDateB}
-            onChange={(e) => setPieDateB(e.target.value)}
-            style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
-          />
-        </label>
-        <span style={{ color: "#aaa" }}>
-          Closest point: {pieDataB.closestLabel || "N/A"}
-        </span>
-        <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
-          Net Worth: {formatCurrency(pieDataB.totalAssets - pieDataB.totalLiab)}
-        </span>
-      </div>
-
-      <div style={{ display: "grid", gap: 16 }}>
+      <div style={{ display: "grid", gap: 16, gridTemplateColumns: "1fr 1fr" }}>
         <div>
+          <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
+            <label>
+              Date A:&nbsp;
+              <input
+                type="date"
+                value={pieDateA}
+                onChange={(e) => setPieDateA(e.target.value)}
+                style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
+              />
+            </label>
+            <span style={{ color: "#aaa" }}>
+              Closest point: {pieDataA.closestLabel || "N/A"}
+            </span>
+            <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
+              Net Worth: {formatCurrency(pieDataA.totalAssets - pieDataA.totalLiab)}
+            </span>
+          </div>
           <h3 style={{ margin: "0 0 8px 0" }}>Snapshot A</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
             {/* Assets pie */}
             <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
               <div style={{ width: "100%", height: 220 }}>
@@ -699,8 +671,25 @@ export default function Charts() {
         </div>
 
         <div>
+          <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
+            <label>
+              Date B:&nbsp;
+              <input
+                type="date"
+                value={pieDateB}
+                onChange={(e) => setPieDateB(e.target.value)}
+                style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
+              />
+            </label>
+            <span style={{ color: "#aaa" }}>
+              Closest point: {pieDataB.closestLabel || "N/A"}
+            </span>
+            <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
+              Net Worth: {formatCurrency(pieDataB.totalAssets - pieDataB.totalLiab)}
+            </span>
+          </div>
           <h3 style={{ margin: "0 0 8px 0" }}>Snapshot B</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
             {/* Assets pie */}
             <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
               <div style={{ width: "100%", height: 220 }}>
@@ -769,7 +758,7 @@ export default function Charts() {
           </div>
         </div>
 
-        <div style={{ background: "#0b0b0b", border: "1px solid #222", borderRadius: 10, padding: 12 }}>
+        <div style={{ background: "#0b0b0b", border: "1px solid #222", borderRadius: 10, padding: 12, gridColumn: "1 / -1" }}>
           <h3 style={{ margin: "0 0 8px 0" }}>Difference (B - A)</h3>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
