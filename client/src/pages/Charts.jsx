@@ -91,6 +91,81 @@ const formatCurrencyShort = (val) => {
   return `${sign}$${(Math.abs(num) / 1_000_000).toFixed(1)}m`;
 };
 
+const buildPieSnapshot = (series, accounts, targetDate) => {
+  if (series.length === 0) {
+    return {
+      assets: [],
+      liabilities: [],
+      closestLabel: "",
+      totalAssets: 0,
+      totalLiab: 0,
+      byCategory: Object.fromEntries(categoriesOrder.map(c => [c, 0]))
+    };
+  }
+
+  const normalized = series
+    .map(d => {
+      const iso = toIsoDate(d.date);
+      return { ...d, iso, ms: dateMs(iso) };
+    })
+    .sort((a, b) => a.ms - b.ms);
+
+  let targetIso = targetDate ? toIsoDate(targetDate) : normalized[normalized.length - 1].iso;
+  let targetMs = dateMs(targetIso);
+
+  let closest = normalized[0];
+  let diff = Math.abs(normalized[0].ms - targetMs);
+
+  for (const d of normalized) {
+    const ndiff = Math.abs(d.ms - targetMs);
+    if (ndiff <= diff) {
+      diff = ndiff;
+      closest = d;
+    } else break;
+  }
+
+  const acctCategory = new Map(accounts.map(a => [a.name, (a.category || "other").toLowerCase()]));
+  const catSums = Object.fromEntries(categoriesOrder.map(c => [c, 0]));
+
+  if (closest.accounts) {
+    for (const [acct, bal] of Object.entries(closest.accounts)) {
+      const cat = acctCategory.get(acct) || "other";
+      catSums[cat] = (catSums[cat] || 0) + bal;
+    }
+  }
+
+  const byCategory = {};
+  assetCategories.forEach(cat => {
+    byCategory[cat] = Math.max(0, catSums[cat] || 0);
+  });
+  liabilityCategories.forEach(cat => {
+    byCategory[cat] = Math.max(0, Math.abs(catSums[cat] || 0));
+  });
+
+  const assetSlices = assetCategories
+    .map(cat => ({ name: cat, value: byCategory[cat] }))
+    .filter(s => s.value > 0);
+
+  const liabilitySlices = liabilityCategories
+    .map(cat => ({ name: cat, value: byCategory[cat] }))
+    .filter(s => s.value > 0);
+
+  const totalAssets = assetSlices.reduce((s, x) => s + x.value, 0);
+  const totalLiab = liabilitySlices.reduce((s, x) => s + x.value, 0);
+
+  assetSlices.forEach(s => { s.pct = totalAssets ? (s.value / totalAssets) * 100 : 0; });
+  liabilitySlices.forEach(s => { s.pct = totalLiab ? (s.value / totalLiab) * 100 : 0; });
+
+  return {
+    assets: assetSlices,
+    liabilities: liabilitySlices,
+    closestLabel: formatMonthDayLabel(closest.ms),
+    totalAssets,
+    totalLiab,
+    byCategory
+  };
+};
+
 /** ---------------- Categories ---------------- */
 
 const categoriesOrder = [...assetCategories, ...liabilityCategories];
@@ -290,7 +365,8 @@ const SortableSection = ({ id, children }) => {
 export default function Charts() {
   const [series, setSeries] = useState([]);
   const [accounts, setAccounts] = useState([]);
-  const [pieDate, setPieDate] = useState("");
+  const [pieDateA, setPieDateA] = useState("");
+  const [pieDateB, setPieDateB] = useState("");
 
   // order for draggable sections
   const [sectionOrder, setSectionOrder] = useState([
@@ -372,60 +448,28 @@ export default function Charts() {
     };
   }, [series, accounts]);
 
-  const pieData = useMemo(() => {
-    if (series.length === 0) return { assets: [], liabilities: [], closestLabel: "", totalAssets: 0, totalLiab: 0 };
+  const pieDataA = useMemo(
+    () => buildPieSnapshot(series, accounts, pieDateA),
+    [series, accounts, pieDateA]
+  );
+  const pieDataB = useMemo(
+    () => buildPieSnapshot(series, accounts, pieDateB),
+    [series, accounts, pieDateB]
+  );
 
-    const normalized = series.map(d => {
-      const iso = toIsoDate(d.date);
-      return { ...d, iso, ms: dateMs(iso) };
-    }).sort((a, b) => a.ms - b.ms);
-
-    let targetIso = pieDate ? toIsoDate(pieDate) : normalized[normalized.length - 1].iso;
-    let targetMs = dateMs(targetIso);
-
-    let closest = normalized[0];
-    let diff = Math.abs(normalized[0].ms - targetMs);
-
-    for (const d of normalized) {
-      const ndiff = Math.abs(d.ms - targetMs);
-      if (ndiff <= diff) {
-        diff = ndiff;
-        closest = d;
-      } else break;
-    }
-
-    const acctCategory = new Map(accounts.map(a => [a.name, (a.category || "other").toLowerCase()]));
-    const catSums = Object.fromEntries(categoriesOrder.map(c => [c, 0]));
-
-    if (closest.accounts) {
-      for (const [acct, bal] of Object.entries(closest.accounts)) {
-        const cat = acctCategory.get(acct) || "other";
-        catSums[cat] = (catSums[cat] || 0) + bal;
-      }
-    }
-
-    const assetSlices = assetCategories
-      .map(cat => ({ name: cat, value: Math.max(0, catSums[cat] || 0) }))
-      .filter(s => s.value > 0);
-
-    const liabilitySlices = liabilityCategories
-      .map(cat => ({ name: cat, value: Math.max(0, Math.abs(catSums[cat] || 0)) }))
-      .filter(s => s.value > 0);
-
-    const totalAssets = assetSlices.reduce((s, x) => s + x.value, 0);
-    const totalLiab = liabilitySlices.reduce((s, x) => s + x.value, 0);
-
-    assetSlices.forEach(s => { s.pct = totalAssets ? (s.value / totalAssets) * 100 : 0; });
-    liabilitySlices.forEach(s => { s.pct = totalLiab ? (s.value / totalLiab) * 100 : 0; });
-
-    return {
-      assets: assetSlices,
-      liabilities: liabilitySlices,
-      closestLabel: formatMonthDayLabel(closest.ms),
-      totalAssets,
-      totalLiab
-    };
-  }, [series, accounts, pieDate]);
+  const diffRows = useMemo(() => {
+    return categoriesOrder.map((cat) => {
+      const a = pieDataA.byCategory?.[cat] || 0;
+      const b = pieDataB.byCategory?.[cat] || 0;
+      return {
+        cat,
+        type: liabilityCategories.includes(cat) ? "Liability" : "Asset",
+        a,
+        b,
+        diff: b - a
+      };
+    });
+  }, [pieDataA, pieDataB]);
 
   if (chartData.length === 0) {
     return (
@@ -547,81 +591,237 @@ export default function Charts() {
             style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
           />
         </label>
+        <label>
+          Date A:&nbsp;
+          <input
+            type="date"
+            value={pieDateA}
+            onChange={(e) => setPieDateA(e.target.value)}
+            style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
+          />
+        </label>
         <span style={{ color: "#aaa" }}>
-          Closest point: {pieData.closestLabel || "N/A"}
+          Closest point: {pieDataA.closestLabel || "N/A"}
         </span>
-        {pieData.totalAssets != null && pieData.totalLiab != null && (
-          <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
-            Total Net Worth: {formatCurrency(pieData.totalAssets - pieData.totalLiab)}
-          </span>
-        )}
+        <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
+          Net Worth: {formatCurrency(pieDataA.totalAssets - pieDataA.totalLiab)}
+        </span>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        {/* Assets pie */}
-        <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
-          <div style={{ width: "100%", height: 220 }}>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie data={pieData.assets} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
-                  {pieData.assets.map(s => (
-                    <Cell
-                      key={`cell-a-${s.name}`}
-                      fill={colorForCategory(s.name).fill}
-                      stroke={colorForCategory(s.name).stroke}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div>
-            <h4 style={{ margin: "0 0 6px 0" }}>Assets</h4>
-            {pieData.assets.length === 0 && <div style={{ color: "#777" }}>None</div>}
-            {pieData.assets.map(s => (
-              <div key={`a-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
-                <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
+      <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
+        <label>
+          Date B:&nbsp;
+          <input
+            type="date"
+            value={pieDateB}
+            onChange={(e) => setPieDateB(e.target.value)}
+            style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
+          />
+        </label>
+        <span style={{ color: "#aaa" }}>
+          Closest point: {pieDataB.closestLabel || "N/A"}
+        </span>
+        <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
+          Net Worth: {formatCurrency(pieDataB.totalAssets - pieDataB.totalLiab)}
+        </span>
+      </div>
+
+      <div style={{ display: "grid", gap: 16 }}>
+        <div>
+          <h3 style={{ margin: "0 0 8px 0" }}>Snapshot A</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {/* Assets pie */}
+            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
+              <div style={{ width: "100%", height: 220 }}>
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie data={pieDataA.assets} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
+                      {pieDataA.assets.map(s => (
+                        <Cell
+                          key={`cell-a-${s.name}`}
+                          fill={colorForCategory(s.name).fill}
+                          stroke={colorForCategory(s.name).stroke}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-            <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
-              <span>Total</span>
-              <span>{formatCurrency(pieData.totalAssets)}</span>
+              <div>
+                <h4 style={{ margin: "0 0 6px 0" }}>Assets</h4>
+                {pieDataA.assets.length === 0 && <div style={{ color: "#777" }}>None</div>}
+                {pieDataA.assets.map(s => (
+                  <div key={`a-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
+                    <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
+                  </div>
+                ))}
+                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
+                  <span>Total</span>
+                  <span>{formatCurrency(pieDataA.totalAssets)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Liabilities pie */}
+            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
+              <div style={{ width: "100%", height: 220 }}>
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie data={pieDataA.liabilities} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
+                      {pieDataA.liabilities.map(s => (
+                        <Cell
+                          key={`cell-l-${s.name}`}
+                          fill={colorForCategory(s.name).fill}
+                          stroke={colorForCategory(s.name).stroke}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div>
+                <h4 style={{ margin: "0 0 6px 0" }}>Liabilities</h4>
+                {pieDataA.liabilities.length === 0 && <div style={{ color: "#777" }}>None</div>}
+                {pieDataA.liabilities.map(s => (
+                  <div key={`l-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
+                    <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
+                  </div>
+                ))}
+                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
+                  <span>Total</span>
+                  <span>{formatCurrency(pieDataA.totalLiab)}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Liabilities pie */}
-        <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
-          <div style={{ width: "100%", height: 220 }}>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie data={pieData.liabilities} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
-                  {pieData.liabilities.map(s => (
-                    <Cell
-                      key={`cell-l-${s.name}`}
-                      fill={colorForCategory(s.name).fill}
-                      stroke={colorForCategory(s.name).stroke}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div>
-            <h4 style={{ margin: "0 0 6px 0" }}>Liabilities</h4>
-            {pieData.liabilities.length === 0 && <div style={{ color: "#777" }}>None</div>}
-            {pieData.liabilities.map(s => (
-              <div key={`l-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
-                <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
+        <div>
+          <h3 style={{ margin: "0 0 8px 0" }}>Snapshot B</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {/* Assets pie */}
+            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
+              <div style={{ width: "100%", height: 220 }}>
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie data={pieDataB.assets} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
+                      {pieDataB.assets.map(s => (
+                        <Cell
+                          key={`cell-a-${s.name}`}
+                          fill={colorForCategory(s.name).fill}
+                          stroke={colorForCategory(s.name).stroke}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-            <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
-              <span>Total</span>
-              <span>{formatCurrency(pieData.totalLiab)}</span>
+              <div>
+                <h4 style={{ margin: "0 0 6px 0" }}>Assets</h4>
+                {pieDataB.assets.length === 0 && <div style={{ color: "#777" }}>None</div>}
+                {pieDataB.assets.map(s => (
+                  <div key={`a-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
+                    <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
+                  </div>
+                ))}
+                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
+                  <span>Total</span>
+                  <span>{formatCurrency(pieDataB.totalAssets)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Liabilities pie */}
+            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
+              <div style={{ width: "100%", height: 220 }}>
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie data={pieDataB.liabilities} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
+                      {pieDataB.liabilities.map(s => (
+                        <Cell
+                          key={`cell-l-${s.name}`}
+                          fill={colorForCategory(s.name).fill}
+                          stroke={colorForCategory(s.name).stroke}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div>
+                <h4 style={{ margin: "0 0 6px 0" }}>Liabilities</h4>
+                {pieDataB.liabilities.length === 0 && <div style={{ color: "#777" }}>None</div>}
+                {pieDataB.liabilities.map(s => (
+                  <div key={`l-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
+                    <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
+                  </div>
+                ))}
+                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
+                  <span>Total</span>
+                  <span>{formatCurrency(pieDataB.totalLiab)}</span>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div style={{ background: "#0b0b0b", border: "1px solid #222", borderRadius: 10, padding: 12 }}>
+          <h3 style={{ margin: "0 0 8px 0" }}>Difference (B - A)</h3>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <thead>
+              <tr style={{ textAlign: "left", borderBottom: "1px solid #222" }}>
+                <th style={{ padding: "6px 4px" }}>Category</th>
+                <th style={{ padding: "6px 4px" }}>Type</th>
+                <th style={{ padding: "6px 4px" }}>{pieDataA.closestLabel || "Date A"}</th>
+                <th style={{ padding: "6px 4px" }}>{pieDataB.closestLabel || "Date B"}</th>
+                <th style={{ padding: "6px 4px" }}>Diff</th>
+              </tr>
+            </thead>
+            <tbody>
+              {diffRows.map((row) => (
+                <tr key={`diff-${row.cat}`} style={{ borderBottom: "1px solid #111" }}>
+                  <td style={{ padding: "6px 4px", textTransform: "capitalize" }}>{row.cat}</td>
+                  <td style={{ padding: "6px 4px" }}>{row.type}</td>
+                  <td style={{ padding: "6px 4px" }}>{formatCurrency(row.a)}</td>
+                  <td style={{ padding: "6px 4px" }}>{formatCurrency(row.b)}</td>
+                  <td style={{ padding: "6px 4px", color: row.diff >= 0 ? "#6ce3a6" : "#ff7b7b" }}>
+                    {formatCurrency(row.diff)}
+                  </td>
+                </tr>
+              ))}
+              <tr style={{ borderTop: "1px solid #222", fontWeight: 700 }}>
+                <td style={{ padding: "8px 4px" }}>Total Assets</td>
+                <td style={{ padding: "8px 4px" }}>Total</td>
+                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataA.totalAssets)}</td>
+                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataB.totalAssets)}</td>
+                <td style={{ padding: "8px 4px", color: pieDataB.totalAssets - pieDataA.totalAssets >= 0 ? "#6ce3a6" : "#ff7b7b" }}>
+                  {formatCurrency(pieDataB.totalAssets - pieDataA.totalAssets)}
+                </td>
+              </tr>
+              <tr style={{ fontWeight: 700 }}>
+                <td style={{ padding: "8px 4px" }}>Total Liabilities</td>
+                <td style={{ padding: "8px 4px" }}>Total</td>
+                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataA.totalLiab)}</td>
+                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataB.totalLiab)}</td>
+                <td style={{ padding: "8px 4px", color: pieDataB.totalLiab - pieDataA.totalLiab >= 0 ? "#6ce3a6" : "#ff7b7b" }}>
+                  {formatCurrency(pieDataB.totalLiab - pieDataA.totalLiab)}
+                </td>
+              </tr>
+              <tr style={{ fontWeight: 700 }}>
+                <td style={{ padding: "8px 4px" }}>Net Worth</td>
+                <td style={{ padding: "8px 4px" }}>Total</td>
+                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataA.totalAssets - pieDataA.totalLiab)}</td>
+                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataB.totalAssets - pieDataB.totalLiab)}</td>
+                <td style={{ padding: "8px 4px", color: (pieDataB.totalAssets - pieDataB.totalLiab) - (pieDataA.totalAssets - pieDataA.totalLiab) >= 0 ? "#6ce3a6" : "#ff7b7b" }}>
+                  {formatCurrency((pieDataB.totalAssets - pieDataB.totalLiab) - (pieDataA.totalAssets - pieDataA.totalLiab))}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
