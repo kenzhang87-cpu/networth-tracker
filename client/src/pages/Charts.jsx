@@ -286,7 +286,13 @@ const AllocationTable = ({ data, accounts }) => {
 
         return (
           <div key={cat} className="category-section">
-            <div className={`category-header ${cat.replace(/\s+/g, "-")}`}>
+            <div 
+              className="category-header"
+              style={{
+                background: `linear-gradient(90deg, ${colors.fill}, ${colors.fill.replace("0.7", "0.1")})`,
+                borderBottom: `2px solid ${colors.stroke}`
+              }}
+            >
               <span style={{ flex: 1 }}>{categoryLabels[cat]}</span>
               <span style={{ fontWeight: 700 }}>
                 {isLiability ? "-" : ""}{formatCurrency(Math.abs(catTotal))}
@@ -448,14 +454,8 @@ export default function Charts() {
       }
     }
 
-    const assetTot = assetCategories.reduce((sum, cat) => {
-      const val = catTotals[cat] || 0;
-      return sum + (val > 0 ? val : 0);
-    }, 0);
-    const liabilityTot = liabilityCategories.reduce((sum, cat) => {
-      const val = catTotals[cat] || 0;
-      return sum + (val > 0 ? val : 0);
-    }, 0);
+    const assetTot = assetCategories.reduce((sum, cat) => sum + (catTotals[cat] || 0), 0);
+    const liabilityTot = liabilityCategories.reduce((sum, cat) => sum + (catTotals[cat] || 0), 0);
 
     return {
       assetTotal: assetTot,
@@ -653,11 +653,9 @@ export default function Charts() {
                     }
                     labelLine={false}
                   >
-                    {assetCategories
-                      .filter(cat => (totals[cat] || 0) > 0)
-                      .map(cat => (
-                        <Cell key={cat} fill={colorForCategory(cat).stroke} />
-                      ))}
+                    {assetCategories.map(cat => (
+                      <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                    ))}
                   </Pie>
                   <Tooltip
                     formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
@@ -711,11 +709,9 @@ export default function Charts() {
                     }
                     labelLine={false}
                   >
-                    {liabilityCategories
-                      .filter(cat => (totals[cat] || 0) > 0)
-                      .map(cat => (
-                        <Cell key={cat} fill={colorForCategory(cat).stroke} />
-                      ))}
+                    {liabilityCategories.map(cat => (
+                      <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                    ))}
                   </Pie>
                   <Tooltip
                     formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
