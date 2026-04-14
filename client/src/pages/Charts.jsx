@@ -3,22 +3,13 @@ import { getTimeseries, getAccounts } from "../api.js";
 import {
   assetCategories,
   liabilityCategories,
-  colorForCategory
+  colorForCategory,
+  categoryLabels
 } from "../palette.js";
 import {
   LineChart, Line, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell, ReferenceLine
 } from "recharts";
-
-// dnd-kit (drag reorder) imports — MUST stay at top
-import { DndContext, closestCenter } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
 /** ---------------- Date helpers ---------------- */
 
@@ -88,128 +79,52 @@ const formatCurrencyShort = (val) => {
   const num = Number(val);
   if (Number.isNaN(num)) return val;
   const sign = num < 0 ? "-" : "";
-  return `${sign}$${(Math.abs(num) / 1_000_000).toFixed(1)}m`;
+  const abs = Math.abs(num);
+  if (abs >= 1_000_000) {
+    return `${sign}$${(abs / 1_000_000).toFixed(1)}m`;
+  } else if (abs >= 1_000) {
+    return `${sign}$${(abs / 1_000).toFixed(1)}k`;
+  }
+  return `${sign}$${abs.toFixed(0)}`;
 };
-
-const buildPieSnapshot = (series, accounts, targetDate) => {
-  if (series.length === 0) {
-    return {
-      assets: [],
-      liabilities: [],
-      closestLabel: "",
-      totalAssets: 0,
-      totalLiab: 0,
-      byCategory: Object.fromEntries(categoriesOrder.map(c => [c, 0]))
-    };
-  }
-
-  const normalized = series
-    .map(d => {
-      const iso = toIsoDate(d.date);
-      return { ...d, iso, ms: dateMs(iso) };
-    })
-    .sort((a, b) => a.ms - b.ms);
-
-  let targetIso = targetDate ? toIsoDate(targetDate) : normalized[normalized.length - 1].iso;
-  let targetMs = dateMs(targetIso);
-
-  let closest = normalized[0];
-  let diff = Math.abs(normalized[0].ms - targetMs);
-
-  for (const d of normalized) {
-    const ndiff = Math.abs(d.ms - targetMs);
-    if (ndiff <= diff) {
-      diff = ndiff;
-      closest = d;
-    } else break;
-  }
-
-  const acctCategory = new Map(accounts.map(a => [a.name, (a.category || "other").toLowerCase()]));
-  const catSums = Object.fromEntries(categoriesOrder.map(c => [c, 0]));
-
-  if (closest.accounts) {
-    for (const [acct, bal] of Object.entries(closest.accounts)) {
-      const cat = acctCategory.get(acct) || "other";
-      catSums[cat] = (catSums[cat] || 0) + bal;
-    }
-  }
-
-  const byCategory = {};
-  assetCategories.forEach(cat => {
-    byCategory[cat] = Math.max(0, catSums[cat] || 0);
-  });
-  liabilityCategories.forEach(cat => {
-    byCategory[cat] = Math.max(0, Math.abs(catSums[cat] || 0));
-  });
-
-  const assetSlices = assetCategories
-    .map(cat => ({ name: cat, value: byCategory[cat] }))
-    .filter(s => s.value > 0);
-
-  const liabilitySlices = liabilityCategories
-    .map(cat => ({ name: cat, value: byCategory[cat] }))
-    .filter(s => s.value > 0);
-
-  const totalAssets = assetSlices.reduce((s, x) => s + x.value, 0);
-  const totalLiab = liabilitySlices.reduce((s, x) => s + x.value, 0);
-
-  assetSlices.forEach(s => { s.pct = totalAssets ? (s.value / totalAssets) * 100 : 0; });
-  liabilitySlices.forEach(s => { s.pct = totalLiab ? (s.value / totalLiab) * 100 : 0; });
-
-  return {
-    assets: assetSlices,
-    liabilities: liabilitySlices,
-    closestLabel: formatMonthDayLabel(closest.ms),
-    totalAssets,
-    totalLiab,
-    byCategory
-  };
-};
-
-/** ---------------- Categories ---------------- */
 
 const categoriesOrder = [...assetCategories, ...liabilityCategories];
 
 /** ---------------- Y-axis scaling ---------------- */
-
-// Net worth chart: start at $2.0m, ticks every $0.5m
 const computeYNetWorth = (rows) => {
-    const vals = rows
-      .map(r => Number(r.netWorth))
-      .filter(v => Number.isFinite(v));
-  
-    if (vals.length === 0) return { domain: ["auto", "auto"], ticks: [] };
-  
-    let min = Math.min(...vals);
-    let max = Math.max(...vals);
-  
-    // if flat line, expand a little
-    if (min === max) {
-      const bump = Math.abs(min) || 1;
-      min -= bump;
-      max += bump;
-    }
-  
-    // add small padding so line isn't glued to edges
-    const range = max - min;
-    const pad = range * 0.02;
-    min -= pad;
-    max += pad;
-  
-    const step = 10_000; // 0.1m ticks
-  
-    const minTick = Math.floor(min / step) * step;
-    const maxTick = Math.ceil(max / step) * step;
-  
-    const ticks = [];
-    for (let t = minTick; t <= maxTick; t += step) {
-      ticks.push(t);
-    }
-  
-    return { domain: [minTick, maxTick], ticks };
-  };
-  
-// Stacked chart: include negatives
+  const vals = rows
+    .map(r => Number(r.netWorth))
+    .filter(v => Number.isFinite(v));
+
+  if (vals.length === 0) return { domain: ["auto", "auto"], ticks: [] };
+
+  let min = Math.min(...vals);
+  let max = Math.max(...vals);
+
+  if (min === max) {
+    const bump = Math.abs(min) || 1;
+    min -= bump;
+    max += bump;
+  }
+
+  const range = max - min;
+  const pad = range * 0.02;
+  min -= pad;
+  max += pad;
+
+  const step = 10_000;
+
+  const minTick = Math.floor(min / step) * step;
+  const maxTick = Math.ceil(max / step) * step;
+
+  const ticks = [];
+  for (let t = minTick; t <= maxTick; t += step) {
+    ticks.push(t);
+  }
+
+  return { domain: [minTick, maxTick], ticks };
+};
+
 const computeYStacked = (rows) => {
   const totals = [];
 
@@ -244,7 +159,6 @@ const computeYStacked = (rows) => {
   min -= pad;
   max += pad;
 
-  // keep 0 so ref line is visible
   min = Math.min(min, 0);
   max = Math.max(max, 0);
 
@@ -283,18 +197,19 @@ const CategoriesTooltip = ({ active, payload, label }) => {
 
   return (
     <div style={{
-      background: "#111",
-      border: "1px solid #333",
-      padding: 10,
+      background: "#161b22",
+      border: "1px solid #30363d",
+      padding: 12,
       borderRadius: 8,
-      color: "#f5f5f5",
-      minWidth: 190
+      color: "#e6edf3",
+      minWidth: 190,
+      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.3)"
     }}>
-      <div style={{ fontWeight: 700, marginBottom: 6 }}>{dateLabel}</div>
+      <div style={{ fontWeight: 700, marginBottom: 8, color: "#f5f5f5" }}>{dateLabel}</div>
 
       {rows.map(r => (
-        <div key={r.cat} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-          <span style={{ color: r.color, textTransform: "capitalize" }}>{r.cat}</span>
+        <div key={r.cat} style={{ display: "flex", justifyContent: "space-between", gap: 16, marginBottom: 4 }}>
+          <span style={{ color: r.color, textTransform: "capitalize" }}>{categoryLabels[r.cat] || r.cat}</span>
           <span>{formatCurrency(r.val)}</span>
         </div>
       ))}
@@ -303,9 +218,9 @@ const CategoriesTooltip = ({ active, payload, label }) => {
         <div style={{
           display: "flex",
           justifyContent: "space-between",
-          marginTop: 6,
-          paddingTop: 6,
-          borderTop: "1px solid #333",
+          marginTop: 8,
+          paddingTop: 8,
+          borderTop: "1px solid #30363d",
           fontWeight: 700
         }}>
           <span>Net Worth</span>
@@ -316,80 +231,18 @@ const CategoriesTooltip = ({ active, payload, label }) => {
   );
 };
 
-/** ---------------- Drag reorder wrapper ---------------- */
-
-const SortableSection = ({ id, children }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.6 : 1
-  };
-
-  return (
-    <div ref={setNodeRef} style={style}>
-      <div
-        {...attributes}
-        {...listeners}
-        style={{
-          padding: "6px 10px",
-          fontSize: 12,
-          color: "#aaa",
-          background: "#0b0b0b",
-          border: "1px solid #222",
-          borderBottom: "none",
-          borderRadius: "10px 10px 0 0",
-          userSelect: "none",
-          cursor: "grab"
-        }}
-      >
-        ⇅ Drag to reorder
-      </div>
-      <div style={{ borderRadius: "0 0 10px 10px" }}>
-        {children}
-      </div>
-    </div>
-  );
-};
-
 /** ---------------- Component ---------------- */
 
 export default function Charts() {
   const [series, setSeries] = useState([]);
   const [accounts, setAccounts] = useState([]);
-  const [pieDateA, setPieDateA] = useState("");
-  const [pieDateB, setPieDateB] = useState("");
-
-  // order for draggable sections
-  const [sectionOrder, setSectionOrder] = useState([
-    "networth",
-    "categories",
-    "snapshot",
-  ]);
-
-  // persist order
-  useEffect(() => {
-    const saved = localStorage.getItem("charts-order");
-    if (saved) setSectionOrder(JSON.parse(saved));
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("charts-order", JSON.stringify(sectionOrder));
-  }, [sectionOrder]);
 
   useEffect(() => {
     getTimeseries().then(setSeries);
     getAccounts().then(setAccounts);
   }, []);
 
-  const { chartData, monthTicks, yMetaNetWorth, yMetaStacked } = useMemo(() => {
+  const { chartData, monthTicks, yMetaNetWorth, yMetaStacked, totals } = useMemo(() => {
     const acctCategory = new Map(
       accounts.map(a => [a.name, (a.category || "other").toLowerCase()])
     );
@@ -405,9 +258,14 @@ export default function Charts() {
         chartData: [],
         monthTicks: [],
         yMetaNetWorth: { domain: ["auto", "auto"], ticks: [] },
-        yMetaStacked: { domain: ["auto", "auto"], ticks: [] }
+        yMetaStacked: { domain: ["auto", "auto"], ticks: [] },
+        totals: {}
       };
     }
+
+    // Calculate category totals for summary
+    const catTotals = {};
+    categoriesOrder.forEach(c => catTotals[c] = 0);
 
     // continuous month ticks
     const ticks = [];
@@ -440,439 +298,346 @@ export default function Charts() {
       return row;
     });
 
+    // Get latest values for summary
+    if (chartData.length > 0) {
+      const latest = chartData[chartData.length - 1];
+      categoriesOrder.forEach(c => {
+        catTotals[c] = Math.abs(latest[c] || 0);
+      });
+    }
+
     return {
       chartData,
       monthTicks: ticks,
       yMetaNetWorth: computeYNetWorth(chartData),
-      yMetaStacked: computeYStacked(chartData)
+      yMetaStacked: computeYStacked(chartData),
+      totals: catTotals
     };
   }, [series, accounts]);
 
-  const pieDataA = useMemo(
-    () => buildPieSnapshot(series, accounts, pieDateA),
-    [series, accounts, pieDateA]
-  );
-  const pieDataB = useMemo(
-    () => buildPieSnapshot(series, accounts, pieDateB),
-    [series, accounts, pieDateB]
-  );
+  const assetTotal = useMemo(() => 
+    assetCategories.reduce((sum, cat) => sum + (totals[cat] || 0), 0),
+  [totals]);
 
-  const diffRows = useMemo(() => {
-    return categoriesOrder.map((cat) => {
-      const a = pieDataA.byCategory?.[cat] || 0;
-      const b = pieDataB.byCategory?.[cat] || 0;
-      return {
-        cat,
-        type: liabilityCategories.includes(cat) ? "Liability" : "Asset",
-        a,
-        b,
-        diff: b - a
-      };
-    });
-  }, [pieDataA, pieDataB]);
+  const liabilityTotal = useMemo(() => 
+    liabilityCategories.reduce((sum, cat) => sum + (totals[cat] || 0), 0),
+  [totals]);
+
+  const netWorth = assetTotal - liabilityTotal;
 
   if (chartData.length === 0) {
     return (
-      <div style={{ padding: 12, border: "1px solid #eee", borderRadius: 12 }}>
+      <div className="chart-container">
         <h2 style={{ marginTop: 0 }}>Charts</h2>
-        <p>No data to plot yet.</p>
+        <p style={{ color: '#8b949e' }}>No data to plot yet. Add some accounts and balances to see charts.</p>
       </div>
     );
   }
 
-  // ----- sections as render fns so we can reorder -----
-  const renderNetWorth = () => (
-    <section style={{ padding: 12, border: "1px solid #333", borderRadius: 12, background: "#111" }}>
-      <h2 style={{ marginTop: 0, color: "#f5f5f5" }}>Total Net Worth</h2>
-      <div style={{ width: "100%", height: 320 }}>
-        <ResponsiveContainer>
-          <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis
-              type="number"
-              dataKey="dateMs"
-              ticks={monthTicks}
-              domain={["dataMin", "dataMax"]}
-              tickFormatter={formatMonthLabel}
-              stroke="#aaa"
-              tick={{ fill: "#ccc" }}
-            />
-            <YAxis
-              domain={yMetaNetWorth.domain}
-              ticks={yMetaNetWorth.ticks}
-              tickFormatter={formatCurrencyShort}
-              stroke="#aaa"
-              tick={{ fill: "#ccc" }}
-            />
-            <Tooltip
-              labelFormatter={(ms) => formatMonthDayLabel(ms)}
-              formatter={(v, n) => [formatCurrency(v), legendLabel(n)]}
-              contentStyle={{ background: "#111", border: "1px solid #333", color: "#f5f5f5" }}
-            />
-            <Legend wrapperStyle={{ color: "#f5f5f5" }} formatter={(value) => legendLabel(value)} />
-            <Line type="monotone" dataKey="netWorth" dot={false} activeDot={{ r: 4 }} stroke="#5dade2" />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </section>
-  );
-
-  const renderCategories = () => (
-    <section style={{ padding: 12, border: "1px solid #333", borderRadius: 12, background: "#111" }}>
-      <h2 style={{ marginTop: 0, color: "#f5f5f5" }}>Categories Over Time</h2>
-      <div style={{ width: "100%", height: 420 }}>
-        <ResponsiveContainer>
-          <AreaChart data={chartData} stackOffset="none" margin={{ left: 12, right: 12 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis
-              type="number"
-              dataKey="dateMs"
-              ticks={monthTicks}
-              domain={["dataMin", "dataMax"]}
-              tickFormatter={formatMonthLabel}
-              stroke="#aaa"
-              tick={{ fill: "#ccc" }}
-            />
-            <YAxis
-              domain={yMetaStacked.domain}
-              ticks={yMetaStacked.ticks}
-              tickFormatter={formatCurrencyShort}
-              stroke="#aaa"
-              tick={{ fill: "#ccc" }}
-            />
-            <Tooltip content={<CategoriesTooltip />} />
-            <Legend wrapperStyle={{ color: "#f5f5f5" }} content={<LegendTwoLine />} />
-
-            {assetCategories.map((cat) => (
-              <Area
-                key={cat}
-                type="monotone"
-                dataKey={cat}
-                stackId="assets"
-                dot={false}
-                fillOpacity={0.6}
-                fill={colorForCategory(cat).fill}
-                stroke={colorForCategory(cat).stroke}
-              />
-            ))}
-
-            {liabilityCategories.map((cat) => (
-              <Area
-                key={cat}
-                type="monotone"
-                dataKey={cat}
-                stackId="liabilities"
-                dot={false}
-                fillOpacity={0.6}
-                fill={colorForCategory(cat).fill}
-                stroke={colorForCategory(cat).stroke}
-              />
-            ))}
-
-            <ReferenceLine y={0} stroke="#888" />
-            <Line type="monotone" dataKey="netWorth" stroke="#5dade2" dot={false} activeDot={{ r: 4 }} />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-    </section>
-  );
-
-  const renderSnapshot = () => (
-    <section style={{ padding: 12, border: "1px solid #333", borderRadius: 12, background: "#000", color: "#f5f5f5" }}>
-      <h2 style={{ marginTop: 0, color: "#f5f5f5" }}>Categories Snapshot</h2>
-
-      <div style={{ display: "grid", gap: 16, gridTemplateColumns: "1fr 1fr" }}>
-        <div>
-          <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
-            <label>
-              Date A:&nbsp;
-              <input
-                type="date"
-                value={pieDateA}
-                onChange={(e) => setPieDateA(e.target.value)}
-                style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
-              />
-            </label>
-            <span style={{ color: "#aaa" }}>
-              Closest point: {pieDataA.closestLabel || "N/A"}
-            </span>
-            <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
-              Net Worth: {formatCurrency(pieDataA.totalAssets - pieDataA.totalLiab)}
-            </span>
-          </div>
-          <h3 style={{ margin: "0 0 8px 0" }}>Snapshot A</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-            {/* Assets pie */}
-            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
-              <div style={{ width: "100%", height: 220 }}>
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie data={pieDataA.assets} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
-                      {pieDataA.assets.map(s => (
-                        <Cell
-                          key={`cell-a-${s.name}`}
-                          fill={colorForCategory(s.name).fill}
-                          stroke={colorForCategory(s.name).stroke}
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div>
-                <h4 style={{ margin: "0 0 6px 0" }}>Assets</h4>
-                {pieDataA.assets.length === 0 && <div style={{ color: "#777" }}>None</div>}
-                {pieDataA.assets.map(s => (
-                  <div key={`a-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
-                    <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
-                  </div>
-                ))}
-                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
-                  <span>Total</span>
-                  <span>{formatCurrency(pieDataA.totalAssets)}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Liabilities pie */}
-            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
-              <div style={{ width: "100%", height: 220 }}>
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie data={pieDataA.liabilities} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
-                      {pieDataA.liabilities.map(s => (
-                        <Cell
-                          key={`cell-l-${s.name}`}
-                          fill={colorForCategory(s.name).fill}
-                          stroke={colorForCategory(s.name).stroke}
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div>
-                <h4 style={{ margin: "0 0 6px 0" }}>Liabilities</h4>
-                {pieDataA.liabilities.length === 0 && <div style={{ color: "#777" }}>None</div>}
-                {pieDataA.liabilities.map(s => (
-                  <div key={`l-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
-                    <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
-                  </div>
-                ))}
-                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
-                  <span>Total</span>
-                  <span>{formatCurrency(pieDataA.totalLiab)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
-            <label>
-              Date B:&nbsp;
-              <input
-                type="date"
-                value={pieDateB}
-                onChange={(e) => setPieDateB(e.target.value)}
-                style={{ padding: 4, borderRadius: 4, background: "#111", color: "#f5f5f5", border: "1px solid #333" }}
-              />
-            </label>
-            <span style={{ color: "#aaa" }}>
-              Closest point: {pieDataB.closestLabel || "N/A"}
-            </span>
-            <span style={{ color: "#f5f5f5", fontWeight: 600 }}>
-              Net Worth: {formatCurrency(pieDataB.totalAssets - pieDataB.totalLiab)}
-            </span>
-          </div>
-          <h3 style={{ margin: "0 0 8px 0" }}>Snapshot B</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-            {/* Assets pie */}
-            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
-              <div style={{ width: "100%", height: 220 }}>
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie data={pieDataB.assets} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
-                      {pieDataB.assets.map(s => (
-                        <Cell
-                          key={`cell-a-${s.name}`}
-                          fill={colorForCategory(s.name).fill}
-                          stroke={colorForCategory(s.name).stroke}
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div>
-                <h4 style={{ margin: "0 0 6px 0" }}>Assets</h4>
-                {pieDataB.assets.length === 0 && <div style={{ color: "#777" }}>None</div>}
-                {pieDataB.assets.map(s => (
-                  <div key={`a-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
-                    <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
-                  </div>
-                ))}
-                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
-                  <span>Total</span>
-                  <span>{formatCurrency(pieDataB.totalAssets)}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Liabilities pie */}
-            <div style={{ display: "grid", gridTemplateColumns: "180px 1fr", gap: 10, alignItems: "start" }}>
-              <div style={{ width: "100%", height: 220 }}>
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie data={pieDataB.liabilities} dataKey="value" nameKey="name" outerRadius={90} labelLine={false}>
-                      {pieDataB.liabilities.map(s => (
-                        <Cell
-                          key={`cell-l-${s.name}`}
-                          fill={colorForCategory(s.name).fill}
-                          stroke={colorForCategory(s.name).stroke}
-                        />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div>
-                <h4 style={{ margin: "0 0 6px 0" }}>Liabilities</h4>
-                {pieDataB.liabilities.length === 0 && <div style={{ color: "#777" }}>None</div>}
-                {pieDataB.liabilities.map(s => (
-                  <div key={`l-${s.name}`} style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: colorForCategory(s.name).stroke, textTransform: "capitalize" }}>{s.name}</span>
-                    <span>{formatCurrency(s.value)} ({s.pct.toFixed(1)}%)</span>
-                  </div>
-                ))}
-                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 4 }}>
-                  <span>Total</span>
-                  <span>{formatCurrency(pieDataB.totalLiab)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ background: "#0b0b0b", border: "1px solid #222", borderRadius: 10, padding: 12, gridColumn: "1 / -1" }}>
-          <h3 style={{ margin: "0 0 8px 0" }}>Difference (B - A)</h3>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-            <thead>
-              <tr style={{ textAlign: "left", borderBottom: "1px solid #222" }}>
-                <th style={{ padding: "6px 4px" }}>Category</th>
-                <th style={{ padding: "6px 4px" }}>Type</th>
-                <th style={{ padding: "6px 4px" }}>{pieDataA.closestLabel || "Date A"}</th>
-                <th style={{ padding: "6px 4px" }}>{pieDataB.closestLabel || "Date B"}</th>
-                <th style={{ padding: "6px 4px" }}>Diff</th>
-              </tr>
-            </thead>
-            <tbody>
-              {diffRows.map((row) => (
-                <tr key={`diff-${row.cat}`} style={{ borderBottom: "1px solid #111" }}>
-                  <td style={{ padding: "6px 4px", textTransform: "capitalize" }}>{row.cat}</td>
-                  <td style={{ padding: "6px 4px" }}>{row.type}</td>
-                  <td style={{ padding: "6px 4px" }}>{formatCurrency(row.a)}</td>
-                  <td style={{ padding: "6px 4px" }}>{formatCurrency(row.b)}</td>
-                  <td style={{ padding: "6px 4px", color: row.diff >= 0 ? "#6ce3a6" : "#ff7b7b" }}>
-                    {formatCurrency(row.diff)}
-                  </td>
-                </tr>
-              ))}
-              <tr style={{ borderTop: "1px solid #222", fontWeight: 700 }}>
-                <td style={{ padding: "8px 4px" }}>Total Assets</td>
-                <td style={{ padding: "8px 4px" }}>Total</td>
-                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataA.totalAssets)}</td>
-                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataB.totalAssets)}</td>
-                <td style={{ padding: "8px 4px", color: pieDataB.totalAssets - pieDataA.totalAssets >= 0 ? "#6ce3a6" : "#ff7b7b" }}>
-                  {formatCurrency(pieDataB.totalAssets - pieDataA.totalAssets)}
-                </td>
-              </tr>
-              <tr style={{ fontWeight: 700 }}>
-                <td style={{ padding: "8px 4px" }}>Total Liabilities</td>
-                <td style={{ padding: "8px 4px" }}>Total</td>
-                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataA.totalLiab)}</td>
-                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataB.totalLiab)}</td>
-                <td style={{ padding: "8px 4px", color: pieDataB.totalLiab - pieDataA.totalLiab >= 0 ? "#6ce3a6" : "#ff7b7b" }}>
-                  {formatCurrency(pieDataB.totalLiab - pieDataA.totalLiab)}
-                </td>
-              </tr>
-              <tr style={{ fontWeight: 700 }}>
-                <td style={{ padding: "8px 4px" }}>Net Worth</td>
-                <td style={{ padding: "8px 4px" }}>Total</td>
-                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataA.totalAssets - pieDataA.totalLiab)}</td>
-                <td style={{ padding: "8px 4px" }}>{formatCurrency(pieDataB.totalAssets - pieDataB.totalLiab)}</td>
-                <td style={{ padding: "8px 4px", color: (pieDataB.totalAssets - pieDataB.totalLiab) - (pieDataA.totalAssets - pieDataA.totalLiab) >= 0 ? "#6ce3a6" : "#ff7b7b" }}>
-                  {formatCurrency((pieDataB.totalAssets - pieDataB.totalLiab) - (pieDataA.totalAssets - pieDataA.totalLiab))}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  );
-
-  const sectionMap = {
-    networth: renderNetWorth,
-    categories: renderCategories,
-    snapshot: renderSnapshot,
-  };
-
   return (
-    <div style={{ display: "grid", gap: 16, background: "#fff", color: "#111", padding: 12, borderRadius: 12 }}>
-      <DndContext
-        collisionDetection={closestCenter}
-        onDragEnd={(event) => {
-          const { active, over } = event;
-          if (!over || active.id === over.id) return;
+    <div style={{ display: "grid", gap: 24 }}>
+      {/* Summary Cards */}
+      <div className="summary-grid">
+        <div className="summary-card">
+          <span className="summary-card-label">Total Assets</span>
+          <span className="summary-card-value" style={{ color: '#3fb950' }}>{formatCurrency(assetTotal)}</span>
+        </div>
+        <div className="summary-card">
+          <span className="summary-card-label">Total Liabilities</span>
+          <span className="summary-card-value" style={{ color: '#f85149' }}>{formatCurrency(liabilityTotal)}</span>
+        </div>
+        <div className={`summary-card ${netWorth >= 0 ? 'positive' : 'negative'}`}>
+          <span className="summary-card-label">Net Worth</span>
+          <span className="summary-card-value">{formatCurrency(netWorth)}</span>
+        </div>
+      </div>
 
-          setSectionOrder((items) => {
-            const oldIndex = items.indexOf(active.id);
-            const newIndex = items.indexOf(over.id);
-            return arrayMove(items, oldIndex, newIndex);
-          });
-        }}
-      >
-        <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
-          {sectionOrder.map((id) => (
-            <SortableSection key={id} id={id}>
-              {sectionMap[id]?.()}
-            </SortableSection>
-          ))}
-        </SortableContext>
-      </DndContext>
+      {/* Net Worth Line Chart */}
+      <div className="chart-container">
+        <h2 style={{ marginTop: 0, marginBottom: 16 }}>Net Worth Over Time</h2>
+        <div style={{ width: "100%", height: 360 }}>
+          <ResponsiveContainer>
+            <LineChart data={chartData} margin={{ left: 12, right: 24, top: 8, bottom: 8 }}>
+              <defs>
+                <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3fb950" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#3fb950" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#30363d" />
+              <XAxis
+                type="number"
+                dataKey="dateMs"
+                ticks={monthTicks}
+                domain={["dataMin", "dataMax"]}
+                tickFormatter={formatMonthLabel}
+                stroke="#8b949e"
+                tick={{ fill: "#8b949e", fontSize: 12 }}
+              />
+              <YAxis
+                domain={yMetaNetWorth.domain}
+                ticks={yMetaNetWorth.ticks}
+                tickFormatter={formatCurrencyShort}
+                stroke="#8b949e"
+                tick={{ fill: "#8b949e", fontSize: 12 }}
+                width={70}
+              />
+              <Tooltip
+                labelFormatter={(ms) => formatMonthDayLabel(ms)}
+                formatter={(v) => [formatCurrency(v), "Net Worth"]}
+                contentStyle={{ 
+                  background: "#161b22", 
+                  border: "1px solid #30363d", 
+                  color: "#e6edf3",
+                  borderRadius: 8
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="netWorth"
+                stroke="none"
+                fill="url(#netWorthGradient)"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="netWorth" 
+                dot={false} 
+                activeDot={{ r: 6, strokeWidth: 0 }} 
+                stroke="#3fb950" 
+                strokeWidth={3}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Categories Stacked Area Chart */}
+      <div className="chart-container">
+        <h2 style={{ marginTop: 0, marginBottom: 16 }}>Categories Breakdown Over Time</h2>
+        <LegendTwoLine />
+        <div style={{ width: "100%", height: 400, marginTop: 16 }}>
+          <ResponsiveContainer>
+            <AreaChart data={chartData} stackOffset="none" margin={{ left: 12, right: 24, top: 8, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#30363d" />
+              <XAxis
+                type="number"
+                dataKey="dateMs"
+                ticks={monthTicks}
+                domain={["dataMin", "dataMax"]}
+                tickFormatter={formatMonthLabel}
+                stroke="#8b949e"
+                tick={{ fill: "#8b949e", fontSize: 12 }}
+              />
+              <YAxis
+                domain={yMetaStacked.domain}
+                ticks={yMetaStacked.ticks}
+                tickFormatter={formatCurrencyShort}
+                stroke="#8b949e"
+                tick={{ fill: "#8b949e", fontSize: 12 }}
+                width={70}
+              />
+              <Tooltip content={<CategoriesTooltip />} />
+
+              {assetCategories.map((cat) => (
+                <Area
+                  key={cat}
+                  type="monotone"
+                  dataKey={cat}
+                  stackId="assets"
+                  dot={false}
+                  fillOpacity={0.7}
+                  fill={colorForCategory(cat).fill}
+                  stroke={colorForCategory(cat).stroke}
+                  strokeWidth={2}
+                />
+              ))}
+
+              {liabilityCategories.map((cat) => (
+                <Area
+                  key={cat}
+                  type="monotone"
+                  dataKey={cat}
+                  stackId="liabilities"
+                  dot={false}
+                  fillOpacity={0.7}
+                  fill={colorForCategory(cat).fill}
+                  stroke={colorForCategory(cat).stroke}
+                  strokeWidth={2}
+                />
+              ))}
+
+              <ReferenceLine y={0} stroke="#8b949e" strokeDasharray="3 3" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Category Pie Charts */}
+      <div className="chart-container">
+        <h2 style={{ marginTop: 0, marginBottom: 16 }}>Current Allocation</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
+          {/* Assets Pie */}
+          <div>
+            <h3 style={{ textAlign: "center", marginBottom: 16, color: "#3fb950" }}>Assets</h3>
+            <div style={{ width: "100%", height: 300 }}>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={assetCategories
+                      .map(cat => ({ name: cat, value: totals[cat] || 0 }))
+                      .filter(d => d.value > 0)}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    label={({ name, percent }) => 
+                      percent > 0.05 ? `${categoryLabels[name] || name}: ${(percent * 100).toFixed(0)}%` : ''
+                    }
+                    labelLine={false}
+                  >
+                    {assetCategories.map(cat => (
+                      <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
+                    contentStyle={{ 
+                      background: "#161b22", 
+                      border: "1px solid #30363d", 
+                      color: "#e6edf3",
+                      borderRadius: 8
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            {/* Legend */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginTop: 16 }}>
+              {assetCategories
+                .filter(cat => (totals[cat] || 0) > 0)
+                .map(cat => (
+                  <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ 
+                      width: 12, 
+                      height: 12, 
+                      borderRadius: 3, 
+                      backgroundColor: colorForCategory(cat).stroke 
+                    }} />
+                    <span style={{ fontSize: 13, color: "#e6edf3" }}>
+                      {categoryLabels[cat]} ({formatCurrency(totals[cat])})
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* Liabilities Pie */}
+          <div>
+            <h3 style={{ textAlign: "center", marginBottom: 16, color: "#f85149" }}>Liabilities</h3>
+            <div style={{ width: "100%", height: 300 }}>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={liabilityCategories
+                      .map(cat => ({ name: cat, value: totals[cat] || 0 }))
+                      .filter(d => d.value > 0)}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    label={({ name, percent }) => 
+                      percent > 0.05 ? `${categoryLabels[name] || name}: ${(percent * 100).toFixed(0)}%` : ''
+                    }
+                    labelLine={false}
+                  >
+                    {liabilityCategories.map(cat => (
+                      <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
+                    contentStyle={{ 
+                      background: "#161b22", 
+                      border: "1px solid #30363d", 
+                      color: "#e6edf3",
+                      borderRadius: 8
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            {/* Legend */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginTop: 16 }}>
+              {liabilityCategories
+                .filter(cat => (totals[cat] || 0) > 0)
+                .map(cat => (
+                  <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ 
+                      width: 12, 
+                      height: 12, 
+                      borderRadius: 3, 
+                      backgroundColor: colorForCategory(cat).stroke 
+                    }} />
+                    <span style={{ fontSize: 13, color: "#e6edf3" }}>
+                      {categoryLabels[cat]} ({formatCurrency(totals[cat])})
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-/** ---------------- Colors + Legends ---------------- */
-
-const legendLabel = (name) => {
-  const c = colorForCategory(name);
-  return <span style={{ color: c.stroke }}>{name}</span>;
-};
+/** ---------------- Legend Component ---------------- */
 
 const LegendTwoLine = () => {
   return (
-    <div style={{ display: "grid", gap: 4 }}>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
-        <strong style={{ marginRight: 4 }}>Assets:</strong>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+        <strong style={{ fontSize: 12, textTransform: "uppercase", color: "#8b949e" }}>Assets:</strong>
         {assetCategories.map(cat => (
-          <span key={`leg-a-${cat}`} style={{ color: colorForCategory(cat).stroke, textTransform: "capitalize" }}>
-            {cat}
-          </span>
+          <div key={`leg-a-${cat}`} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ 
+              width: 10, 
+              height: 10, 
+              borderRadius: 2, 
+              backgroundColor: colorForCategory(cat).stroke 
+            }} />
+            <span style={{ 
+              color: colorForCategory(cat).stroke, 
+              textTransform: "capitalize",
+              fontSize: 13,
+              fontWeight: 500
+            }}>
+              {categoryLabels[cat]}
+            </span>
+          </div>
         ))}
       </div>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
-        <strong style={{ marginRight: 4 }}>Liabilities:</strong>
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+        <strong style={{ fontSize: 12, textTransform: "uppercase", color: "#8b949e" }}>Liabilities:</strong>
         {liabilityCategories.map(cat => (
-          <span key={`leg-l-${cat}`} style={{ color: colorForCategory(cat).stroke, textTransform: "capitalize" }}>
-            {cat}
-          </span>
+          <div key={`leg-l-${cat}`} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ 
+              width: 10, 
+              height: 10, 
+              borderRadius: 2, 
+              backgroundColor: colorForCategory(cat).stroke 
+            }} />
+            <span style={{ 
+              color: colorForCategory(cat).stroke, 
+              textTransform: "capitalize",
+              fontSize: 13,
+              fontWeight: 500
+            }}>
+              {categoryLabels[cat]}
+            </span>
+          </div>
         ))}
       </div>
     </div>

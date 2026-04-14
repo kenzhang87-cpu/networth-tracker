@@ -269,6 +269,118 @@ app.get("/timeseries", authMiddleware, async (req, res) => {
   res.json([...byDate.values()]);
 });
 
+// Snapshot endpoints for save/load functionality
+app.get("/snapshots", authMiddleware, async (req, res) => {
+  const rows = await all(`
+    SELECT id, name, created_at
+    FROM snapshots
+    WHERE user_id=$1
+    ORDER BY created_at DESC
+  `, [req.user.id]);
+  res.json(rows);
+});
+
+app.post("/snapshots", authMiddleware, async (req, res) => {
+  const { name } = req.body;
+  if (!name?.trim()) {
+    return res.status(400).json({ error: "name required" });
+  }
+
+  try {
+    // Get all current data
+    const accounts = await all(`
+      SELECT id, name, category FROM accounts WHERE user_id=$1 ORDER BY name
+    `, [req.user.id]);
+
+    const balances = await all(`
+      SELECT b.id, b.date, b.balance, a.name AS account
+      FROM balances b
+      JOIN accounts a ON a.id = b.account_id
+      WHERE b.user_id=$1
+      ORDER BY b.date ASC, a.name ASC
+    `, [req.user.id]);
+
+    const data = { accounts, balances };
+
+    const result = await run(`
+      INSERT INTO snapshots(user_id, name, data) VALUES ($1, $2, $3) RETURNING id
+    `, [req.user.id, name.trim(), JSON.stringify(data)]);
+
+    res.json({ id: result.rows[0].id, name: name.trim(), created_at: new Date().toISOString() });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+app.get("/snapshots/:id", authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  const rows = await all(`
+    SELECT id, name, created_at, data
+    FROM snapshots
+    WHERE id=$1 AND user_id=$2
+  `, [id, req.user.id]);
+
+  if (!rows[0]) {
+    return res.status(404).json({ error: "snapshot not found" });
+  }
+
+  res.json(rows[0]);
+});
+
+app.post("/snapshots/:id/restore", authMiddleware, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Get snapshot data
+    const snapshotRows = await all(`
+      SELECT data FROM snapshots WHERE id=$1 AND user_id=$2
+    `, [id, req.user.id]);
+
+    if (!snapshotRows[0]) {
+      return res.status(404).json({ error: "snapshot not found" });
+    }
+
+    const { accounts, balances } = snapshotRows[0].data;
+
+    // Clear current data
+    await run(`DELETE FROM balances WHERE user_id=$1`, [req.user.id]);
+    await run(`DELETE FROM accounts WHERE user_id=$1`, [req.user.id]);
+
+    // Restore accounts
+    const accountIdMap = {};
+    for (const acct of accounts) {
+      const result = await run(`
+        INSERT INTO accounts(user_id, name, category) VALUES ($1, $2, $3) RETURNING id
+      `, [req.user.id, acct.name, acct.category || "other"]);
+      accountIdMap[acct.name] = result.rows[0].id;
+    }
+
+    // Restore balances
+    for (const bal of balances) {
+      const accountId = accountIdMap[bal.account];
+      if (accountId) {
+        await run(`
+          INSERT INTO balances(user_id, account_id, date, balance) VALUES ($1, $2, $3, $4)
+        `, [req.user.id, accountId, bal.date, bal.balance]);
+      }
+    }
+
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+app.delete("/snapshots/:id", authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await run(`DELETE FROM snapshots WHERE id=$1 AND user_id=$2`, [id, req.user.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
 const PORT = process.env.PORT || 4000;
 const start = async () => {
   await initDb();

@@ -141,3 +141,40 @@ export async function forgotPassword(email) {
   if (!r.ok) throw new Error(data.error || "Reset failed");
   return data;
 }
+
+// Snapshot endpoints for save/load functionality
+export async function getSnapshots() {
+  const r = await fetch(`${API}/snapshots`, { headers: authHeaders() });
+  if (!r.ok) throw new Error("Failed to fetch snapshots");
+  return r.json();
+}
+
+export async function saveSnapshot(name) {
+  const r = await fetch(`${API}/snapshots`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ name })
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || "Failed to save snapshot");
+  return data;
+}
+
+export async function loadSnapshot(id) {
+  const r = await fetch(`${API}/snapshots/${id}/restore`, {
+    method: "POST",
+    headers: authHeaders()
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || "Failed to restore snapshot");
+  return data;
+}
+
+export async function deleteSnapshot(id) {
+  const r = await fetch(`${API}/snapshots/${id}`, {
+    method: "DELETE",
+    headers: authHeaders()
+  });
+  if (!r.ok) throw new Error("Failed to delete snapshot");
+  return r.json();
+}

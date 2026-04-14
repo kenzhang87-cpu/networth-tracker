@@ -85,6 +85,22 @@ export async function initDb() {
     ON accounts(user_id, name);
   `);
 
+  // Snapshots table for saving/loading data versions
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS snapshots (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      data JSONB NOT NULL
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_snapshots_user_id
+    ON snapshots(user_id);
+  `);
+
   console.log("[db] initDb complete");
 }
 
