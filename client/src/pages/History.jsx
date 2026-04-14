@@ -336,7 +336,8 @@ export default function History() {
     allColumns.forEach(a => { values[a] = latestMap[a] ?? ""; });
 
     const id = `draft-${Date.now()}`;
-    const isoDate = toIsoDate(latestDate);
+    // Use today as the default date for new entries, not the latest existing date
+    const isoDate = toIsoDate(today);
 
     setDraftRows(prev => [{ id, date: isoDate, values }, ...prev]);
     setEditingRowKey(id);
@@ -674,9 +675,27 @@ const onCsvUpload = async (e) => {
       <tr key={key} style={{ borderBottom: "1px solid #f2f2f2" }}>
         <td style={{ whiteSpace: "nowrap", fontWeight: isDraft ? 400 : 600 }}>
           {isEditing ? (
-            <input type="date" value={editingDate} onChange={(e) => setEditingDate(e.target.value)} />
+            <input
+              type="date"
+              value={editingDate}
+              onChange={(e) => setEditingDate(e.target.value)}
+              style={{
+                fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
+                fontSize: "13px",
+                padding: "6px 8px",
+                backgroundColor: "#0d1117",
+                border: "2px solid #58a6ff",
+                borderRadius: "6px",
+                color: "#e6edf3"
+              }}
+            />
           ) : (
-            formatDate(rowDate)
+            <span style={{
+              fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
+              fontSize: "13px"
+            }}>
+              {formatDate(rowDate)}
+            </span>
           )}
         </td>
 
@@ -690,10 +709,28 @@ const onCsvUpload = async (e) => {
                   type="text"
                   value={val}
                   onChange={(e) => setEditingValues(v => ({ ...v, [acct]: e.target.value }))}
-                  style={{ width: "100%", textAlign: "right" }}
+                  style={{
+                    width: "100%",
+                    textAlign: "right",
+                    fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    padding: "6px 8px",
+                    backgroundColor: "#0d1117",
+                    border: "2px solid #58a6ff",
+                    borderRadius: "6px",
+                    color: "#e6edf3"
+                  }}
                 />
               ) : (
-                shown || <span style={{ color: "#999" }}>—</span>
+                <span style={{
+                  fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  color: shown ? "#e6edf3" : "#999"
+                }}>
+                  {shown || "—"}
+                </span>
               )}
             </td>
           );
