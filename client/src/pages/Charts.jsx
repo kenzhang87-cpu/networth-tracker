@@ -245,30 +245,18 @@ const AllocationTable = ({ data, accounts }) => {
     accounts.map(a => [a.name, (a.category || "other").toLowerCase()])
   );
 
-  // Group accounts by category
-  const accountsByCategory = {};
-  categoriesOrder.forEach(cat => {
-    accountsByCategory[cat] = [];
-  });
-
+  // Get all accounts with balances for this date
+  const accountRows = [];
   if (data?.accounts) {
     Object.entries(data.accounts).forEach(([acctName, balance]) => {
-      const cat = acctCategory.get(acctName) || "other";
-      if (accountsByCategory[cat]) {
-        accountsByCategory[cat].push({ name: acctName, balance });
-      }
+      accountRows.push({ name: acctName, balance });
     });
   }
 
-  // Sort accounts within each category by balance (descending)
-  Object.keys(accountsByCategory).forEach(cat => {
-    accountsByCategory[cat].sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance));
-  });
+  // Sort by absolute balance (descending)
+  accountRows.sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance));
 
-  // Filter to only categories with accounts
-  const categoriesWithData = categoriesOrder.filter(cat => accountsByCategory[cat].length > 0);
-
-  if (categoriesWithData.length === 0) {
+  if (accountRows.length === 0) {
     return (
       <div style={{ textAlign: "center", padding: 40, color: "#8b949e" }}>
         <p>No account data available for this date.</p>
@@ -277,65 +265,29 @@ const AllocationTable = ({ data, accounts }) => {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {categoriesWithData.map(cat => {
-        const catAccounts = accountsByCategory[cat];
-        const catTotal = catAccounts.reduce((sum, a) => sum + a.balance, 0);
-        const colors = colorForCategory(cat);
-        const isLiability = liabilityCategories.includes(cat);
-
-        return (
-          <div key={cat} className="category-section">
-            <div 
-              className="category-header"
-              style={{
-                background: `linear-gradient(90deg, ${colors.fill}, ${colors.fill.replace("0.7", "0.1")})`,
-                borderBottom: `2px solid ${colors.stroke}`
-              }}
-            >
-              <span style={{ flex: 1 }}>{categoryLabels[cat]}</span>
-              <span style={{ fontWeight: 700 }}>
-                {isLiability ? "-" : ""}{formatCurrency(Math.abs(catTotal))}
-              </span>
-            </div>
-            <div className="table-container" style={{ borderRadius: "0 0 8px 8px", borderTop: "none" }}>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Account</th>
-                    <th style={{ textAlign: "right" }}>Balance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {catAccounts.map(acct => (
-                    <tr key={acct.name}>
-                      <td>
-                        <span 
-                          className="category-badge"
-                          style={{
-                            backgroundColor: colors.fill,
-                            color: colors.stroke,
-                            border: `1px solid ${colors.stroke}`,
-                          }}
-                        >
-                          {acct.name}
-                        </span>
-                      </td>
-                      <td style={{ 
-                        textAlign: "right", 
-                        fontWeight: 600,
-                        color: acct.balance < 0 ? "#f85149" : "#3fb950"
-                      }}>
-                        {formatCurrency(acct.balance)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
-      })}
+    <div className="table-container" style={{ borderRadius: "8px" }}>
+      <table>
+        <thead>
+          <tr>
+            <th>Account Name</th>
+            <th style={{ textAlign: "right" }}>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {accountRows.map(acct => (
+            <tr key={acct.name}>
+              <td>{acct.name}</td>
+              <td style={{ 
+                textAlign: "right", 
+                fontWeight: 600,
+                color: acct.balance < 0 ? "#f85149" : "#3fb950"
+              }}>
+                {formatCurrency(acct.balance)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -434,9 +386,12 @@ export default function Charts() {
     return series.find(d => toIsoDate(d.date) === selectedDate) || series[series.length - 1];
   }, [selectedDate, series]);
 
-  // Calculate totals for selected date
-  const { assetTotal, liabilityTotal, netWorth, totals } = useMemo(() => {
-    if (!selectedDateData) {
+  // Second date selector for comparison
+  const [selectedDate2, setSelectedDate2] = useState(null);
+
+  // Calculate totals for a given date
+  const calculateTotals = (dateData) => {
+    if (!dateData) {
       return { assetTotal: 0, liabilityTotal: 0, netWorth: 0, totals: {} };
     }
 
@@ -447,8 +402,8 @@ export default function Charts() {
     const catTotals = {};
     categoriesOrder.forEach(c => catTotals[c] = 0);
 
-    if (selectedDateData.accounts) {
-      for (const [acct, bal] of Object.entries(selectedDateData.accounts)) {
+    if (dateData.accounts) {
+      for (const [acct, bal] of Object.entries(dateData.accounts)) {
         const cat = acctCategory.get(acct) || "other";
         catTotals[cat] = (catTotals[cat] || 0) + bal;
       }
@@ -463,7 +418,24 @@ export default function Charts() {
       netWorth: assetTot - liabilityTot,
       totals: catTotals
     };
-  }, [selectedDateData, accounts]);
+  };
+
+  // Get data for selected dates
+  const selectedDateData2 = useMemo(() => {
+    if (!selectedDate2 || !series.length) return null;
+    return series.find(d => toIsoDate(d.date) === selectedDate2) || series[series.length - 1];
+  }, [selectedDate2, series]);
+
+  // Calculate totals for both dates
+  const { assetTotal, liabilityTotal, netWorth, totals } = calculateTotals(selectedDateData);
+  const { assetTotal: assetTotal2, liabilityTotal: liabilityTotal2, netWorth: netWorth2, totals: totals2 } = calculateTotals(selectedDateData2);
+
+  // Set default second date when data loads
+  useEffect(() => {
+    if (dateOptions.length > 1 && !selectedDate2) {
+      setSelectedDate2(dateOptions[1]?.value || dateOptions[0]?.value);
+    }
+  }, [dateOptions, selectedDate2]);
 
   if (chartData.length === 0) {
     return (
@@ -476,22 +448,6 @@ export default function Charts() {
 
   return (
     <div style={{ display: "grid", gap: 24 }}>
-      {/* Summary Cards */}
-      <div className="summary-grid">
-        <div className="summary-card">
-          <span className="summary-card-label">Total Assets</span>
-          <span className="summary-card-value" style={{ color: '#3fb950' }}>{formatCurrency(assetTotal)}</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-card-label">Total Liabilities</span>
-          <span className="summary-card-value" style={{ color: '#f85149' }}>{formatCurrency(liabilityTotal)}</span>
-        </div>
-        <div className={`summary-card ${netWorth >= 0 ? 'positive' : 'negative'}`}>
-          <span className="summary-card-label">Net Worth</span>
-          <span className="summary-card-value">{formatCurrency(netWorth)}</span>
-        </div>
-      </div>
-
       {/* Net Worth Line Chart */}
       <div className="chart-container">
         <h2 style={{ marginTop: 0, marginBottom: 16 }}>Net Worth Over Time</h2>
@@ -612,136 +568,240 @@ export default function Charts() {
         </div>
       </div>
 
-      {/* Category Pie Charts with Date Selector */}
+      {/* Category Pie Charts with Two Date Selectors */}
       <div className="chart-container">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, marginBottom: 16 }}>
-          <h2 style={{ margin: 0 }}>Allocation by Date</h2>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <label style={{ color: "#8b949e", fontSize: 14 }}>Select Date:</label>
-            <select 
-              value={selectedDate || ""} 
-              onChange={(e) => setSelectedDate(e.target.value)}
-              style={{ minWidth: 150 }}
-            >
-              {dateOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <h2 style={{ marginTop: 0, marginBottom: 16 }}>Allocation Comparison</h2>
         
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
-          {/* Assets Pie */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
+          {/* Date 1 Column */}
           <div>
-            <h3 style={{ textAlign: "center", marginBottom: 16, color: "#3fb950" }}>Assets</h3>
-            <div style={{ width: "100%", height: 300 }}>
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={assetCategories
-                      .map(cat => ({ name: cat, value: totals[cat] || 0 }))
-                      .filter(d => d.value > 0)}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    label={({ name, percent }) => 
-                      percent > 0.05 ? `${categoryLabels[name] || name}: ${(percent * 100).toFixed(0)}%` : ''
-                    }
-                    labelLine={false}
-                  >
-                    {assetCategories.map(cat => (
-                      <Cell key={cat} fill={colorForCategory(cat).stroke} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
-                    contentStyle={{ 
-                      background: "#161b22", 
-                      border: "1px solid #30363d", 
-                      color: "#e6edf3",
-                      borderRadius: 8
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            {/* Legend */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginTop: 16 }}>
-              {assetCategories
-                .filter(cat => (totals[cat] || 0) > 0)
-                .map(cat => (
-                  <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ 
-                      width: 12, 
-                      height: 12, 
-                      borderRadius: 3, 
-                      backgroundColor: colorForCategory(cat).stroke 
-                    }} />
-                    <span style={{ fontSize: 13, color: "#e6edf3" }}>
-                      {categoryLabels[cat]} ({formatCurrency(totals[cat])})
-                    </span>
-                  </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ color: "#8b949e", fontSize: 14, display: "block", marginBottom: 8 }}>Date 1:</label>
+              <select 
+                value={selectedDate || ""} 
+                onChange={(e) => setSelectedDate(e.target.value)}
+                style={{ minWidth: 200, width: "100%" }}
+              >
+                {dateOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
                 ))}
+              </select>
+            </div>
+            
+            {/* Totals for Date 1 */}
+            <div style={{ 
+              background: "#21262d", 
+              borderRadius: 8, 
+              padding: 12, 
+              marginBottom: 16,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "#8b949e" }}>Total Assets:</span>
+                <span style={{ color: "#3fb950", fontWeight: 600 }}>{formatCurrency(assetTotal)}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "#8b949e" }}>Total Liabilities:</span>
+                <span style={{ color: "#f85149", fontWeight: 600 }}>{formatCurrency(liabilityTotal)}</span>
+              </div>
+            </div>
+            
+            <div style={{ display: "grid", gap: 24 }}>
+              {/* Assets Pie - Date 1 */}
+              <div>
+                <h3 style={{ textAlign: "center", marginBottom: 12, color: "#3fb950", fontSize: 16 }}>Assets</h3>
+                <div style={{ width: "100%", height: 250 }}>
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie
+                        data={assetCategories
+                          .map(cat => ({ name: cat, value: totals[cat] || 0 }))
+                          .filter(d => d.value > 0)}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label={({ name, percent }) => 
+                          percent > 0.05 ? `${categoryLabels[name] || name}: ${(percent * 100).toFixed(0)}%` : ''
+                        }
+                        labelLine={false}
+                      >
+                        {assetCategories.map(cat => (
+                          <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
+                        contentStyle={{ 
+                          background: "#161b22", 
+                          border: "1px solid #30363d", 
+                          color: "#e6edf3",
+                          borderRadius: 8
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Liabilities Pie - Date 1 */}
+              <div>
+                <h3 style={{ textAlign: "center", marginBottom: 12, color: "#f85149", fontSize: 16 }}>Liabilities</h3>
+                <div style={{ width: "100%", height: 250 }}>
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie
+                        data={liabilityCategories
+                          .map(cat => ({ name: cat, value: totals[cat] || 0 }))
+                          .filter(d => d.value > 0)}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label={({ name, percent }) => 
+                          percent > 0.05 ? `${categoryLabels[name] || name}: ${(percent * 100).toFixed(0)}%` : ''
+                        }
+                        labelLine={false}
+                      >
+                        {liabilityCategories.map(cat => (
+                          <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
+                        contentStyle={{ 
+                          background: "#161b22", 
+                          border: "1px solid #30363d", 
+                          color: "#e6edf3",
+                          borderRadius: 8
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Liabilities Pie */}
+          {/* Date 2 Column */}
           <div>
-            <h3 style={{ textAlign: "center", marginBottom: 16, color: "#f85149" }}>Liabilities</h3>
-            <div style={{ width: "100%", height: 300 }}>
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={liabilityCategories
-                      .map(cat => ({ name: cat, value: totals[cat] || 0 }))
-                      .filter(d => d.value > 0)}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    label={({ name, percent }) => 
-                      percent > 0.05 ? `${categoryLabels[name] || name}: ${(percent * 100).toFixed(0)}%` : ''
-                    }
-                    labelLine={false}
-                  >
-                    {liabilityCategories.map(cat => (
-                      <Cell key={cat} fill={colorForCategory(cat).stroke} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
-                    contentStyle={{ 
-                      background: "#161b22", 
-                      border: "1px solid #30363d", 
-                      color: "#e6edf3",
-                      borderRadius: 8
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            {/* Legend */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginTop: 16 }}>
-              {liabilityCategories
-                .filter(cat => (totals[cat] || 0) > 0)
-                .map(cat => (
-                  <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ 
-                      width: 12, 
-                      height: 12, 
-                      borderRadius: 3, 
-                      backgroundColor: colorForCategory(cat).stroke 
-                    }} />
-                    <span style={{ fontSize: 13, color: "#e6edf3" }}>
-                      {categoryLabels[cat]} ({formatCurrency(totals[cat])})
-                    </span>
-                  </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ color: "#8b949e", fontSize: 14, display: "block", marginBottom: 8 }}>Date 2:</label>
+              <select 
+                value={selectedDate2 || ""} 
+                onChange={(e) => setSelectedDate2(e.target.value)}
+                style={{ minWidth: 200, width: "100%" }}
+              >
+                {dateOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
                 ))}
+              </select>
+            </div>
+            
+            {/* Totals for Date 2 */}
+            <div style={{ 
+              background: "#21262d", 
+              borderRadius: 8, 
+              padding: 12, 
+              marginBottom: 16,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "#8b949e" }}>Total Assets:</span>
+                <span style={{ color: "#3fb950", fontWeight: 600 }}>{formatCurrency(assetTotal2)}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "#8b949e" }}>Total Liabilities:</span>
+                <span style={{ color: "#f85149", fontWeight: 600 }}>{formatCurrency(liabilityTotal2)}</span>
+              </div>
+            </div>
+            
+            <div style={{ display: "grid", gap: 24 }}>
+              {/* Assets Pie - Date 2 */}
+              <div>
+                <h3 style={{ textAlign: "center", marginBottom: 12, color: "#3fb950", fontSize: 16 }}>Assets</h3>
+                <div style={{ width: "100%", height: 250 }}>
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie
+                        data={assetCategories
+                          .map(cat => ({ name: cat, value: totals2[cat] || 0 }))
+                          .filter(d => d.value > 0)}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label={({ name, percent }) => 
+                          percent > 0.05 ? `${categoryLabels[name] || name}: ${(percent * 100).toFixed(0)}%` : ''
+                        }
+                        labelLine={false}
+                      >
+                        {assetCategories.map(cat => (
+                          <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
+                        contentStyle={{ 
+                          background: "#161b22", 
+                          border: "1px solid #30363d", 
+                          color: "#e6edf3",
+                          borderRadius: 8
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Liabilities Pie - Date 2 */}
+              <div>
+                <h3 style={{ textAlign: "center", marginBottom: 12, color: "#f85149", fontSize: 16 }}>Liabilities</h3>
+                <div style={{ width: "100%", height: 250 }}>
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie
+                        data={liabilityCategories
+                          .map(cat => ({ name: cat, value: totals2[cat] || 0 }))
+                          .filter(d => d.value > 0)}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label={({ name, percent }) => 
+                          percent > 0.05 ? `${categoryLabels[name] || name}: ${(percent * 100).toFixed(0)}%` : ''
+                        }
+                        labelLine={false}
+                      >
+                        {liabilityCategories.map(cat => (
+                          <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
+                        contentStyle={{ 
+                          background: "#161b22", 
+                          border: "1px solid #30363d", 
+                          color: "#e6edf3",
+                          borderRadius: 8
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             </div>
           </div>
         </div>
