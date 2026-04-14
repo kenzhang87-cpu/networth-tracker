@@ -1,4 +1,14 @@
 {
   "buildCommand": "cd client && rm -rf node_modules package-lock.json .vite dist && npm install && npm run build",
-  "installCommand": "cd client && npm install"
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ]
 }
