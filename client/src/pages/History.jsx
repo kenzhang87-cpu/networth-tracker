@@ -569,7 +569,7 @@ export default function History() {
             <div style={{ background: "linear-gradient(90deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1))", color: "#4ade80", padding: "12px 16px", borderRadius: "8px 8px 0 0", fontWeight: 600, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "2px solid #22c55e" }}>
               Assets
             </div>
-            <div className="table-container" style={{ borderRadius: '0 0 12px 12px', borderTop: 'none', maxHeight: '60vh', overflow: 'auto' }}>
+            <div className="table-container" style={{ borderRadius: '0 0 12px 12px', borderTop: 'none', maxHeight: '60vh', maxWidth: '90%', margin: '0 auto', overflow: 'auto' }}>
               {assetCols.length === 0 ? (
                 <div style={{ padding: 20, color: "#777" }}>No asset accounts</div>
               ) : (
@@ -600,7 +600,7 @@ export default function History() {
             <div style={{ background: "linear-gradient(90deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1))", color: "#f87171", padding: "12px 16px", borderRadius: "8px 8px 0 0", fontWeight: 600, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "2px solid #ef4444" }}>
               Liabilities
             </div>
-            <div className="table-container" style={{ borderRadius: '0 0 12px 12px', borderTop: 'none', maxHeight: '60vh', overflow: 'auto' }}>
+            <div className="table-container" style={{ borderRadius: '0 0 12px 12px', borderTop: 'none', maxHeight: '60vh', maxWidth: '90%', margin: '0 auto', overflow: 'auto' }}>
               {liabilityCols.length === 0 ? (
                 <div style={{ padding: 20, color: "#777" }}>No liability accounts</div>
               ) : (
