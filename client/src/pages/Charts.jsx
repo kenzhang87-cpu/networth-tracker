@@ -240,52 +240,91 @@ const CategoriesTooltip = ({ active, payload, label }) => {
 
 /** -------- Table Component -------- */
 
-const AllocationTable = ({ data, accounts }) => {
-  const acctCategory = new Map(
-    accounts.map(a => [a.name, (a.category || "other").toLowerCase()])
-  );
+const AllocationTable = ({ totals, assetTotal, liabilityTotal, netWorth }) => {
+  // Build category rows with all asset and liability categories
+  const categoryRows = [];
+  
+  // Add asset categories
+  assetCategories.forEach(cat => {
+    const value = totals[cat] || 0;
+    if (Math.abs(value) > 0.01) {
+      categoryRows.push({ 
+        name: categoryLabels[cat] || cat, 
+        value: value,
+        type: 'asset',
+        catKey: cat
+      });
+    }
+  });
+  
+  // Add liability categories
+  liabilityCategories.forEach(cat => {
+    const value = totals[cat] || 0;
+    if (Math.abs(value) > 0.01) {
+      categoryRows.push({ 
+        name: categoryLabels[cat] || cat, 
+        value: value,
+        type: 'liability',
+        catKey: cat
+      });
+    }
+  });
 
-  // Get all accounts with balances for this date
-  const accountRows = [];
-  if (data?.accounts) {
-    Object.entries(data.accounts).forEach(([acctName, balance]) => {
-      accountRows.push({ name: acctName, balance });
-    });
-  }
+  // Sort by absolute value (descending)
+  categoryRows.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
 
-  // Sort by absolute balance (descending)
-  accountRows.sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance));
-
-  if (accountRows.length === 0) {
+  if (categoryRows.length === 0) {
     return (
       <div style={{ textAlign: "center", padding: 40, color: "#8b949e" }}>
-        <p>No account data available for this date.</p>
+        <p>No category data available for this date.</p>
       </div>
     );
   }
 
   return (
-    <div className="table-container" style={{ borderRadius: "8px" }}>
+    <div className="table-container" style={{ borderRadius: "8px", maxWidth: "90%", margin: "0 auto" }}>
       <table>
         <thead>
           <tr>
-            <th>Account Name</th>
-            <th style={{ textAlign: "right" }}>Balance</th>
+            <th>Category</th>
+            <th style={{ textAlign: "right" }}>Total</th>
           </tr>
         </thead>
         <tbody>
-          {accountRows.map(acct => (
-            <tr key={acct.name}>
-              <td>{acct.name}</td>
+          {categoryRows.map(row => (
+            <tr key={row.catKey}>
+              <td>
+                <span className={`category-badge ${row.catKey.replace(/\s+/g, '-')}`}>
+                  {row.name}
+                </span>
+              </td>
               <td style={{ 
                 textAlign: "right", 
                 fontWeight: 600,
-                color: acct.balance < 0 ? "#f85149" : "#3fb950"
+                color: row.value < 0 ? "#f85149" : "#3fb950"
               }}>
-                {formatCurrency(acct.balance)}
+                {formatCurrency(row.value)}
               </td>
             </tr>
           ))}
+          <tr style={{ borderTop: "2px solid #30363d", fontWeight: 700 }}>
+            <td style={{ paddingTop: 16 }}>Total Assets</td>
+            <td style={{ textAlign: "right", color: "#3fb950", paddingTop: 16 }}>
+              {formatCurrency(assetTotal)}
+            </td>
+          </tr>
+          <tr>
+            <td>Total Liabilities</td>
+            <td style={{ textAlign: "right", color: "#f85149" }}>
+              {formatCurrency(liabilityTotal)}
+            </td>
+          </tr>
+          <tr style={{ borderTop: "1px solid #30363d" }}>
+            <td style={{ paddingTop: 12 }}>Net Worth</td>
+            <td style={{ textAlign: "right", color: netWorth >= 0 ? "#3fb950" : "#f85149", paddingTop: 12 }}>
+              {formatCurrency(netWorth)}
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -608,6 +647,18 @@ export default function Charts() {
                 <span style={{ color: "#8b949e" }}>Total Liabilities:</span>
                 <span style={{ color: "#f85149", fontWeight: 600 }}>{formatCurrency(liabilityTotal)}</span>
               </div>
+              <div style={{ 
+                display: "flex", 
+                justifyContent: "space-between",
+                borderTop: "1px solid #30363d",
+                marginTop: 4,
+                paddingTop: 8
+              }}>
+                <span style={{ color: "#8b949e" }}>Net Worth:</span>
+                <span style={{ color: netWorth >= 0 ? "#3fb950" : "#f85149", fontWeight: 700 }}>
+                  {formatCurrency(netWorth)}
+                </span>
+              </div>
             </div>
             
             <div style={{ display: "grid", gap: 24 }}>
@@ -657,7 +708,7 @@ export default function Charts() {
                     <PieChart>
                       <Pie
                         data={liabilityCategories
-                          .map(cat => ({ name: cat, value: totals[cat] || 0 }))
+                          .map(cat => ({ name: cat, value: Math.abs(totals[cat] || 0) }))
                           .filter(d => d.value > 0)}
                         dataKey="value"
                         nameKey="name"
@@ -724,6 +775,18 @@ export default function Charts() {
                 <span style={{ color: "#8b949e" }}>Total Liabilities:</span>
                 <span style={{ color: "#f85149", fontWeight: 600 }}>{formatCurrency(liabilityTotal2)}</span>
               </div>
+              <div style={{ 
+                display: "flex", 
+                justifyContent: "space-between",
+                borderTop: "1px solid #30363d",
+                marginTop: 4,
+                paddingTop: 8
+              }}>
+                <span style={{ color: "#8b949e" }}>Net Worth:</span>
+                <span style={{ color: netWorth2 >= 0 ? "#3fb950" : "#f85149", fontWeight: 700 }}>
+                  {formatCurrency(netWorth2)}
+                </span>
+              </div>
             </div>
             
             <div style={{ display: "grid", gap: 24 }}>
@@ -773,7 +836,7 @@ export default function Charts() {
                     <PieChart>
                       <Pie
                         data={liabilityCategories
-                          .map(cat => ({ name: cat, value: totals2[cat] || 0 }))
+                          .map(cat => ({ name: cat, value: Math.abs(totals2[cat] || 0) }))
                           .filter(d => d.value > 0)}
                         dataKey="value"
                         nameKey="name"
@@ -810,9 +873,14 @@ export default function Charts() {
       {/* Detailed Table Below Charts */}
       <div className="chart-container">
         <h2 style={{ marginTop: 0, marginBottom: 16 }}>
-          Account Details for {selectedDate ? formatDateForSelector(selectedDate) : "Selected Date"}
+          Category Breakdown for {selectedDate ? formatDateForSelector(selectedDate) : "Selected Date"}
         </h2>
-        <AllocationTable data={selectedDateData} accounts={accounts} />
+        <AllocationTable 
+          totals={totals} 
+          assetTotal={assetTotal} 
+          liabilityTotal={liabilityTotal} 
+          netWorth={netWorth} 
+        />
       </div>
     </div>
   );
