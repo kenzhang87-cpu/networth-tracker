@@ -65,6 +65,13 @@ const formatMonthDayLabel = (ms) => {
   return `${month} ${day}, ${yy}`;
 };
 
+const formatDateForSelector = (iso) => {
+  const p = parseDateParts(iso);
+  if (!p) return iso;
+  const month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][p.m - 1];
+  return `${month} ${p.d}, ${p.y}`;
+};
+
 /** ---------------- Formatting helpers ---------------- */
 
 const formatCurrency = (val) => {
@@ -231,18 +238,115 @@ const CategoriesTooltip = ({ active, payload, label }) => {
   );
 };
 
+/** -------- Table Component -------- */
+
+const AllocationTable = ({ data, accounts }) => {
+  const acctCategory = new Map(
+    accounts.map(a => [a.name, (a.category || "other").toLowerCase()])
+  );
+
+  // Group accounts by category
+  const accountsByCategory = {};
+  categoriesOrder.forEach(cat => {
+    accountsByCategory[cat] = [];
+  });
+
+  if (data?.accounts) {
+    Object.entries(data.accounts).forEach(([acctName, balance]) => {
+      const cat = acctCategory.get(acctName) || "other";
+      if (accountsByCategory[cat]) {
+        accountsByCategory[cat].push({ name: acctName, balance });
+      }
+    });
+  }
+
+  // Sort accounts within each category by balance (descending)
+  Object.keys(accountsByCategory).forEach(cat => {
+    accountsByCategory[cat].sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance));
+  });
+
+  // Filter to only categories with accounts
+  const categoriesWithData = categoriesOrder.filter(cat => accountsByCategory[cat].length > 0);
+
+  if (categoriesWithData.length === 0) {
+    return (
+      <div style={{ textAlign: "center", padding: 40, color: "#8b949e" }}>
+        <p>No account data available for this date.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {categoriesWithData.map(cat => {
+        const catAccounts = accountsByCategory[cat];
+        const catTotal = catAccounts.reduce((sum, a) => sum + a.balance, 0);
+        const colors = colorForCategory(cat);
+        const isLiability = liabilityCategories.includes(cat);
+
+        return (
+          <div key={cat} className="category-section">
+            <div className={`category-header ${cat.replace(/\s+/g, "-")}`}>
+              <span style={{ flex: 1 }}>{categoryLabels[cat]}</span>
+              <span style={{ fontWeight: 700 }}>
+                {isLiability ? "-" : ""}{formatCurrency(Math.abs(catTotal))}
+              </span>
+            </div>
+            <div className="table-container" style={{ borderRadius: "0 0 8px 8px", borderTop: "none" }}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Account</th>
+                    <th style={{ textAlign: "right" }}>Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {catAccounts.map(acct => (
+                    <tr key={acct.name}>
+                      <td>
+                        <span 
+                          className="category-badge"
+                          style={{
+                            backgroundColor: colors.fill,
+                            color: colors.stroke,
+                            border: `1px solid ${colors.stroke}`,
+                          }}
+                        >
+                          {acct.name}
+                        </span>
+                      </td>
+                      <td style={{ 
+                        textAlign: "right", 
+                        fontWeight: 600,
+                        color: acct.balance < 0 ? "#f85149" : "#3fb950"
+                      }}>
+                        {formatCurrency(acct.balance)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 /** ---------------- Component ---------------- */
 
 export default function Charts() {
   const [series, setSeries] = useState([]);
   const [accounts, setAccounts] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     getTimeseries().then(setSeries);
     getAccounts().then(setAccounts);
   }, []);
 
-  const { chartData, monthTicks, yMetaNetWorth, yMetaStacked, totals } = useMemo(() => {
+  const { chartData, monthTicks, yMetaNetWorth, yMetaStacked, dateOptions } = useMemo(() => {
     const acctCategory = new Map(
       accounts.map(a => [a.name, (a.category || "other").toLowerCase()])
     );
@@ -259,13 +363,17 @@ export default function Charts() {
         monthTicks: [],
         yMetaNetWorth: { domain: ["auto", "auto"], ticks: [] },
         yMetaStacked: { domain: ["auto", "auto"], ticks: [] },
-        totals: {}
+        dateOptions: []
       };
     }
 
-    // Calculate category totals for summary
-    const catTotals = {};
-    categoriesOrder.forEach(c => catTotals[c] = 0);
+    // Create date options for selector (reverse chronological)
+    const dateOpts = normalized.map(d => ({
+      value: d.iso,
+      label: formatDateForSelector(d.iso),
+      ms: d.ms,
+      data: d
+    })).sort((a, b) => b.ms - a.ms);
 
     // continuous month ticks
     const ticks = [];
@@ -298,32 +406,64 @@ export default function Charts() {
       return row;
     });
 
-    // Get latest values for summary
-    if (chartData.length > 0) {
-      const latest = chartData[chartData.length - 1];
-      categoriesOrder.forEach(c => {
-        catTotals[c] = Math.abs(latest[c] || 0);
-      });
-    }
-
     return {
       chartData,
       monthTicks: ticks,
       yMetaNetWorth: computeYNetWorth(chartData),
       yMetaStacked: computeYStacked(chartData),
-      totals: catTotals
+      dateOptions: dateOpts
     };
   }, [series, accounts]);
 
-  const assetTotal = useMemo(() => 
-    assetCategories.reduce((sum, cat) => sum + (totals[cat] || 0), 0),
-  [totals]);
+  // Set default selected date to latest when data loads
+  useEffect(() => {
+    if (dateOptions.length > 0 && !selectedDate) {
+      setSelectedDate(dateOptions[0].value);
+    }
+  }, [dateOptions, selectedDate]);
 
-  const liabilityTotal = useMemo(() => 
-    liabilityCategories.reduce((sum, cat) => sum + (totals[cat] || 0), 0),
-  [totals]);
+  // Get data for selected date
+  const selectedDateData = useMemo(() => {
+    if (!selectedDate || !series.length) return null;
+    return series.find(d => toIsoDate(d.date) === selectedDate) || series[series.length - 1];
+  }, [selectedDate, series]);
 
-  const netWorth = assetTotal - liabilityTotal;
+  // Calculate totals for selected date
+  const { assetTotal, liabilityTotal, netWorth, totals } = useMemo(() => {
+    if (!selectedDateData) {
+      return { assetTotal: 0, liabilityTotal: 0, netWorth: 0, totals: {} };
+    }
+
+    const acctCategory = new Map(
+      accounts.map(a => [a.name, (a.category || "other").toLowerCase()])
+    );
+
+    const catTotals = {};
+    categoriesOrder.forEach(c => catTotals[c] = 0);
+
+    if (selectedDateData.accounts) {
+      for (const [acct, bal] of Object.entries(selectedDateData.accounts)) {
+        const cat = acctCategory.get(acct) || "other";
+        catTotals[cat] = (catTotals[cat] || 0) + bal;
+      }
+    }
+
+    const assetTot = assetCategories.reduce((sum, cat) => {
+      const val = catTotals[cat] || 0;
+      return sum + (val > 0 ? val : 0);
+    }, 0);
+    const liabilityTot = liabilityCategories.reduce((sum, cat) => {
+      const val = catTotals[cat] || 0;
+      return sum + (val > 0 ? val : 0);
+    }, 0);
+
+    return {
+      assetTotal: assetTot,
+      liabilityTotal: liabilityTot,
+      netWorth: assetTot - liabilityTot,
+      totals: catTotals
+    };
+  }, [selectedDateData, accounts]);
 
   if (chartData.length === 0) {
     return (
@@ -472,9 +612,26 @@ export default function Charts() {
         </div>
       </div>
 
-      {/* Category Pie Charts */}
+      {/* Category Pie Charts with Date Selector */}
       <div className="chart-container">
-        <h2 style={{ marginTop: 0, marginBottom: 16 }}>Current Allocation</h2>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, marginBottom: 16 }}>
+          <h2 style={{ margin: 0 }}>Allocation by Date</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <label style={{ color: "#8b949e", fontSize: 14 }}>Select Date:</label>
+            <select 
+              value={selectedDate || ""} 
+              onChange={(e) => setSelectedDate(e.target.value)}
+              style={{ minWidth: 150 }}
+            >
+              {dateOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
           {/* Assets Pie */}
           <div>
@@ -496,9 +653,11 @@ export default function Charts() {
                     }
                     labelLine={false}
                   >
-                    {assetCategories.map(cat => (
-                      <Cell key={cat} fill={colorForCategory(cat).stroke} />
-                    ))}
+                    {assetCategories
+                      .filter(cat => (totals[cat] || 0) > 0)
+                      .map(cat => (
+                        <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                      ))}
                   </Pie>
                   <Tooltip
                     formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
@@ -552,9 +711,11 @@ export default function Charts() {
                     }
                     labelLine={false}
                   >
-                    {liabilityCategories.map(cat => (
-                      <Cell key={cat} fill={colorForCategory(cat).stroke} />
-                    ))}
+                    {liabilityCategories
+                      .filter(cat => (totals[cat] || 0) > 0)
+                      .map(cat => (
+                        <Cell key={cat} fill={colorForCategory(cat).stroke} />
+                      ))}
                   </Pie>
                   <Tooltip
                     formatter={(val, name) => [formatCurrency(val), categoryLabels[name] || name]}
@@ -588,6 +749,14 @@ export default function Charts() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Detailed Table Below Charts */}
+      <div className="chart-container">
+        <h2 style={{ marginTop: 0, marginBottom: 16 }}>
+          Account Details for {selectedDate ? formatDateForSelector(selectedDate) : "Selected Date"}
+        </h2>
+        <AllocationTable data={selectedDateData} accounts={accounts} />
       </div>
     </div>
   );
